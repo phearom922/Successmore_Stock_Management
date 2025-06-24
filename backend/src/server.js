@@ -1,26 +1,43 @@
 const express = require('express');
-     const mongoose = require('mongoose');
-     const apiRoutes = require('./routes/api');
-     const cors = require('cors');
+  const mongoose = require('mongoose');
+  const apiRoutes = require('./routes/api');
+  const cors = require('cors');
+  const jwt = require('jsonwebtoken');
 
-     const app = express();
+  const app = express();
 
-     // Enable CORS for localhost:5173
-     app.use(cors({
-       origin: 'http://localhost:5173',
-       methods: ['GET', 'POST', 'PUT', 'DELETE'],
-       allowedHeaders: ['Content-Type', 'Authorization'],
-     }));
+  // Enable CORS for localhost:5173
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
 
-     app.use(express.json());
+  app.use(express.json());
 
-     // MongoDB Connection
-     mongoose.connect('mongodb://localhost:27017/stock-management')
-       .then(() => console.log('Connected to MongoDB Atlas'))
-       .catch(err => console.error('Connection error:', err));
+  // Middleware to verify JWT
+  const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-     // Register API Routes
-     app.use('/api', apiRoutes);
+    if (!token) return res.status(401).json({ message: 'Access denied, no token provided' });
 
-     const PORT = process.env.PORT || 3000;
-     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
+      if (err) return res.status(403).json({ message: 'Invalid token' });
+      req.user = user;
+      next();
+    });
+  };
+
+  // MongoDB Connection
+  mongoose.connect('mongodb://localhost:27017/stock-management')
+    .then(() => console.log('Connected to MongoDB Atlas'))
+    .catch(err => console.error('Connection error:', err));
+
+  // Apply authentication to protected routes
+  app.use('/api/lots', authenticateToken);
+  app.use('/api/issue', authenticateToken);
+  app.use('/api', apiRoutes);
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
