@@ -1,0 +1,1 @@
+import {toast} from'react-toastify';export const success=m=>toast.success(m);export const error=m=>toast.error(m);

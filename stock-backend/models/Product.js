@@ -1,0 +1,1 @@
+const m=require('mongoose');module.exports=m.model('Product',new m.Schema({sku:{type:String,unique:true},name:String,baseUom:String,reorderPoint:Number},{timestamps:true}));

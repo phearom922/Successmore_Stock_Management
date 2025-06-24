@@ -1,0 +1,17 @@
+
+{
+  "name": "stock-backend",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": { "dev": "node server.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.0",
+    "mongoose": "^8.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "zod": "^3.22.4"
+  }
+}

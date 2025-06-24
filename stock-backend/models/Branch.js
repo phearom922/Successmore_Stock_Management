@@ -1,0 +1,1 @@
+const mongoose=require('mongoose');module.exports=mongoose.model('Branch',new mongoose.Schema({code:{type:String,unique:true},name:String},{timestamps:true}));
