@@ -1,1 +1,0 @@
-const mongoose = require('mongoose'); module.exports = mongoose.model('Lot', new mongoose.Schema({ lotCode: String, productId: mongoose.Types.ObjectId, warehouseId: mongoose.Types.ObjectId, qtyOnHand: Number, mfgDate: Date, expDate: Date }, { timestamps: true }));

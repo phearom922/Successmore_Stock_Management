@@ -1,1 +1,0 @@
-const mongoose = require('mongoose'); module.exports = mongoose.model('Warehouse', new mongoose.Schema({ code: { type: String, unique: true }, name: String, branchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch' }, type: { type: String, enum: ['main', 'sub'], default: 'main' } }, { timestamps: true }));

@@ -1,1 +1,0 @@
-const mongoose=require('mongoose');module.exports=mongoose.model('Transaction',new mongoose.Schema({type:String,lotId:mongoose.Types.ObjectId,fromWh:mongoose.Types.ObjectId,toWh:mongoose.Types.ObjectId,quantity:Number,reason:String,userId:mongoose.Types.ObjectId},{timestamps:true}));
