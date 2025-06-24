@@ -14,13 +14,13 @@ const seedData = async () => {
       lotCode: 'LOT001-240101',
       productId: doveProduct._id,
       expDate: new Date('2025-12-31'),
-      qtyOnHand: 100,
+      qtyOnHand: 50,
       warehouse: 'Bangkok Main Warehouse',
     });
     await Lot.create({
       lotCode: 'LOT002-240101',
       productId: headShouldersProduct._id,
-      expDate: new Date('2026-01-15'),
+      expDate: '2026-01-15',
       qtyOnHand: 50,
       warehouse: 'Silom Sub Warehouse',
     });
@@ -53,22 +53,25 @@ router.get('/lots', async (req, res) => {
 // Issue stock with FEFO
 router.post('/issue', async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, quantity, warehouse } = req.body;
 
-    if (!productId || !quantity || quantity <= 0) {
-      return res.status(400).json({ message: 'Product ID and valid quantity are required' });
+    if (!productId || !quantity || quantity <= 0 || !warehouse) {
+      return res.status(400).json({ message: 'Product ID, valid quantity, and warehouse are required' });
+    }
+
+    // Check total available stock in the specified warehouse before issuing
+    const lots = await Lot.find({ productId, warehouse, qtyOnHand: { $gt: 0 } }).sort({ expDate: 1 });
+    const totalAvailable = lots.reduce((sum, lot) => sum + lot.qtyOnHand, 0);
+
+    if (totalAvailable < quantity) {
+      return res.status(400).json({
+        message: 'Insufficient stock available',
+        availableStock: totalAvailable,
+      });
     }
 
     let remainingQty = quantity;
     const issuedLots = [];
-
-    // Get lots sorted by expDate (FEFO)
-    const lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 } })
-      .sort({ expDate: 1 });
-
-    if (lots.length === 0) {
-      return res.status(404).json({ message: 'No available lots for this product' });
-    }
 
     for (const lot of lots) {
       if (remainingQty <= 0) break;
@@ -85,10 +88,6 @@ router.post('/issue', async (req, res) => {
         qtyIssued: qtyToIssue,
         remainingQty: lot.qtyOnHand,
       });
-    }
-
-    if (remainingQty > 0) {
-      return res.status(400).json({ message: 'Insufficient stock available' });
     }
 
     res.json({
