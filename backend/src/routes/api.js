@@ -21,7 +21,9 @@ const express = require('express');
       const admin = await User.create({ username: 'admin', password: hashedPassword, role: 'admin', warehouse: 'All' });
       const user1 = await User.create({ username: 'user1', password: hashedPassword, role: 'user', warehouse: 'Bangkok Main Warehouse' });
 
-      await Warehouse.create({ name: 'Bangkok Main Warehouse', assignedUser: user1._id });
+      const bangkokWarehouse = await Warehouse.create({ name: 'Bangkok Main Warehouse', assignedUser: user1._id });
+      await User.findByIdAndUpdate(user1._id, { assignedWarehouse: bangkokWarehouse._id });
+
       await Warehouse.create({ name: 'Silom Sub Warehouse' });
 
       const doveProduct = await Product.create({ name: 'Dove Soap 100g', sku: 'SKU001' });
@@ -29,8 +31,9 @@ const express = require('express');
         lotCode: 'LOT001-240101',
         productId: doveProduct._id,
         expDate: new Date('2025-12-31'),
-        qtyOnHand: 50,
+        qtyOnHand: 40, // อัปเดตตามการตัดก่อนหน้า
         warehouse: 'Bangkok Main Warehouse',
+        status: 'active',
       });
       console.log('Seed data added, users:', await User.find(), 'warehouses:', await Warehouse.find());
     }
@@ -41,7 +44,7 @@ const express = require('express');
   router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     console.log('Login attempt:', { username, password });
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate('assignedWarehouse');
 
     if (!user) {
       console.log('User not found:', username);
@@ -53,7 +56,11 @@ const express = require('express');
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role, warehouse: user.warehouse }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '1h' });
+    const token = jwt.sign({ 
+      id: user._id, 
+      role: user.role, 
+      warehouse: user.assignedWarehouse ? user.assignedWarehouse.name : user.warehouse 
+    }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '1h' });
     res.json({ token });
   });
 
@@ -71,7 +78,6 @@ const express = require('express');
   router.get('/lots', async (req, res) => {
     try {
       const user = req.user;
-      console.log('User in /lots:', user); // Debug user
       const query = user.role === 'admin' ? {} : { warehouse: user.warehouse };
       const lots = await Lot.find(query).populate('productId');
       res.json(lots);
@@ -84,12 +90,11 @@ const express = require('express');
   router.get('/users', async (req, res) => {
     try {
       const user = req.user;
-      console.log('User in /users:', user); // Debug user
       if (!user || user.role !== 'admin') {
         console.log('Forbidden: User role:', user?.role);
         return res.status(403).json({ message: 'Only admins can view users' });
       }
-      const users = await User.find().select('-password');
+      const users = await User.find().select('-password').populate('assignedWarehouse');
       console.log('Fetched users:', users);
       res.json(users);
     } catch (error) {
@@ -98,21 +103,45 @@ const express = require('express');
     }
   });
 
-  // Issue stock with FEFO
+  // Issue stock with FEFO based on issueType
   router.post('/issue', async (req, res) => {
     try {
       const user = req.user;
-      const { productId, quantity, warehouse } = req.body;
+      const { productId, quantity, warehouse, issueType, lotId } = req.body;
 
-      if (!productId || !quantity || quantity <= 0 || !warehouse) {
-        return res.status(400).json({ message: 'Product ID, valid quantity, and warehouse are required' });
+      if (!productId || !quantity || quantity <= 0 || !issueType) {
+        return res.status(400).json({ message: 'Product ID, quantity, and issue type are required' });
       }
 
-      if (user.role === 'user' && warehouse !== user.warehouse) {
-        return res.status(403).json({ message: 'Unauthorized to issue from this warehouse' });
+      let lots = [];
+      if (issueType === 'expired') {
+        lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, expDate: { $lt: new Date() } }).sort({ expDate: 1 });
+      } else if (issueType === 'waste' && !lotId) {
+        return res.status(400).json({ message: 'Lot ID is required for waste issue' });
+      } else if (issueType === 'waste') {
+        const lot = await Lot.findOne({ _id: lotId });
+        console.log('Waste lot check:', lot); // Debug
+        if (!lot) {
+          return res.status(400).json({ message: 'Lot not found' });
+        }
+        if (lot.qtyOnHand < quantity) {
+          return res.status(400).json({
+            message: 'Insufficient stock available',
+            availableStock: lot.qtyOnHand,
+          });
+        }
+        lot.qtyOnHand -= quantity; // ลดสต็อกทันที
+        const updatedLot = await lot.save(); // บันทึกการเปลี่ยนแปลง
+        console.log('Updated lot after save:', updatedLot); // Debug
+        lots = [updatedLot]; // ใช้ Lot ที่อัปเดตแล้ว
+      } else {
+        lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, status: 'active' }).sort({ expDate: 1 });
       }
 
-      const lots = await Lot.find({ productId, warehouse, qtyOnHand: { $gt: 0 } }).sort({ expDate: 1 });
+      if (user.role !== 'admin') {
+        lots = lots.filter(lot => lot.warehouse === warehouse);
+      }
+      console.log('Lots found:', lots); // Debug
       const totalAvailable = lots.reduce((sum, lot) => sum + lot.qtyOnHand, 0);
 
       if (totalAvailable < quantity) {
@@ -131,13 +160,14 @@ const express = require('express');
         const qtyToIssue = Math.min(remainingQty, lot.qtyOnHand);
         remainingQty -= qtyToIssue;
 
-        lot.qtyOnHand -= qtyToIssue;
-        await lot.save();
+        lot.qtyOnHand -= qtyToIssue; // ลดสต็อกทันที
+        const updatedLot = await lot.save(); // บันทึกการเปลี่ยนแปลง
+        console.log(`Saved lot ${lot.lotCode}, qtyOnHand: ${updatedLot.qtyOnHand}`); // Debug
 
         issuedLots.push({
           lotCode: lot.lotCode,
           qtyIssued: qtyToIssue,
-          remainingQty: lot.qtyOnHand,
+          remainingQty: updatedLot.qtyOnHand,
         });
       }
 
@@ -147,6 +177,7 @@ const express = require('express');
         totalIssued: quantity,
       });
     } catch (error) {
+      console.error('Error issuing stock:', error); // Debug
       res.status(500).json({ message: 'Error issuing stock', error: error.message });
     }
   });
@@ -171,6 +202,7 @@ const express = require('express');
         if (!validAssignedUser) {
           return res.status(400).json({ message: 'Invalid assigned user' });
         }
+        await User.findByIdAndUpdate(assignedUser, { warehouse: name, assignedWarehouse: null });
       }
 
       const warehouse = await Warehouse.create({ name, assignedUser: validAssignedUser ? validAssignedUser._id : null });
