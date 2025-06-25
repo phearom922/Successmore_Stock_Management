@@ -3,20 +3,27 @@ import { useEffect, useState } from 'react';
 
   const Dashboard = () => {
     const [stats, setStats] = useState({ totalProducts: 0, totalStock: 0 });
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
       const fetchStats = async () => {
-        const [productsRes, lotsRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/products'),
-          axios.get('http://localhost:3000/api/lots'),
-        ]);
-        setStats({
-          totalProducts: productsRes.data.length,
-          totalStock: lotsRes.data.reduce((sum, lot) => sum + lot.qtyOnHand, 0),
-        });
+        try {
+          const [productsRes, lotsRes] = await Promise.all([
+            axios.get('http://localhost:3000/api/products'),
+            axios.get('http://localhost:3000/api/lots', {
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+          ]);
+          setStats({
+            totalProducts: productsRes.data.length,
+            totalStock: lotsRes.data.reduce((sum, lot) => sum + lot.qtyOnHand, 0),
+          });
+        } catch (error) {
+          console.error('Error fetching stats:', error);
+        }
       };
       fetchStats();
-    }, []);
+    }, [token]);
 
     return (
       <div className="grid grid-cols-3 gap-4">

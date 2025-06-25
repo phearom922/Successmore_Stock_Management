@@ -3,6 +3,7 @@ const express = require('express');
   const Product = require('../models/Product');
   const Lot = require('../models/Lot');
   const User = require('../models/User');
+  const Warehouse = require('../models/Warehouse');
   const bcrypt = require('bcryptjs');
   const jwt = require('jsonwebtoken');
 
@@ -10,14 +11,18 @@ const express = require('express');
   const seedData = async () => {
     const users = await User.find();
     const products = await Product.find();
-    if (users.length === 0 || products.length === 0) { // เปลี่ยนเงื่อนไขให้รันถ้าไม่มี User หรือ Product
+    if (users.length === 0 || products.length === 0) {
       const hashedPassword = await bcrypt.hash('password123', 10);
-      await User.deleteMany(); // ลบ User เก่าทั้งหมด
-      await Product.deleteMany(); // ลบ Product เก่าทั้งหมด
-      await Lot.deleteMany(); // ลบ Lot เก่าทั้งหมด
+      await User.deleteMany();
+      await Product.deleteMany();
+      await Lot.deleteMany();
+      await Warehouse.deleteMany();
 
-      await User.create({ username: 'admin', password: hashedPassword, role: 'admin', warehouse: 'All' });
-      await User.create({ username: 'user1', password: hashedPassword, role: 'user', warehouse: 'Bangkok Main Warehouse' });
+      const admin = await User.create({ username: 'admin', password: hashedPassword, role: 'admin', warehouse: 'All' });
+      const user1 = await User.create({ username: 'user1', password: hashedPassword, role: 'user', warehouse: 'Bangkok Main Warehouse' });
+
+      await Warehouse.create({ name: 'Bangkok Main Warehouse', assignedUser: user1._id });
+      await Warehouse.create({ name: 'Silom Sub Warehouse' });
 
       const doveProduct = await Product.create({ name: 'Dove Soap 100g', sku: 'SKU001' });
       await Lot.create({
@@ -27,7 +32,7 @@ const express = require('express');
         qtyOnHand: 50,
         warehouse: 'Bangkok Main Warehouse',
       });
-      console.log('Seed data added, users:', await User.find());
+      console.log('Seed data added, users:', await User.find(), 'warehouses:', await Warehouse.find());
     }
   };
   seedData().catch(console.error);
@@ -52,25 +57,44 @@ const express = require('express');
     res.json({ token });
   });
 
-  // Get all products (protected for now, adjust later)
+  // Get all products
   router.get('/products', async (req, res) => {
     try {
       const products = await Product.find();
       res.json(products);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching products', error });
+      res.status(500).json({ message: 'Error fetching products', error: error.message });
     }
   });
 
-  // Get all lots (protected, filter by user warehouse)
+  // Get all lots
   router.get('/lots', async (req, res) => {
     try {
       const user = req.user;
+      console.log('User in /lots:', user); // Debug user
       const query = user.role === 'admin' ? {} : { warehouse: user.warehouse };
       const lots = await Lot.find(query).populate('productId');
       res.json(lots);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching lots', error });
+      res.status(500).json({ message: 'Error fetching lots', error: error.message });
+    }
+  });
+
+  // Get all users (for Admin)
+  router.get('/users', async (req, res) => {
+    try {
+      const user = req.user;
+      console.log('User in /users:', user); // Debug user
+      if (!user || user.role !== 'admin') {
+        console.log('Forbidden: User role:', user?.role);
+        return res.status(403).json({ message: 'Only admins can view users' });
+      }
+      const users = await User.find().select('-password');
+      console.log('Fetched users:', users);
+      res.json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Error fetching users', error: error.message });
     }
   });
 
@@ -123,7 +147,37 @@ const express = require('express');
         totalIssued: quantity,
       });
     } catch (error) {
-      res.status(500).json({ message: 'Error issuing stock', error });
+      res.status(500).json({ message: 'Error issuing stock', error: error.message });
+    }
+  });
+
+  // Create Warehouse (Admin only)
+  router.post('/warehouses', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        console.log('Forbidden: User role:', user?.role);
+        return res.status(403).json({ message: 'Only admins can create warehouses' });
+      }
+
+      const { name, assignedUser } = req.body;
+      if (!name) {
+        return res.status(400).json({ message: 'Warehouse name is required' });
+      }
+
+      let validAssignedUser = null;
+      if (assignedUser) {
+        validAssignedUser = await User.findById(assignedUser);
+        if (!validAssignedUser) {
+          return res.status(400).json({ message: 'Invalid assigned user' });
+        }
+      }
+
+      const warehouse = await Warehouse.create({ name, assignedUser: validAssignedUser ? validAssignedUser._id : null });
+      res.json({ message: 'Warehouse created', warehouse });
+    } catch (error) {
+      console.error('Warehouse creation error:', error);
+      res.status(500).json({ message: 'Error creating warehouse', error: error.message });
     }
   });
 
