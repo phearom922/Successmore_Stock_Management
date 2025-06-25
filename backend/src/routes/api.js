@@ -31,7 +31,15 @@ const express = require('express');
         lotCode: 'LOT001-240101',
         productId: doveProduct._id,
         expDate: new Date('2025-12-31'),
-        qtyOnHand: 40, // อัปเดตตามการตัดก่อนหน้า
+        qtyOnHand: 40,
+        warehouse: 'Bangkok Main Warehouse',
+        status: 'active',
+      });
+      await Lot.create({
+        lotCode: 'LOT002-240101',
+        productId: doveProduct._id,
+        expDate: new Date('2024-12-31'),
+        qtyOnHand: 30,
         warehouse: 'Bangkok Main Warehouse',
         status: 'active',
       });
@@ -179,6 +187,94 @@ const express = require('express');
     } catch (error) {
       console.error('Error issuing stock:', error); // Debug
       res.status(500).json({ message: 'Error issuing stock', error: error.message });
+    }
+  });
+
+  // Update lot status
+  router.post('/lots/status', async (req, res) => {
+    try {
+      const user = req.user;
+      const { lotId, status } = req.body;
+
+      if (!lotId || !status) {
+        return res.status(400).json({ message: 'Lot ID and status are required' });
+      }
+      if (!['active', 'damaged', 'expired'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status value' });
+      }
+
+      const lot = await Lot.findById(lotId);
+      if (!lot) {
+        return res.status(404).json({ message: 'Lot not found' });
+      }
+      if (user.role !== 'admin' && lot.warehouse !== user.warehouse) {
+        return res.status(403).json({ message: 'Unauthorized to update this lot' });
+      }
+
+      lot.status = status;
+      const updatedLot = await lot.save();
+      console.log('Updated lot status:', updatedLot);
+
+      res.json({ message: 'Lot status updated successfully', lot: updatedLot });
+    } catch (error) {
+      console.error('Error updating lot status:', error);
+      res.status(500).json({ message: 'Error updating lot status', error: error.message });
+    }
+  });
+
+  // Split lot status with quantity
+  router.post('/lots/split-status', async (req, res) => {
+    try {
+      const user = req.user;
+      const { lotId, status, quantity } = req.body;
+
+      if (!lotId || !status || !quantity || quantity <= 0) {
+        return res.status(400).json({ message: 'Lot ID, status, and quantity are required' });
+      }
+      if (!['active', 'damaged', 'expired'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status value' });
+      }
+
+      const lot = await Lot.findById(lotId);
+      if (!lot) {
+        return res.status(404).json({ message: 'Lot not found' });
+      }
+      if (user.role !== 'admin' && lot.warehouse !== user.warehouse) {
+        return res.status(403).json({ message: 'Unauthorized to update this lot' });
+      }
+      if (lot.qtyOnHand < quantity) {
+        return res.status(400).json({
+          message: 'Insufficient quantity available',
+          availableStock: lot.qtyOnHand,
+        });
+      }
+
+      // ลดจำนวนจาก Lot เดิม
+      lot.qtyOnHand -= quantity;
+      const originalLot = await lot.save();
+
+      // สร้าง Lot ใหม่สำหรับของเสีย
+      const newLot = new Lot({
+        lotCode: `${lot.lotCode}-Damaged-${Date.now()}`, // เพิ่ม timestamp เพื่อความไม่ซ้ำ
+        productId: lot.productId,
+        expDate: lot.expDate,
+        qtyOnHand: quantity,
+        warehouse: lot.warehouse,
+        status: status,
+      });
+      const savedNewLot = await newLot.save();
+
+      console.log('Original lot after split:', originalLot);
+      console.log('New damaged lot:', savedNewLot);
+
+      res.json({
+        message: 'Lot split and status updated successfully',
+        originalLot: originalLot,
+        newLot: savedNewLot,
+      });
+    } catch (error) {
+      console.error('Error splitting lot status:', error);
+      res.status(500).json({ message: 'Error splitting lot status', error: error.message });
     }
   });
 

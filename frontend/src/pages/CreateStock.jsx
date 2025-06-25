@@ -5,9 +5,13 @@ import { useState, useEffect } from 'react';
   import { useNavigate } from 'react-router-dom';
 
   const CreateStock = () => {
-    const [name, setName] = useState('');
-    const [assignedUser, setAssignedUser] = useState('');
-    const [users, setUsers] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState('');
+    const [lotCode, setLotCode] = useState('');
+    const [quantity, setQuantity] = useState(0);
+    const [expDate, setExpDate] = useState('');
+    const [warehouse, setWarehouse] = useState('');
+    const [message, setMessage] = useState('');
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
     const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
@@ -17,77 +21,107 @@ import { useState, useEffect } from 'react';
         navigate('/login');
         return;
       }
-      // ถ้าเป็น Admin ดึงรายชื่อ User
-      if (userRole === 'admin') {
-        const fetchUsers = async () => {
-          try {
-            const res = await axios.get('http://localhost:3000/api/users', {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            setUsers(res.data);
-          } catch (error) {
-            console.error('Error fetching users:', error);
-            toast.error('Failed to load users');
-          }
-        };
-        fetchUsers();
-      } else {
-        setUsers([]); // User ทั่วไปไม่เห็นรายชื่อ
+      if (userRole !== 'admin') {
+        toast.error('Unauthorized access: Only admins can create stock');
+        navigate('/');
+        return;
       }
+      const fetchProducts = async () => {
+        try {
+          const res = await axios.get('http://localhost:3000/api/products', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setProducts(res.data);
+          if (res.data.length > 0) setSelectedProduct(res.data[0]._id);
+        } catch (error) {
+          console.error('Error fetching products:', error);
+          toast.error('Failed to load products');
+        }
+      };
+      fetchProducts();
     }, [token, navigate, userRole]);
 
-    const handleCreate = async (e) => {
+    const handleCreateStock = async (e) => {
       e.preventDefault();
       if (!token) {
         toast.error('Please login first');
         return;
       }
       try {
-        const res = await axios.post('http://localhost:3000/api/warehouses', {
-          name,
-          assignedUser: assignedUser || null,
+        const res = await axios.post('http://localhost:3000/api/lots', {
+          lotCode,
+          productId: selectedProduct,
+          expDate,
+          qtyOnHand: quantity,
+          warehouse,
         }, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success('Warehouse created successfully!');
-        setTimeout(() => navigate('/issue'), 1000);
+        setMessage(res.data.message);
+        toast.success('Stock created successfully!');
       } catch (error) {
-        console.error('Create warehouse error:', error);
-        toast.error(error.response?.data?.message || 'Error creating warehouse');
+        setMessage(error.response?.data?.message || 'Error creating stock');
+        toast.error(error.response?.data?.message || 'Network Error');
       }
     };
 
-    if (!token) return null;
+    if (!token || userRole !== 'admin') return null;
 
     return (
       <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4">Create Stock</h2>
-        <form onSubmit={handleCreate} className="space-y-4">
+        <h2 className="text-xl font-bold mb-4">Create Stock</h2>
+        <form onSubmit={handleCreateStock} className="space-y-4">
+          <select
+            value={selectedProduct}
+            onChange={(e) => setSelectedProduct(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          >
+            <option value="">Select Product</option>
+            {products.map((product) => (
+              <option key={product._id} value={product._id}>
+                {product.name}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Warehouse Name"
+            value={lotCode}
+            onChange={(e) => setLotCode(e.target.value)}
+            placeholder="Lot Code"
             className="w-full p-2 border rounded"
             required
           />
-          {userRole === 'admin' && (
-            <select
-              value={assignedUser}
-              onChange={(e) => setAssignedUser(e.target.value)}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">No User Assigned</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.username}
-                </option>
-              ))}
-            </select>
-          )}
-          <button type="submit" className="bg-green-500 text-white p-2 rounded">
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            placeholder="Quantity"
+            className="w-full p-2 border rounded"
+            required
+            min="1"
+          />
+          <input
+            type="date"
+            value={expDate}
+            onChange={(e) => setExpDate(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <select
+            value={warehouse}
+            onChange={(e) => setWarehouse(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          >
+            <option value="">Select Warehouse</option>
+            <option value="Bangkok Main Warehouse">Bangkok Main Warehouse</option>
+            <option value="Silom Sub Warehouse">Silom Sub Warehouse</option>
+          </select>
+          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
             Create Stock
           </button>
+          {message && <p className="mt-2">{message}</p>}
         </form>
         <ToastContainer />
       </div>

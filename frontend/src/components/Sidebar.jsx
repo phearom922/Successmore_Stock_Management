@@ -15,6 +15,9 @@ import { Link } from 'react-router-dom';
           {userRole === 'admin' && (
             <Link to="/create-stock" className="block p-2 hover:bg-gray-700">Create Stock</Link>
           )}
+          {(userRole === 'admin' || userRole === 'user') && (
+            <Link to="/manage-stock-status" className="block p-2 hover:bg-gray-700">Manage Stock Status</Link>
+          )}
         </nav>
         <button
           onClick={() => setIsOpen(!isOpen)}

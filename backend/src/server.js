@@ -37,17 +37,28 @@ const express = require('express');
     });
   };
 
-  // MongoDB Connection
-  mongoose.connect('mongodb://localhost:27017/stock-management')
-    .then(() => console.log('Connected to MongoDB Atlas'))
-    .catch(err => console.error('Connection error:', err));
-
   // Apply authentication to protected routes
   app.use('/api/lots', authenticateToken);
   app.use('/api/issue', authenticateToken);
   app.use('/api/warehouses', authenticateToken);
-  app.use('/api/users', authenticateToken); // Ensure this is protected
+  app.use('/api/users', authenticateToken);
+  app.use('/api/lots/status', authenticateToken);
+  app.use('/api/lots/split-status', authenticateToken); // เพิ่มสำหรับ split-status
+
+  // Load all API routes
   app.use('/api', apiRoutes);
 
+  // MongoDB Connection
+  mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-management', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => {
+      console.error('Connection error:', err);
+      process.exit(1); // ออกจากโปรแกรมถ้าเชื่อมต่อล้มเหลว
+    });
+
+  // Start server
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
