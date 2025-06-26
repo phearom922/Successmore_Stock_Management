@@ -18,7 +18,7 @@ import { useState } from 'react';
         });
         localStorage.setItem('token', data.token);
         toast.success('Login successful!');
-        navigate('/issue'); // ไปหน้า Issue หลังล็อกอิน
+        navigate('/'); // ไปหน้า Issue หลังล็อกอิน
       } catch (error) {
         toast.error(error.response?.data?.message || 'Login failed');
       }

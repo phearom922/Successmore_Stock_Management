@@ -12,14 +12,15 @@ import Categories from './pages/Categories';
 import Products from './pages/Products';
 import Warehouses from './pages/Warehouses';
 
-const ProtectedRoute = ({ children, requiredRole = null }) => {
+const ProtectedRoute = ({ children, requiredRoles = [] }) => {
   const token = localStorage.getItem('token');
 
   if (!token) return <Navigate to="/login" />;
 
   const userRole = JSON.parse(atob(token.split('.')[1])).role;
 
-  if (requiredRole && userRole !== requiredRole) {
+  // ถ้าไม่กำหนด requiredRoles หรือ roles เป็น empty array แปลว่าให้ทุก role เข้าถึงได้
+  if (requiredRoles.length > 0 && !requiredRoles.includes(userRole)) {
     return <Navigate to="/" />;
   }
 
@@ -42,27 +43,27 @@ createRoot(document.getElementById('root')).render(
             </ProtectedRoute>
           } />
           <Route path="/create-stock" element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRoles={['admin']}>
               <CreateStock />
             </ProtectedRoute>
           } />
           <Route path="/manage-stock-status" element={
-            <ProtectedRoute requiredRole="user">
+            <ProtectedRoute requiredRoles={['admin', 'user']}>
               <ManageStockStatus />
             </ProtectedRoute>
           } />
           <Route path="/categories" element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRoles={['admin']}>
               <Categories />
             </ProtectedRoute>
           } />
           <Route path="/products" element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRoles={['admin']}>
               <Products />
             </ProtectedRoute>
           } />
           <Route path="/warehouses" element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRoles={['admin']}>
               <Warehouses />
             </ProtectedRoute>
           } />
