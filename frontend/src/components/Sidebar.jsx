@@ -18,6 +18,21 @@ import { Link } from 'react-router-dom';
           {(userRole === 'admin' || userRole === 'user') && (
             <Link to="/manage-stock-status" className="block p-2 hover:bg-gray-700">Manage Stock Status</Link>
           )}
+          <div className="mt-2">
+            <span className="block p-2 text-gray-400">Product</span>
+            {userRole === 'admin' && (
+              <>
+                <Link to="/categories" className="block p-2 pl-6 hover:bg-gray-700">Category</Link>
+                <Link to="/products" className="block p-2 pl-6 hover:bg-gray-700">Products</Link>
+              </>
+            )}
+          </div>
+          {userRole === 'admin' && (
+            <div className="mt-2">
+              <span className="block p-2 text-gray-400">Warehouse</span>
+              <Link to="/warehouses" className="block p-2 pl-6 hover:bg-gray-700">Warehouses</Link>
+            </div>
+          )}
         </nav>
         <button
           onClick={() => setIsOpen(!isOpen)}

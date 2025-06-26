@@ -4,6 +4,7 @@ const express = require('express');
   const Lot = require('../models/Lot');
   const User = require('../models/User');
   const Warehouse = require('../models/Warehouse');
+  const Category = require('../models/Category');
   const bcrypt = require('bcryptjs');
   const jwt = require('jsonwebtoken');
 
@@ -11,12 +12,14 @@ const express = require('express');
   const seedData = async () => {
     const users = await User.find();
     const products = await Product.find();
-    if (users.length === 0 || products.length === 0) {
+    const categories = await Category.find();
+    if (users.length === 0 || products.length === 0 || categories.length === 0) {
       const hashedPassword = await bcrypt.hash('password123', 10);
       await User.deleteMany();
       await Product.deleteMany();
       await Lot.deleteMany();
       await Warehouse.deleteMany();
+      await Category.deleteMany();
 
       const admin = await User.create({ username: 'admin', password: hashedPassword, role: 'admin', warehouse: 'All' });
       const user1 = await User.create({ username: 'user1', password: hashedPassword, role: 'user', warehouse: 'Bangkok Main Warehouse' });
@@ -26,7 +29,21 @@ const express = require('express');
 
       await Warehouse.create({ name: 'Silom Sub Warehouse' });
 
-      const doveProduct = await Product.create({ name: 'Dove Soap 100g', sku: 'SKU001' });
+      const category1 = await Category.create({ name: 'Personal Care', description: 'Personal hygiene products' });
+      const category2 = await Category.create({ name: 'Household', description: 'Household items' });
+
+      const doveProduct = await Product.create({
+        productCode: 'PROD001',
+        name: 'Dove Soap 100g',
+        category: category1._id,
+        sku: null,
+      });
+      await Product.create({
+        productCode: 'PROD002',
+        name: 'Shampoo 200ml',
+        category: category1._id,
+        sku: null,
+      });
       await Lot.create({
         lotCode: 'LOT001-240101',
         productId: doveProduct._id,
@@ -41,6 +58,14 @@ const express = require('express');
         expDate: new Date('2024-12-31'),
         qtyOnHand: 30,
         warehouse: 'Bangkok Main Warehouse',
+        status: 'active',
+      });
+      await Lot.create({
+        lotCode: 'LOT003-240101',
+        productId: doveProduct._id,
+        expDate: new Date('2025-12-31'),
+        qtyOnHand: 20,
+        warehouse: 'Silom Sub Warehouse',
         status: 'active',
       });
       console.log('Seed data added, users:', await User.find(), 'warehouses:', await Warehouse.find());
@@ -75,10 +100,185 @@ const express = require('express');
   // Get all products
   router.get('/products', async (req, res) => {
     try {
-      const products = await Product.find();
+      const products = await Product.find().populate('category', 'name description');
       res.json(products);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching products', error: error.message });
+    }
+  });
+
+  // Batch create products
+  router.post('/products/batch', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can create products' });
+      }
+      const { products } = req.body;
+      if (!Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ message: 'Products array is required' });
+      }
+
+      const validProducts = products.filter(p => p.productCode && p.name && p.category);
+      if (validProducts.length === 0) {
+        return res.status(400).json({ message: 'No valid products provided' });
+      }
+
+      const createdProducts = await Product.insertMany(validProducts.map(p => ({
+        productCode: p.productCode,
+        name: p.name,
+        category: p.category,
+        sku: p.sku || null,
+      })), { ordered: false });
+
+      res.json({ message: 'Products created successfully', products: createdProducts });
+    } catch (error) {
+      console.error('Error creating products in batch:', error);
+      res.status(500).json({ message: 'Error creating products', error: error.message });
+    }
+  });
+
+  // Create product
+  router.post('/products', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can create products' });
+      }
+      const { productCode, name, category, sku } = req.body;
+      if (!productCode || !name || !category) {
+        return res.status(400).json({ message: 'Product code, name, and category are required' });
+      }
+      const product = await Product.create({ productCode, name, category, sku: sku || null });
+      res.json({ message: 'Product created successfully', product });
+    } catch (error) {
+      console.error('Error creating product:', error);
+      res.status(500).json({ message: 'Error creating product', error: error.message });
+    }
+  });
+
+  // Update product
+  router.put('/products/:id', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can update products' });
+      }
+      const { productCode, name, category, sku } = req.body;
+      if (!productCode || !name || !category) {
+        return res.status(400).json({ message: 'Product code, name, and category are required' });
+      }
+      const product = await Product.findByIdAndUpdate(req.params.id, { productCode, name, category, sku: sku || null }, { new: true, runValidators: true });
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.json({ message: 'Product updated successfully', product });
+    } catch (error) {
+      console.error('Error updating product:', error);
+      res.status(500).json({ message: 'Error updating product', error: error.message });
+    }
+  });
+
+  // Delete product
+  router.delete('/products/:id', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can delete products' });
+      }
+      const product = await Product.findByIdAndDelete(req.params.id);
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.json({ message: 'Product deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      res.status(500).json({ message: 'Error deleting product', error: error.message });
+    }
+  });
+
+  // Get all categories
+  router.get('/categories', async (req, res) => {
+    try {
+      const categories = await Category.find();
+      res.json(categories);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching categories', error: error.message });
+    }
+  });
+
+  // Create category
+  router.post('/categories', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can create categories' });
+      }
+      const { name, description } = req.body;
+      if (!name) {
+        return res.status(400).json({ message: 'Category name is required' });
+      }
+      const category = await Category.create({ name, description });
+      res.json({ message: 'Category created successfully', category });
+    } catch (error) {
+      console.error('Error creating category:', error);
+      res.status(500).json({ message: 'Error creating category', error: error.message });
+    }
+  });
+
+  // Update category
+  router.put('/categories/:id', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can update categories' });
+      }
+      const { name, description } = req.body;
+      if (!name) {
+        return res.status(400).json({ message: 'Category name is required' });
+      }
+      const category = await Category.findByIdAndUpdate(req.params.id, { name, description }, { new: true, runValidators: true });
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+      res.json({ message: 'Category updated successfully', category });
+    } catch (error) {
+      console.error('Error updating category:', error);
+      res.status(500).json({ message: 'Error updating category', error: error.message });
+    }
+  });
+
+  // Delete category
+  router.delete('/categories/:id', async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admins can delete categories' });
+      }
+      const categoryId = req.params.id;
+      // ตรวจสอบว่ามี Product ใช้ Category นี้หรือไม่
+      const productCount = await Product.countDocuments({ category: categoryId });
+      if (productCount > 0) {
+        return res.status(400).json({ message: 'Cannot delete category, it is in use by products' });
+      }
+      const category = await Category.findByIdAndDelete(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+      res.json({ message: 'Category deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      res.status(500).json({ message: 'Error deleting category', error: error.message });
+    }
+  });
+
+  // Get all warehouses
+  router.get('/warehouses', async (req, res) => {
+    try {
+      const warehouses = await Warehouse.find();
+      res.json(warehouses);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching warehouses', error: error.message });
     }
   });
 

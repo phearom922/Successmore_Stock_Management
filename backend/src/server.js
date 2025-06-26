@@ -28,22 +28,28 @@ const express = require('express');
 
     jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
       if (err) {
-        console.error('Token verification error:', err.message); // Debug error
+        console.error('Token verification error:', err.message, 'Full error:', err); // Debug full error
         return res.status(403).json({ message: 'Invalid token', error: err.message });
       }
-      req.user = user;
+      if (!user || !user.role) {
+        console.error('User data missing in token:', user);
+        return res.status(403).json({ message: 'Invalid user data in token' });
+      }
       console.log('Authenticated user:', user); // Debug user
+      req.user = user;
       next();
     });
   };
 
-  // Apply authentication to protected routes
+  // Apply authentication to specific routes before apiRoutes
   app.use('/api/lots', authenticateToken);
   app.use('/api/issue', authenticateToken);
   app.use('/api/warehouses', authenticateToken);
   app.use('/api/users', authenticateToken);
   app.use('/api/lots/status', authenticateToken);
-  app.use('/api/lots/split-status', authenticateToken); // เพิ่มสำหรับ split-status
+  app.use('/api/lots/split-status', authenticateToken);
+  app.use('/api/categories', authenticateToken);
+  app.use('/api/products', authenticateToken);
 
   // Load all API routes
   app.use('/api', apiRoutes);
