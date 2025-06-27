@@ -10,7 +10,8 @@ import {
   FiChevronRight,
   FiBox,
   FiClipboard,
-  FiDatabase
+  FiDatabase,
+  FiUsers,
 } from 'react-icons/fi';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
@@ -82,6 +83,21 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               {isOpen && <span>Manage Status</span>}
             </Link>
           )}
+
+          {/* Warehouse Section */}
+          {userRole === 'admin' && (
+            <div>
+              <div className="mt-1">
+                <Link
+                  to="/warehouses"
+                  className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/warehouses') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                >
+                  <FiTruck  className={`${isOpen ? 'mr-3' : ''} text-lg`} />
+                  {isOpen && <span>Warehouses</span>}
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Product Section */}
@@ -117,12 +133,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
         </div>
 
-        {/* Warehouse Section */}
+
+
+        {/* System Section */}
         {userRole === 'admin' && (
           <div className="mt-6">
             {isOpen ? (
               <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Warehouse
+                System
               </span>
             ) : (
               <div className="border-t border-gray-700 mx-2 my-2"></div>
@@ -130,11 +148,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
             <div className="mt-1 space-y-1">
               <Link
-                to="/warehouses"
-                className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/warehouses') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                to="/users"
+                className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/users') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
               >
-                <FiTruck className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-                {isOpen && <span>Warehouses</span>}
+                <FiUsers className={`${isOpen ? 'mr-3' : ''} text-lg`} />
+                {isOpen && <span>Users Management</span>}
               </Link>
             </div>
           </div>

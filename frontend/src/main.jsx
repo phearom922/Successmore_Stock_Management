@@ -11,6 +11,7 @@ import ManageStockStatus from './pages/ManageStockStatus';
 import Categories from './pages/Categories';
 import Products from './pages/Products';
 import Warehouses from './pages/Warehouses';
+import Users from './pages/Users';
 
 const ProtectedRoute = ({ children, requiredRoles = [] }) => {
   const token = localStorage.getItem('token');
@@ -65,6 +66,11 @@ createRoot(document.getElementById('root')).render(
           <Route path="/warehouses" element={
             <ProtectedRoute requiredRoles={['admin']}>
               <Warehouses />
+            </ProtectedRoute>
+          } />
+          <Route path="/users" element={
+            <ProtectedRoute requiredRoles={['admin']}>
+              <Users />
             </ProtectedRoute>
           } />
         </Route>

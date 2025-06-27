@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import { FaEdit, FaTrash, FaUpload, FaPlus, FaFileExcel, FaSearch } from 'react-icons/fa';
+import { FaRegTrashAlt, FaPlus, FaFileExcel, FaSearch, FaRegEdit } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
 
 Modal.setAppElement('#root');
@@ -283,17 +283,17 @@ const Products = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() => openModal(product)}
-                            className="text-blue-600 hover:text-blue-900 mr-4"
+                            className="text-blue-600 hover:text-blue-900 mr-4 p-2 rounded border border-blue-200 hover:border-blue-300"
                             title="Edit"
                           >
-                            <FaEdit />
+                            <FaRegEdit />
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product._id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 p-2 rounded border border-red-200 hover:border-red-300"
                             title="Delete"
                           >
-                            <FaTrash />
+                            <FaRegTrashAlt />
                           </button>
                         </td>
                       </tr>
@@ -315,7 +315,7 @@ const Products = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => { setIsModalOpen(false); setEditingId(null); }}
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-[rgb(0,0,0)]/50 bg-opacity-50 flex items-center justify-center p-4"
         overlayClassName="fixed inset-0"
       >
         <div className="bg-white rounded-lg shadow-xl max-w-md w-full">

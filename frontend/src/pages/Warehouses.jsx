@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 
 const Warehouses = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -14,6 +14,7 @@ const Warehouses = () => {
   const [status, setStatus] = useState('Active');
   const [assignedUser, setAssignedUser] = useState('');
   const [editingId, setEditingId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const Warehouses = () => {
         name,
         branch,
         status,
-        assignedUser,
+        assignedUser: assignedUser || null,
       };
 
       if (editingId) {
@@ -82,6 +83,7 @@ const Warehouses = () => {
         setWarehouses([...warehouses, res.data.warehouse]);
         toast.success(res.data.message);
       }
+      setIsModalOpen(false);
       resetForm();
     } catch (error) {
       setMessage(error.response?.data?.message || 'Error processing warehouse');
@@ -125,7 +127,7 @@ const Warehouses = () => {
         name: warehouse.name,
         branch: warehouse.branch,
         status: newStatus,
-        assignedUser: warehouse.assignedUser?._id || '',
+        assignedUser: warehouse.assignedUser ? warehouse.assignedUser._id : '',
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -142,36 +144,84 @@ const Warehouses = () => {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Warehouse Management</h2>
-      <form onSubmit={handleCreateOrUpdateWarehouse} className="space-y-4 mb-6">
-        <input type="text" value={warehouseCode} onChange={(e) => setWarehouseCode(e.target.value)} placeholder="Warehouse Code" className="w-full p-2 border rounded" required />
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Warehouse Name" className="w-full p-2 border rounded" required />
-        <input type="text" value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="Branch" className="w-full p-2 border rounded" required />
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-2 border rounded">
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
-        <select value={assignedUser} onChange={(e) => setAssignedUser(e.target.value)} className="w-full p-2 border rounded">
-          <option value="">No User Assigned</option>
-          {users.map(user => (
-            <option key={user._id} value={user._id}>{user.username}</option>
-          ))}
-        </select>
-        <div className="flex gap-2">
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-            {editingId ? 'Update Warehouse' : 'Create Warehouse'}
-          </button>
-          {editingId && (
-            <button type="button" onClick={resetForm} className="bg-gray-500 text-white p-2 rounded">Cancel</button>
-          )}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="bg-green-500 text-white p-2 rounded mb-4"
+      >
+        <FaPlus /> Create Warehouse
+      </button>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-1/3">
+            <h3 className="text-lg font-bold mb-4">{editingId ? 'Edit Warehouse' : 'Create Warehouse'}</h3>
+            <form onSubmit={handleCreateOrUpdateWarehouse} className="space-y-4">
+              <input
+                type="text"
+                value={warehouseCode}
+                onChange={(e) => setWarehouseCode(e.target.value)}
+                placeholder="Warehouse Code"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Warehouse Name"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <input
+                type="text"
+                value={branch}
+                onChange={(e) => setBranch(e.target.value)}
+                placeholder="Branch"
+                className="w-full p-2 border rounded"
+                required
+              />
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full p-2 border rounded"
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+              <select
+                value={assignedUser}
+                onChange={(e) => setAssignedUser(e.target.value)}
+                className="w-full p-2 border rounded"
+              >
+                <option value="">No User Assigned</option>
+                {users.map(user => (
+                  <option key={user._id} value={user._id}>{user.username}</option>
+                ))}
+              </select>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded"
+                >
+                  {editingId ? 'Update Warehouse' : 'Create Warehouse'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setIsModalOpen(false); resetForm(); }}
+                  className="bg-gray-500 text-white p-2 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+            {message && <p className="text-red-500 mt-2">{message}</p>}
+          </div>
         </div>
-        {message && <p className="text-red-500">{message}</p>}
-      </form>
-
+      )}
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border p-2">Code</th>
-            <th className="border p-2">Name</th>
+            <th className="border p-2">Warehouse Code</th>
+            <th className="border p-2">Warehouse Name</th>
             <th className="border p-2">Branch</th>
             <th className="border p-2">Status</th>
             <th className="border p-2">Assigned User</th>
