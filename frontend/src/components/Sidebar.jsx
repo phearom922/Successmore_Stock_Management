@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { FiHome, FiUpload, FiPackage, FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers } from 'react-icons/fi';
+import { FaBuilding } from "react-icons/fa";
+
 
 const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
   const location = useLocation();
@@ -55,6 +57,18 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             {isOpen && <span>Dashboard</span>}
           </Link>
 
+
+
+
+
+          <Link
+            to="/suppliers"
+            className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/suppliers') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+          >
+            <FaBuilding className={`${isOpen ? 'mr-3' : ''} text-lg`} />
+            {isOpen && <span>Suppliers</span>}
+          </Link>
+
           <Link
             to="/issue"
             className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/issue') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
@@ -62,6 +76,13 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             <FiUpload className={`${isOpen ? 'mr-3' : ''} text-lg`} />
             {isOpen && <span>Issue</span>}
           </Link>
+
+
+
+
+
+
+
 
           {userRole === 'admin' && (
             <Link

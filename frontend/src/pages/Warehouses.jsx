@@ -166,7 +166,7 @@ const Warehouses = () => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+          <div className="fixed inset-0 bg-[rgb(0,0,0)]/50 flex justify-center items-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
               <div className="bg-indigo-600 p-4 text-white">
                 <h3 className="text-lg font-bold">{editingId ? 'Edit Warehouse' : 'Create New Warehouse'}</h3>

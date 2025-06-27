@@ -11,6 +11,7 @@ const User = require('../models/User');
 const Warehouse = require('../models/Warehouse');
 const Category = require('../models/Category');
 const XLSX = require('xlsx');
+const Supplier = require('../models/Suppliers');
 
 // Validation Schemas
 const warehouseSchema = z.object({
@@ -881,5 +882,117 @@ router.post('/lots/split-status', authMiddleware, async (req, res) => {
     });
   }
 });
+
+// Validation Schemas
+const supplierSchema = z.object({
+  name: z.string().min(1),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+});
+
+// Create Supplier
+router.post('/suppliers', authMiddleware, async (req, res) => {
+  try {
+    console.log('Creating supplier:', req.body);
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can create suppliers' });
+    }
+    const data = supplierSchema.parse(req.body);
+    const { name, address, phone } = data;
+
+    const existingSupplier = await Supplier.findOne({ name });
+    if (existingSupplier) {
+      return res.status(400).json({ message: 'Supplier name already exists' });
+    }
+
+    const supplier = await Supplier.create({ name, address, phone });
+    res.json({ message: 'Supplier created successfully', supplier });
+  } catch (error) {
+    console.error('Error creating supplier:', error);
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error creating supplier',
+      error: error.message
+    });
+  }
+});
+
+// Update Supplier
+router.put('/suppliers/:id', authMiddleware, async (req, res) => {
+  try {
+    console.log('Updating supplier:', req.params.id, req.body);
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can update suppliers' });
+    }
+    const data = supplierSchema.parse(req.body);
+    const { name, address, phone } = data;
+
+    const supplier = await Supplier.findById(req.params.id);
+    if (!supplier) {
+      return res.status(404).json({ message: 'Supplier not found' });
+    }
+
+    const existingSupplier = await Supplier.findOne({ name, _id: { $ne: supplier._id } });
+    if (existingSupplier) {
+      return res.status(400).json({ message: 'Supplier name already exists' });
+    }
+
+    supplier.name = name;
+    supplier.address = address;
+    supplier.phone = phone;
+    const updated = await supplier.save();
+    res.json({ message: 'Supplier updated successfully', supplier: updated });
+  } catch (error) {
+    console.error('Error updating supplier:', error);
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error updating supplier',
+      error: error.message
+    });
+  }
+});
+
+// Delete Supplier
+router.delete('/suppliers/:id', authMiddleware, async (req, res) => {
+  try {
+    console.log('Deleting supplier:', req.params.id);
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can delete suppliers' });
+    }
+    const supplier = await Supplier.findById(req.params.id);
+    if (!supplier) {
+      return res.status(404).json({ message: 'Supplier not found' });
+    }
+    await Supplier.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Supplier deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting supplier:', error);
+    res.status(500).json({ message: 'Error deleting supplier', error: error.message });
+  }
+});
+
+// Get all suppliers
+router.get('/suppliers', authMiddleware, async (req, res) => {
+  try {
+    console.log('Fetching suppliers for user:', req.user);
+    const suppliers = await Supplier.find();
+    res.json(suppliers);
+  } catch (error) {
+    console.error('Error fetching suppliers:', error);
+    res.status(500).json({ message: 'Error fetching suppliers', error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;
