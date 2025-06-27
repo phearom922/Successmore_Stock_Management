@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const Warehouses = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -15,19 +15,13 @@ const Warehouses = () => {
   const [assignedUser, setAssignedUser] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [message, setMessage] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
 
   useEffect(() => {
-    if (!token) {
+    if (!token || userRole !== 'admin') {
       navigate('/login');
-      return;
-    }
-    if (userRole !== 'admin') {
-      toast.error('Unauthorized access: Only admins can manage warehouses');
-      navigate('/');
       return;
     }
     const fetchData = async () => {
@@ -39,7 +33,6 @@ const Warehouses = () => {
         setWarehouses(warehousesRes.data);
         setUsers(usersRes.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
         toast.error('Failed to load data');
       }
     };
@@ -53,6 +46,7 @@ const Warehouses = () => {
     setBranch('');
     setStatus('Active');
     setAssignedUser('');
+    setIsModalOpen(false);
   };
 
   const handleCreateOrUpdateWarehouse = async (e) => {
@@ -62,14 +56,7 @@ const Warehouses = () => {
       return;
     }
     try {
-      const payload = {
-        warehouseCode,
-        name,
-        branch,
-        status,
-        assignedUser: assignedUser || null,
-      };
-
+      const payload = { warehouseCode, name, branch, status, assignedUser };
       if (editingId) {
         const res = await axios.put(`http://localhost:3000/api/warehouses/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
@@ -83,10 +70,8 @@ const Warehouses = () => {
         setWarehouses([...warehouses, res.data.warehouse]);
         toast.success(res.data.message);
       }
-      setIsModalOpen(false);
       resetForm();
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Error processing warehouse');
       toast.error(error.response?.data?.message || 'Network Error');
     }
   };
@@ -98,6 +83,7 @@ const Warehouses = () => {
     setBranch(warehouse.branch);
     setStatus(warehouse.status || 'Active');
     setAssignedUser(warehouse.assignedUser ? warehouse.assignedUser._id : '');
+    setIsModalOpen(true);
   };
 
   const handleDeleteWarehouse = async (id) => {
@@ -113,7 +99,6 @@ const Warehouses = () => {
         setWarehouses(warehouses.filter(w => w._id !== id));
         toast.success(res.data.message);
       } catch (error) {
-        setMessage(error.response?.data?.message || 'Error deleting warehouse');
         toast.error(error.response?.data?.message || 'Network Error');
       }
     }
@@ -127,14 +112,13 @@ const Warehouses = () => {
         name: warehouse.name,
         branch: warehouse.branch,
         status: newStatus,
-        assignedUser: warehouse.assignedUser ? warehouse.assignedUser._id : '',
+        assignedUser: warehouse.assignedUser?._id || '',
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWarehouses(warehouses.map(w => w._id === warehouse._id ? res.data.warehouse : w));
       toast.success(`Status updated to ${newStatus}`);
     } catch (error) {
-      console.error('Error toggling status:', error);
       toast.error('Failed to update status');
     }
   };
@@ -146,13 +130,14 @@ const Warehouses = () => {
       <h2 className="text-xl font-bold mb-4">Warehouse Management</h2>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-green-500 text-white p-2 rounded mb-4"
+        className="bg-blue-500 text-white p-2 rounded mb-4"
       >
-        <FaPlus /> Create Warehouse
+        Create Warehouse
       </button>
+
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-1/3">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <h3 className="text-lg font-bold mb-4">{editingId ? 'Edit Warehouse' : 'Create Warehouse'}</h3>
             <form onSubmit={handleCreateOrUpdateWarehouse} className="space-y-4">
               <input
@@ -194,29 +179,32 @@ const Warehouses = () => {
               >
                 <option value="">No User Assigned</option>
                 {users.map(user => (
-                  <option key={user._id} value={user._id}>{user.username}</option>
+                  <option
+                    key={user._id}
+                    value={user._id}
+                    disabled={user.assignedWarehouse && user.assignedWarehouse._id !== editingId}
+                  >
+                    {user.username}
+                  </option>
                 ))}
               </select>
               <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white p-2 rounded"
-                >
-                  {editingId ? 'Update Warehouse' : 'Create Warehouse'}
+                <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+                  {editingId ? 'Update' : 'Create'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setIsModalOpen(false); resetForm(); }}
+                  onClick={resetForm}
                   className="bg-gray-500 text-white p-2 rounded"
                 >
                   Cancel
                 </button>
               </div>
             </form>
-            {message && <p className="text-red-500 mt-2">{message}</p>}
           </div>
         </div>
       )}
+
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-200">

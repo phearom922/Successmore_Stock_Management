@@ -1,104 +1,518 @@
 const express = require('express');
 const router = express.Router();
+const { z } = require('zod');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const authMiddleware = require('../middleware/auth');
 const Product = require('../models/Product');
 const Lot = require('../models/Lot');
 const User = require('../models/User');
 const Warehouse = require('../models/Warehouse');
 const Category = require('../models/Category');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+
+
+
+// Validation Schemas
+const warehouseSchema = z.object({
+  warehouseCode: z.string().min(1),
+  name: z.string().min(1),
+  branch: z.string().min(1),
+  status: z.enum(['Active', 'Inactive']).optional(),
+  assignedUser: z.string().optional(),
+});
+
+const userSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(6),
+  role: z.enum(['admin', 'user']),
+  assignedWarehouse: z.string().optional(),
+});
 
 // Seed Data
-const seedData = async () => {
-  const users = await User.find();
-  const products = await Product.find();
-  const categories = await Category.find();
-  if (users.length === 0 || products.length === 0 || categories.length === 0) {
-    const hashedPassword = await bcrypt.hash('password123', 10);
-    await User.deleteMany();
-    await Product.deleteMany();
-    await Lot.deleteMany();
-    await Warehouse.deleteMany();
-    await Category.deleteMany();
-
-    const admin = await User.create({ username: 'admin', password: hashedPassword, role: 'admin', warehouse: 'All' });
-    const user1 = await User.create({ username: 'user1', password: hashedPassword, role: 'user', warehouse: 'Bangkok Main Warehouse' });
-
-    const bangkokWarehouse = await Warehouse.create({ name: 'Bangkok Main Warehouse', assignedUser: user1._id });
-    await User.findByIdAndUpdate(user1._id, { assignedWarehouse: bangkokWarehouse._id });
-
-    await Warehouse.create({ name: 'Silom Sub Warehouse' });
-
-    const category1 = await Category.create({ name: 'Personal Care', description: 'Personal hygiene products' });
-    const category2 = await Category.create({ name: 'Household', description: 'Household items' });
-
-    const doveProduct = await Product.create({
-      productCode: 'PROD001',
-      name: 'Dove Soap 100g',
-      category: category1._id,
-      sku: null,
-    });
-    await Product.create({
-      productCode: 'PROD002',
-      name: 'Shampoo 200ml',
-      category: category1._id,
-      sku: null,
-    });
-    await Lot.create({
-      lotCode: 'LOT001-240101',
-      productId: doveProduct._id,
-      expDate: new Date('2025-12-31'),
-      qtyOnHand: 40,
-      warehouse: 'Bangkok Main Warehouse',
-      status: 'active',
-    });
-    await Lot.create({
-      lotCode: 'LOT002-240101',
-      productId: doveProduct._id,
-      expDate: new Date('2024-12-31'),
-      qtyOnHand: 30,
-      warehouse: 'Bangkok Main Warehouse',
-      status: 'active',
-    });
-    await Lot.create({
-      lotCode: 'LOT003-240101',
-      productId: doveProduct._id,
-      expDate: new Date('2025-12-31'),
-      qtyOnHand: 20,
-      warehouse: 'Silom Sub Warehouse',
-      status: 'active',
-    });
-    console.log('Seed data added, users:', await User.find(), 'warehouses:', await Warehouse.find());
+router.post('/seed', authMiddleware, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Only admins can seed data' });
   }
-};
-seedData().catch(console.error);
+  try {
+    const users = await User.find();
+    const products = await Product.find();
+    const categories = await Category.find();
+    if (users.length === 0 || products.length === 0 || categories.length === 0) {
+      const hashedPassword = await bcrypt.hash('password123', 10);
+      await User.deleteMany();
+      await Product.deleteMany();
+      await Lot.deleteMany();
+      await Warehouse.deleteMany();
+      await Category.deleteMany();
+
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        const admin = await User.create(
+          [{ username: 'admin', password: hashedPassword, role: 'admin', assignedWarehouse: null }],
+          { session }
+        );
+        const user1 = await User.create(
+          [{ username: 'user1', password: hashedPassword, role: 'user', assignedWarehouse: null }],
+          { session }
+        );
+
+        const bangkokWarehouse = await Warehouse.create(
+          [{ name: 'Bangkok Main Warehouse', warehouseCode: 'BKK001', branch: 'Bangkok', assignedUser: user1[0]._id }],
+          { session }
+        );
+        await User.findByIdAndUpdate(user1[0]._id, { assignedWarehouse: bangkokWarehouse[0]._id }, { session });
+
+        await Warehouse.create([{ name: 'Silom Sub Warehouse', warehouseCode: 'BKK002', branch: 'Bangkok' }], { session });
+
+        const category1 = await Category.create(
+          [{ name: 'Personal Care', description: 'Personal hygiene products' }],
+          { session }
+        );
+        const category2 = await Category.create([{ name: 'Household', description: 'Household items' }], { session });
+
+        const doveProduct = await Product.create(
+          [{
+            productCode: 'PROD001',
+            name: 'Dove Soap 100g',
+            category: category1[0]._id,
+            sku: null,
+          }],
+          { session }
+        );
+        await Product.create(
+          [{
+            productCode: 'PROD002',
+            name: 'Shampoo 200ml',
+            category: category1[0]._id,
+            sku: null,
+          }],
+          { session }
+        );
+        await Lot.create(
+          [{
+            lotCode: 'LOT001-240101',
+            productId: doveProduct[0]._id,
+            expDate: new Date('2025-12-31'),
+            qtyOnHand: 40,
+            warehouse: 'Bangkok Main Warehouse',
+            status: 'active',
+          }],
+          { session }
+        );
+        await Lot.create(
+          [{
+            lotCode: 'LOT002-240101',
+            productId: doveProduct[0]._id,
+            expDate: new Date('2024-12-31'),
+            qtyOnHand: 30,
+            warehouse: 'Bangkok Main Warehouse',
+            status: 'active',
+          }],
+          { session }
+        );
+        await Lot.create(
+          [{
+            lotCode: 'LOT003-240101',
+            productId: doveProduct[0]._id,
+            expDate: new Date('2025-12-31'),
+            qtyOnHand: 20,
+            warehouse: 'Silom Sub Warehouse',
+            status: 'active',
+          }],
+          { session }
+        );
+        await session.commitTransaction();
+      } catch (error) {
+        await session.abortTransaction();
+        throw error;
+      } finally {
+        session.endSession();
+      }
+      console.log('Seed data added');
+    }
+    res.json({ message: 'Seed data completed' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error seeding data', error: error.message });
+  }
+});
 
 // Login Endpoint
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  console.log('Login attempt:', { username, password });
   const user = await User.findOne({ username }).populate('assignedWarehouse');
-
   if (!user) {
-    console.log('User not found:', username);
     return res.status(401).json({ message: 'Invalid credentials' });
   }
-
   if (!(await bcrypt.compare(password, user.password))) {
-    console.log('Password mismatch for:', username);
     return res.status(401).json({ message: 'Invalid credentials' });
   }
-
   const token = jwt.sign({
     id: user._id,
     role: user.role,
-    warehouse: user.assignedWarehouse ? user.assignedWarehouse.name : user.warehouse
-  }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '1h' });
+    username: user.username,
+    warehouse: user.assignedWarehouse ? user.assignedWarehouse.name : 'All'
+  }, process.env.JWT_SECRET, { expiresIn: '1h' });
   res.json({ token });
 });
 
+// Create Warehouse
+router.post('/warehouses', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can create warehouses' });
+    }
+    const data = warehouseSchema.parse(req.body);
+    const { warehouseCode, name, branch, status, assignedUser } = data;
+
+    const exists = await Warehouse.findOne({ warehouseCode }).session(session);
+    if (exists) {
+      return res.status(400).json({ message: 'Warehouse code already exists' });
+    }
+
+    let validAssignedUser = null;
+    if (assignedUser) {
+      validAssignedUser = await User.findById(assignedUser).session(session);
+      if (!validAssignedUser) {
+        return res.status(400).json({ message: 'Invalid assigned user' });
+      }
+      if (validAssignedUser.assignedWarehouse) {
+        return res.status(400).json({ message: 'User is already assigned to another warehouse' });
+      }
+    }
+
+    const warehouse = await Warehouse.create(
+      [{
+        warehouseCode,
+        name,
+        branch,
+        status: status || 'Active',
+        assignedUser: validAssignedUser ? validAssignedUser._id : null,
+        hasAssignedUserHistory: !!validAssignedUser,
+      }],
+      { session }
+    );
+
+    if (validAssignedUser) {
+      await User.findByIdAndUpdate(
+        assignedUser,
+        { assignedWarehouse: warehouse[0]._id },
+        { session }
+      );
+    }
+
+    await session.commitTransaction();
+    res.json({ message: 'Warehouse created successfully', warehouse: warehouse[0] });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error creating warehouse',
+      error: error.message
+    });
+  } finally {
+    session.endSession();
+  }
+});
+
+// Update Warehouse
+router.put('/warehouses/:id', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can update warehouses' });
+    }
+    const data = warehouseSchema.parse(req.body);
+    const { warehouseCode, name, branch, status, assignedUser } = data;
+
+    const warehouse = await Warehouse.findById(req.params.id).session(session);
+    if (!warehouse) {
+      return res.status(404).json({ message: 'Warehouse not found' });
+    }
+
+    const codeExists = await Warehouse.findOne({
+      warehouseCode,
+      _id: { $ne: warehouse._id },
+    }).session(session);
+    if (codeExists) {
+      return res.status(400).json({ message: 'Warehouse code already in use' });
+    }
+
+    let validAssignedUser = null;
+    if (assignedUser) {
+      validAssignedUser = await User.findById(assignedUser).session(session);
+      if (!validAssignedUser) {
+        return res.status(400).json({ message: 'Invalid assigned user' });
+      }
+      if (validAssignedUser.assignedWarehouse && validAssignedUser.assignedWarehouse.toString() !== warehouse._id.toString()) {
+        return res.status(400).json({ message: 'User is already assigned to another warehouse' });
+      }
+    }
+
+    // Clear previous assignment
+    if (warehouse.assignedUser && (!assignedUser || assignedUser !== warehouse.assignedUser.toString())) {
+      await User.findByIdAndUpdate(
+        warehouse.assignedUser,
+        { assignedWarehouse: null },
+        { session }
+      );
+    }
+
+    warehouse.warehouseCode = warehouseCode;
+    warehouse.name = name;
+    warehouse.branch = branch;
+    warehouse.status = status || 'Active';
+    warehouse.assignedUser = validAssignedUser ? validAssignedUser._id : null;
+    warehouse.hasAssignedUserHistory = warehouse.hasAssignedUserHistory || !!validAssignedUser;
+
+    const updated = await warehouse.save({ session });
+
+    if (validAssignedUser) {
+      await User.findByIdAndUpdate(
+        assignedUser,
+        { assignedWarehouse: warehouse._id },
+        { session }
+      );
+    }
+
+    await session.commitTransaction();
+    res.json({ message: 'Warehouse updated successfully', warehouse: updated });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error updating warehouse',
+      error: error.message
+    });
+  } finally {
+    session.endSession();
+  }
+});
+
+// Delete Warehouse
+router.delete('/warehouses/:id', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can delete warehouses' });
+    }
+    const warehouse = await Warehouse.findById(req.params.id).session(session);
+    if (!warehouse) {
+      return res.status(404).json({ message: 'Warehouse not found' });
+    }
+    if (warehouse.hasAssignedUserHistory) {
+      return res.status(400).json({ message: 'Cannot delete warehouse with user assignment history' });
+    }
+    const lotsUsingWarehouse = await Lot.countDocuments({ warehouse: warehouse.name }).session(session);
+    if (lotsUsingWarehouse > 0) {
+      return res.status(400).json({ message: 'Cannot delete warehouse in use by lots' });
+    }
+    if (warehouse.assignedUser) {
+      await User.findByIdAndUpdate(
+        warehouse.assignedUser,
+        { assignedWarehouse: null },
+        { session }
+      );
+    }
+    await Warehouse.findByIdAndDelete(req.params.id, { session });
+    await session.commitTransaction();
+    res.json({ message: 'Warehouse deleted successfully' });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(500).json({ message: 'Error deleting warehouse', error: error.message });
+  } finally {
+    session.endSession();
+  }
+});
+
+// Get all warehouses
+router.get('/warehouses', authMiddleware, async (req, res) => {
+  try {
+    const warehouses = await Warehouse.find().populate('assignedUser', 'username');
+    res.json(warehouses);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching warehouses', error: error.message });
+  }
+});
+
+// Create User
+router.post('/users', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can create users' });
+    }
+    const data = userSchema.parse(req.body);
+    const { username, password, role, assignedWarehouse } = data;
+
+    const existingUser = await User.findOne({ username }).session(session);
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    let warehouse = null;
+    if (assignedWarehouse) {
+      warehouse = await Warehouse.findById(assignedWarehouse).session(session);
+      if (!warehouse) {
+        return res.status(400).json({ message: 'Invalid warehouse' });
+      }
+      if (warehouse.assignedUser) {
+        return res.status(400).json({ message: 'Warehouse already assigned to another user' });
+      }
+    }
+
+    const user = await User.create(
+      [{
+        username,
+        password: hashedPassword,
+        role,
+        assignedWarehouse: assignedWarehouse || null,
+      }],
+      { session }
+    );
+
+    if (warehouse) {
+      await Warehouse.findByIdAndUpdate(
+        assignedWarehouse,
+        { assignedUser: user[0]._id, hasAssignedUserHistory: true },
+        { session }
+      );
+    }
+
+    await session.commitTransaction();
+    res.json({ message: 'User created successfully', user: user[0] });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error creating user',
+      error: error.message
+    });
+  } finally {
+    session.endSession();
+  }
+});
+
+// Update User
+router.put('/users/:id', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can update users' });
+    }
+    const data = userSchema.parse(req.body);
+    const { username, password, role, assignedWarehouse } = data;
+
+    const user = await User.findById(req.params.id).session(session);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const existingUser = await User.findOne({ username, _id: { $ne: user._id } }).session(session);
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
+    let warehouse = null;
+    if (assignedWarehouse) {
+      warehouse = await Warehouse.findById(assignedWarehouse).session(session);
+      if (!warehouse) {
+        return res.status(400).json({ message: 'Invalid warehouse' });
+      }
+      if (warehouse.assignedUser && warehouse.assignedUser.toString() !== user._id.toString()) {
+        return res.status(400).json({ message: 'Warehouse already assigned to another user' });
+      }
+    }
+
+    // Clear previous assignment
+    if (user.assignedWarehouse && (!assignedWarehouse || assignedWarehouse !== user.assignedWarehouse.toString())) {
+      await Warehouse.findByIdAndUpdate(
+        user.assignedWarehouse,
+        { assignedUser: null },
+        { session }
+      );
+    }
+
+    user.username = username;
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    user.role = role;
+    user.assignedWarehouse = assignedWarehouse || null;
+
+    const updated = await user.save({ session });
+
+    if (warehouse) {
+      await Warehouse.findByIdAndUpdate(
+        assignedWarehouse,
+        { assignedUser: user._id, hasAssignedUserHistory: true },
+        { session }
+      );
+    }
+
+    await session.commitTransaction();
+    res.json({ message: 'User updated successfully', user: updated });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error updating user',
+      error: error.message
+    });
+  } finally {
+    session.endSession();
+  }
+});
+
+// Delete User
+router.delete('/users/:id', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can delete users' });
+    }
+    const user = await User.findById(req.params.id).session(session);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.assignedWarehouse) {
+      await Warehouse.findByIdAndUpdate(
+        user.assignedWarehouse,
+        { assignedUser: null },
+        { session }
+      );
+    }
+    await User.findByIdAndDelete(req.params.id, { session });
+    await session.commitTransaction();
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(500).json({ message: 'Error deleting user', error: error.message });
+  } finally {
+    session.endSession();
+  }
+});
+
+// Get all users
+router.get('/users', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can view users' });
+    }
+    const users = await User.find().select('-password').populate('assignedWarehouse', 'name');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users', error: error.message });
+  }
+});
+
 // Get all products
-router.get('/products', async (req, res) => {
+router.get('/products', authMiddleware, async (req, res) => {
   try {
     const products = await Product.find().populate('category', 'name description');
     res.json(products);
@@ -272,84 +686,96 @@ router.delete('/categories/:id', async (req, res) => {
   }
 });
 
-// Get all warehouses
-router.get('/warehouses', async (req, res) => {
+// Create Lot
+router.post('/lots', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    const warehouses = await Warehouse.find();
-    res.json(warehouses);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching warehouses', error: error.message });
-  }
-});
-
-// Get all lots
-router.get('/lots', async (req, res) => {
-  try {
-    const user = req.user;
-    const query = user.role === 'admin' ? {} : { warehouse: user.warehouse };
-    const lots = await Lot.find(query).populate('productId');
-    res.json(lots);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching lots', error: error.message });
-  }
-});
-
-// Get all users (for Admin)
-router.get('/users', async (req, res) => {
-  try {
-    const user = req.user;
-    if (!user || user.role !== 'admin') {
-      console.log('Forbidden: User role:', user?.role);
-      return res.status(403).json({ message: 'Only admins can view users' });
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admins can create lots' });
     }
-    const users = await User.find().select('-password').populate('assignedWarehouse');
-    console.log('Fetched users:', users);
-    res.json(users);
+    const data = lotSchema.parse(req.body);
+    const { lotCode, productId, expDate, qtyOnHand, warehouse } = data;
+    console.log('Creating lot:', { lotCode, productId, expDate, qtyOnHand, warehouse }); // Debug
+    const existingLot = await Lot.findOne({ lotCode }).session(session);
+    if (existingLot) {
+      return res.status(400).json({ message: 'Lot code already exists' });
+    }
+
+    const product = await Product.findById(productId).session(session);
+    if (!product) {
+      return res.status(400).json({ message: 'Invalid product' });
+    }
+
+    const warehouseDoc = await Warehouse.findOne({ name: warehouse }).session(session);
+    if (!warehouseDoc) {
+      return res.status(400).json({ message: 'Invalid warehouse' });
+    }
+
+    const lot = await Lot.create(
+      [{
+        lotCode,
+        productId,
+        expDate: new Date(expDate),
+        qtyOnHand,
+        warehouse,
+        status: 'active',
+      }],
+      { session }
+    );
+
+    await session.commitTransaction();
+    res.json({ message: 'Lot created successfully', lot: lot[0] });
   } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ message: 'Error fetching users', error: error.message });
+    await session.abortTransaction();
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error creating lot',
+      error: error.message
+    });
+  } finally {
+    session.endSession();
   }
 });
 
-// Issue stock with FEFO based on issueType
-router.post('/issue', async (req, res) => {
+// Issue stock
+router.post('/issue', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    const user = req.user;
-    const { productId, quantity, warehouse, issueType, lotId } = req.body;
+    const data = issueSchema.parse(req.body);
+    const { productId, quantity, warehouse, issueType, lotId } = data;
 
-    if (!productId || !quantity || quantity <= 0 || !issueType) {
-      return res.status(400).json({ message: 'Product ID, quantity, and issue type are required' });
+    console.log('Issuing stock:', { productId, quantity, warehouse, issueType, lotId }); // Debug
+
+    const warehouseDoc = await Warehouse.findOne({ name: warehouse }).session(session);
+    if (!warehouseDoc) {
+      return res.status(400).json({ message: 'Invalid warehouse' });
     }
 
     let lots = [];
     if (issueType === 'expired') {
-      lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, expDate: { $lt: new Date() } }).sort({ expDate: 1 });
-    } else if (issueType === 'waste' && !lotId) {
-      return res.status(400).json({ message: 'Lot ID is required for waste issue' });
+      lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, expDate: { $lt: new Date() } }).sort({ expDate: 1 }).session(session);
     } else if (issueType === 'waste') {
-      const lot = await Lot.findOne({ _id: lotId });
-      console.log('Waste lot check:', lot); // Debug
-      if (!lot) {
-        return res.status(400).json({ message: 'Lot not found' });
-      }
+      if (!lotId) return res.status(400).json({ message: 'Lot ID is required for waste issue' });
+      const lot = await Lot.findOne({ _id: lotId }).session(session);
+      if (!lot) return res.status(400).json({ message: 'Lot not found' });
       if (lot.qtyOnHand < quantity) {
         return res.status(400).json({
           message: 'Insufficient stock available',
           availableStock: lot.qtyOnHand,
         });
       }
-      lot.qtyOnHand -= quantity; // ลดสต็อกทันที
-      const updatedLot = await lot.save(); // บันทึกการเปลี่ยนแปลง
-      console.log('Updated lot after save:', updatedLot); // Debug
-      lots = [updatedLot]; // ใช้ Lot ที่อัปเดตแล้ว
+      lot.qtyOnHand -= quantity;
+      const updatedLot = await lot.save({ session });
+      lots = [updatedLot];
     } else {
-      lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, status: 'active' }).sort({ expDate: 1 });
+      lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, status: 'active' }).sort({ expDate: 1 }).session(session);
     }
 
-    if (user.role !== 'admin') {
+    if (req.user.role !== 'admin') {
       lots = lots.filter(lot => lot.warehouse === warehouse);
     }
-    console.log('Lots found:', lots); // Debug
+    console.log('Filtered lots:', lots); // Debug
     const totalAvailable = lots.reduce((sum, lot) => sum + lot.qtyOnHand, 0);
 
     if (totalAvailable < quantity) {
@@ -366,19 +792,17 @@ router.post('/issue', async (req, res) => {
       if (remainingQty <= 0) break;
 
       const qtyToIssue = Math.min(remainingQty, lot.qtyOnHand);
-      remainingQty -= qtyToIssue;
-
-      lot.qtyOnHand -= qtyToIssue; // ลดสต็อกทันที
-      const updatedLot = await lot.save(); // บันทึกการเปลี่ยนแปลง
-      console.log(`Saved lot ${lot.lotCode}, qtyOnHand: ${updatedLot.qtyOnHand}`); // Debug
-
+      lot.qtyOnHand -= qtyToIssue;
+      const updatedLot = await lot.save({ session });
       issuedLots.push({
         lotCode: lot.lotCode,
         qtyIssued: qtyToIssue,
         remainingQty: updatedLot.qtyOnHand,
       });
+      remainingQty -= qtyToIssue;
     }
 
+    await session.commitTransaction();
     res.json({
       message: 'Stock issued successfully',
       issuedLots,
@@ -386,7 +810,13 @@ router.post('/issue', async (req, res) => {
     });
   } catch (error) {
     console.error('Error issuing stock:', error); // Debug
-    res.status(500).json({ message: 'Error issuing stock', error: error.message });
+    await session.abortTransaction();
+    res.status(error instanceof z.ZodError ? 400 : 500).json({
+      message: error instanceof z.ZodError ? 'Invalid input' : 'Error issuing stock',
+      error: error.message
+    });
+  } finally {
+    session.endSession();
   }
 });
 
@@ -478,143 +908,19 @@ router.post('/lots/split-status', async (req, res) => {
   }
 });
 
-
-// Create Warehouse (Admin only)
-router.post('/warehouses', async (req, res) => {
+// Get all lots
+router.get('/lots', authMiddleware, async (req, res) => {
   try {
+    console.log('Fetching lots for user:', req.user); // Debug
     const user = req.user;
-    if (!user || user.role !== 'admin') {
-      return res.status(403).json({ message: 'Only admins can create warehouses' });
-    }
-
-    const { warehouseCode, name, branch, assignedUser } = req.body;
-
-    if (!warehouseCode || !name || !branch) {
-      return res.status(400).json({ message: 'warehouseCode, name, and branch are required' });
-    }
-
-    const exists = await Warehouse.findOne({ warehouseCode });
-    if (exists) {
-      return res.status(400).json({ message: 'Warehouse code already exists' });
-    }
-
-    let validAssignedUser = null;
-    if (assignedUser) {
-      validAssignedUser = await User.findById(assignedUser);
-      if (!validAssignedUser) {
-        return res.status(400).json({ message: 'Invalid assigned user' });
-      }
-
-      await User.findByIdAndUpdate(assignedUser, {
-        assignedWarehouse: null,
-        warehouse: name,
-      });
-    }
-
-    const warehouse = await Warehouse.create({
-      warehouseCode,
-      name,
-      branch,
-      assignedUser: validAssignedUser ? validAssignedUser._id : null,
-      status: 'Active',
-      hasAssignedUserHistory: !!validAssignedUser,
-    });
-
-    res.json({ message: 'Warehouse created successfully', warehouse });
+    const query = user.role === 'admin' ? {} : { warehouse: user.warehouse };
+    const lots = await Lot.find(query).populate('productId');
+    console.log('Fetched lots:', lots); // Debug
+    res.json(lots);
   } catch (error) {
-    console.error('Warehouse creation error:', error);
-    res.status(500).json({ message: 'Error creating warehouse', error: error.message });
+    console.error('Error fetching lots:', error); // Debug
+    res.status(500).json({ message: 'Error fetching lots', error: error.message });
   }
 });
-
-// Update Warehouse (Admin only)
-router.put('/warehouses/:id', async (req, res) => {
-  try {
-    const user = req.user;
-    if (!user || user.role !== 'admin') {
-      return res.status(403).json({ message: 'Only admins can update warehouses' });
-    }
-
-    const { warehouseCode, name, branch, status, assignedUser } = req.body;
-
-    if (!warehouseCode || !name || !branch) {
-      return res.status(400).json({ message: 'warehouseCode, name, and branch are required' });
-    }
-
-    const warehouse = await Warehouse.findById(req.params.id);
-    if (!warehouse) {
-      return res.status(404).json({ message: 'Warehouse not found' });
-    }
-
-    const codeExists = await Warehouse.findOne({
-      warehouseCode,
-      _id: { $ne: warehouse._id },
-    });
-    if (codeExists) {
-      return res.status(400).json({ message: 'Warehouse code already in use' });
-    }
-
-    warehouse.warehouseCode = warehouseCode;
-    warehouse.name = name;
-    warehouse.branch = branch;
-    warehouse.status = status || 'Active';
-
-    if (assignedUser) {
-      const userToAssign = await User.findById(assignedUser);
-      if (!userToAssign) {
-        return res.status(400).json({ message: 'Invalid assigned user' });
-      }
-
-      warehouse.assignedUser = userToAssign._id;
-      warehouse.hasAssignedUserHistory = true;
-
-      await User.findByIdAndUpdate(userToAssign._id, {
-        assignedWarehouse: warehouse._id,
-        warehouse: name,
-      });
-    } else {
-      warehouse.assignedUser = null;
-    }
-
-    const updated = await warehouse.save();
-    res.json({ message: 'Warehouse updated successfully', warehouse: updated });
-  } catch (error) {
-    console.error('Error updating warehouse:', error);
-    res.status(500).json({ message: 'Error updating warehouse', error: error.message });
-  }
-});
-
-// Delete Warehouse (Admin only)
-router.delete('/warehouses/:id', async (req, res) => {
-  try {
-    const user = req.user;
-    if (!user || user.role !== 'admin') {
-      return res.status(403).json({ message: 'Only admins can delete warehouses' });
-    }
-
-    const warehouse = await Warehouse.findById(req.params.id);
-    if (!warehouse) {
-      return res.status(404).json({ message: 'Warehouse not found' });
-    }
-
-    if (warehouse.hasAssignedUserHistory) {
-      return res.status(400).json({ message: 'Cannot delete warehouse: It was previously assigned to a user' });
-    }
-
-    const lotsUsingWarehouse = await Lot.countDocuments({ warehouse: warehouse.name });
-    if (lotsUsingWarehouse > 0) {
-      return res.status(400).json({ message: 'Cannot delete warehouse: It is in use by lots' });
-    }
-
-    await Warehouse.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Warehouse deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting warehouse:', error);
-    res.status(500).json({ message: 'Error deleting warehouse', error: error.message });
-  }
-});
-
-
-
 
 module.exports = router;

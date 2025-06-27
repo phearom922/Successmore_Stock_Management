@@ -1,30 +1,30 @@
 import { Link, useLocation } from 'react-router-dom';
-import {
-  FiHome,
-  FiUpload,
-  FiSettings,
-  FiPackage,
-  FiLayers,
-  FiTruck,
-  FiChevronLeft,
-  FiChevronRight,
-  FiBox,
-  FiClipboard,
-  FiDatabase,
-  FiUsers,
-} from 'react-icons/fi';
+import { FiHome, FiUpload, FiPackage, FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers } from 'react-icons/fi';
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
-  const token = localStorage.getItem('token');
-  const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
+const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
   const location = useLocation();
+  const token = localStorage.getItem('token');
 
-  // Check if current route matches
+  // ตรวจสอบ token validity
+  const isValidToken = () => {
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
+  };
+
+  // ถ้า token ไม่ถูกต้อง จะไม่แสดง Sidebar
+  if (!isValidToken()) {
+    return null;
+  }
+
   const isActive = (path) => location.pathname === path;
 
   return (
     <div className={`${isOpen ? 'w-64' : 'w-20'} flex flex-col transition-all duration-300 bg-gradient-to-b from-gray-800 to-gray-900 text-white h-screen fixed z-10`}>
-      {/* Logo/Sidebar Header */}
       <div className="p-4 flex items-center justify-between border-b border-gray-700">
         {isOpen ? (
           <h2 className="text-xl font-bold whitespace-nowrap flex items-center">
@@ -45,7 +45,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </button>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
         <div className="space-y-1">
           <Link
@@ -84,7 +83,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             </Link>
           )}
 
-          {/* Warehouse Section */}
           {userRole === 'admin' && (
             <div>
               <div className="mt-1">
@@ -92,7 +90,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                   to="/warehouses"
                   className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/warehouses') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
                 >
-                  <FiTruck  className={`${isOpen ? 'mr-3' : ''} text-lg`} />
+                  <FiTruck className={`${isOpen ? 'mr-3' : ''} text-lg`} />
                   {isOpen && <span>Warehouses</span>}
                 </Link>
               </div>
@@ -100,7 +98,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           )}
         </div>
 
-        {/* Product Section */}
         <div className="mt-6">
           {isOpen ? (
             <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -133,9 +130,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
         </div>
 
-
-
-        {/* System Section */}
         {userRole === 'admin' && (
           <div className="mt-6">
             {isOpen ? (
@@ -158,17 +152,6 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
         )}
       </nav>
-
-      {/* Bottom Area (could be used for user profile or settings) */}
-      <div className="p-4 border-t border-gray-700">
-        <Link
-          to="/settings"
-          className={`flex items-center ${isOpen ? 'px-4 py-2' : 'px-2 py-2 justify-center'} rounded-lg transition-colors hover:bg-gray-700 text-gray-300`}
-        >
-          <FiSettings className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-          {isOpen && <span>Settings</span>}
-        </Link>
-      </div>
     </div>
   );
 };

@@ -9,4 +9,7 @@ const warehouseSchema = new mongoose.Schema({
   hasAssignedUserHistory: { type: Boolean, default: false }
 }, { timestamps: true });
 
+// เพิ่ม index เพื่อประสิทธิภาพการค้นหา
+warehouseSchema.index({ warehouseCode: 1, name: 1 });
+
 module.exports = mongoose.model('Warehouse', warehouseSchema);
