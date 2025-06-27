@@ -10,6 +10,7 @@ const Lot = require('../models/Lot');
 const User = require('../models/User');
 const Warehouse = require('../models/Warehouse');
 const Category = require('../models/Category');
+const XLSX = require('xlsx');
 
 // Validation Schemas
 const warehouseSchema = z.object({
@@ -22,6 +23,7 @@ const warehouseSchema = z.object({
 
 const userSchema = z.object({
   username: z.string().min(1),
+  lastName: z.string().min(1),
   password: z.string().min(6).optional(),
   role: z.enum(['admin', 'user']),
   assignedWarehouse: z.string().optional(),
@@ -41,116 +43,6 @@ const issueSchema = z.object({
   warehouse: z.string().min(1),
   issueType: z.enum(['normal', 'expired', 'waste']),
   lotId: z.string().optional(),
-});
-
-// Seed Data
-router.post('/seed', authMiddleware, async (req, res) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Only admins can seed data' });
-  }
-  try {
-    const users = await User.find();
-    const products = await Product.find();
-    const categories = await Category.find();
-    if (users.length === 0 || products.length === 0 || categories.length === 0) {
-      const hashedPassword = await bcrypt.hash('password123', 10);
-      await User.deleteMany();
-      await Product.deleteMany();
-      await Lot.deleteMany();
-      await Warehouse.deleteMany();
-      await Category.deleteMany();
-
-      const session = await mongoose.startSession();
-      session.startTransaction();
-      try {
-        const admin = await User.create(
-          [{ username: 'admin', password: hashedPassword, role: 'admin', assignedWarehouse: null }],
-          { session }
-        );
-        const user1 = await User.create(
-          [{ username: 'user1', password: hashedPassword, role: 'user', assignedWarehouse: null }],
-          { session }
-        );
-
-        const bangkokWarehouse = await Warehouse.create(
-          [{ name: 'Bangkok Main Warehouse', warehouseCode: 'BKK001', branch: 'Bangkok', assignedUser: user1[0]._id }],
-          { session }
-        );
-        await User.findByIdAndUpdate(user1[0]._id, { assignedWarehouse: bangkokWarehouse[0]._id }, { session });
-
-        await Warehouse.create([{ name: 'Silom Sub Warehouse', warehouseCode: 'BKK002', branch: 'Bangkok' }], { session });
-
-        const category1 = await Category.create(
-          [{ name: 'Personal Care', description: 'Personal hygiene products' }],
-          { session }
-        );
-        const category2 = await Category.create([{ name: 'Household', description: 'Household items' }], { session });
-
-        const doveProduct = await Product.create(
-          [{
-            productCode: 'PROD001',
-            name: 'Dove Soap 100g',
-            category: category1[0]._id,
-            sku: null,
-          }],
-          { session }
-        );
-        await Product.create(
-          [{
-            productCode: 'PROD002',
-            name: 'Shampoo 200ml',
-            category: category1[0]._id,
-            sku: null,
-          }],
-          { session }
-        );
-        await Lot.create(
-          [{
-            lotCode: 'LOT001-240101',
-            productId: doveProduct[0]._id,
-            expDate: new Date('2025-12-31'),
-            qtyOnHand: 40,
-            warehouse: 'Bangkok Main Warehouse',
-            status: 'active',
-          }],
-          { session }
-        );
-        await Lot.create(
-          [{
-            lotCode: 'LOT002-240101',
-            productId: doveProduct[0]._id,
-            expDate: new Date('2024-12-31'),
-            qtyOnHand: 30,
-            warehouse: 'Bangkok Main Warehouse',
-            status: 'active',
-          }],
-          { session }
-        );
-        await Lot.create(
-          [{
-            lotCode: 'LOT003-240101',
-            productId: doveProduct[0]._id,
-            expDate: new Date('2025-12-31'),
-            qtyOnHand: 20,
-            warehouse: 'Silom Sub Warehouse',
-            status: 'active',
-          }],
-          { session }
-        );
-        await session.commitTransaction();
-      } catch (error) {
-        await session.abortTransaction();
-        throw error;
-      } finally {
-        session.endSession();
-      }
-      console.log('Seed data added');
-    }
-    res.json({ message: 'Seed data completed' });
-  } catch (error) {
-    console.error('Error seeding data:', error);
-    res.status(500).json({ message: 'Error seeding data', error: error.message });
-  }
 });
 
 // Login Endpoint
@@ -186,7 +78,7 @@ router.post('/users', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Only admins can create users' });
     }
     const data = userSchema.parse(req.body);
-    const { username, password, role, assignedWarehouse } = data;
+    const { username, lastName, password, role, assignedWarehouse } = data;
 
     if (!password) {
       return res.status(400).json({ message: 'Password is required for new users' });
@@ -214,6 +106,7 @@ router.post('/users', authMiddleware, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       username,
+      lastName,
       password: hashedPassword,
       role,
       assignedWarehouse: assignedWarehouse || null,
@@ -244,7 +137,7 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Only admins can update users' });
     }
     const data = userSchema.parse(req.body);
-    const { username, password, role, assignedWarehouse } = data;
+    const { username, lastName, password, role, assignedWarehouse } = data;
 
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -278,6 +171,7 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
     }
 
     user.username = username;
+    user.lastName = lastName;
     if (password) {
       user.password = await bcrypt.hash(password, 10);
     }
@@ -335,7 +229,7 @@ router.get('/users', authMiddleware, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can view users' });
     }
-    const users = await User.find().select('-password').populate('assignedWarehouse', 'name');
+    const users = await User.find().select('-password').populate('assignedWarehouse', 'name warehouseCode');
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -417,7 +311,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
     let lots = [];
     if (issueType === 'expired') {
       lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, expDate: { $lt: new Date() } }).sort({ expDate: 1 });
-    } else if (issueType === 'waste') {
+    } else if (issueType == 'waste') {
       if (!lotId) return res.status(400).json({ message: 'Lot ID is required for waste issue' });
       const lot = await Lot.findOne({ _id: lotId });
       if (!lot) return res.status(400).json({ message: 'Lot not found' });
@@ -619,6 +513,27 @@ router.post('/products/batch', authMiddleware, async (req, res) => {
   }
 });
 
+// Download Excel Template
+router.get('/products/template', async (req, res) => {
+  try {
+    const categories = await Category.find({}, 'name');
+    const sampleData = [
+      { ProductCode: 'PROD003', ProductName: 'Toothpaste', Category: categories[0]?.name || 'Personal Care', SKU: 'SKU001' },
+      { ProductCode: 'PROD004', ProductName: 'Detergent', Category: categories[1]?.name || 'Household', SKU: 'SKU002' },
+    ];
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(sampleData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', 'attachment; filename=products_template.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    console.error('Error generating template:', error);
+    res.status(500).json({ message: 'Error generating template', error: error.message });
+  }
+});
+
 // Create Warehouse
 router.post('/warehouses', authMiddleware, async (req, res) => {
   try {
@@ -780,7 +695,7 @@ router.delete('/warehouses/:id', authMiddleware, async (req, res) => {
 router.get('/warehouses', authMiddleware, async (req, res) => {
   try {
     console.log('Fetching warehouses for user:', req.user);
-    const warehouses = await Warehouse.find().populate('assignedUser', 'username');
+    const warehouses = await Warehouse.find().populate('assignedUser', 'username lastName');
     res.json(warehouses);
   } catch (error) {
     console.error('Error fetching warehouses:', error);

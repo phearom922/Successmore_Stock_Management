@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaPlus } from 'react-icons/fa';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [username, setUsername] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user');
   const [assignedWarehouse, setAssignedWarehouse] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
@@ -24,6 +26,7 @@ const Users = () => {
       navigate('/login');
       return;
     }
+    
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.exp * 1000 < Date.now()) {
@@ -47,14 +50,12 @@ const Users = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        console.log('Fetching users and warehouses, token:', token);
         const [usersRes, warehousesRes] = await Promise.all([
           axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } }),
           axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
         ]);
-        console.log('Users:', usersRes.data);
-        console.log('Warehouses:', warehousesRes.data);
         setUsers(usersRes.data);
+        setFilteredUsers(usersRes.data);
         setWarehouses(warehousesRes.data);
         if (warehousesRes.data.length === 0) {
           toast.warn('No warehouses available. Please create a warehouse first.');
@@ -74,9 +75,20 @@ const Users = () => {
     fetchData();
   }, [token, navigate, userRole]);
 
+  useEffect(() => {
+    const results = users.filter(user =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.assignedWarehouse && user.assignedWarehouse.warehouseCode.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    setFilteredUsers(results);
+  }, [searchTerm, users]);
+
   const resetForm = () => {
     setEditingId(null);
     setUsername('');
+    setLastName('');
     setPassword('');
     setRole('user');
     setAssignedWarehouse('');
@@ -89,7 +101,7 @@ const Users = () => {
       toast.error('Please login first');
       return;
     }
-    if (!username || (!editingId && !password) || !role) {
+    if (!username || !lastName || (!editingId && !password) || !role) {
       toast.error('Please fill all required fields');
       return;
     }
@@ -99,21 +111,27 @@ const Users = () => {
     }
     setIsLoading(true);
     try {
-      const payload = { username, password: password || undefined, role, assignedWarehouse: assignedWarehouse || undefined };
-      console.log('Sending user payload:', payload);
+      const payload = {
+        username,
+        lastName,
+        password: password || undefined,
+        role,
+        assignedWarehouse: assignedWarehouse || undefined,
+      };
+      
       if (editingId) {
         const response = await axios.put(`http://localhost:3000/api/users/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('Update user response:', response.data);
         setUsers(users.map(u => u._id === editingId ? response.data.user : u));
+        setFilteredUsers(filteredUsers.map(u => u._id === editingId ? response.data.user : u));
         toast.success(response.data.message);
       } else {
         const response = await axios.post('http://localhost:3000/api/users', payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log('Create user response:', response.data);
         setUsers([...users, response.data.user]);
+        setFilteredUsers([...filteredUsers, response.data.user]);
         toast.success(response.data.message);
       }
       resetForm();
@@ -126,9 +144,9 @@ const Users = () => {
   };
 
   const handleEditUser = (user) => {
-    console.log('Editing user:', user);
     setEditingId(user._id);
     setUsername(user.username);
+    setLastName(user.lastName);
     setRole(user.role);
     setAssignedWarehouse(user.assignedWarehouse?._id || '');
     setIsModalOpen(true);
@@ -142,9 +160,9 @@ const Users = () => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       setIsLoading(true);
       try {
-        console.log('Deleting user:', id);
         await axios.delete(`http://localhost:3000/api/users/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         setUsers(users.filter(u => u._id !== id));
+        setFilteredUsers(filteredUsers.filter(u => u._id !== id));
         toast.success('User deleted successfully');
       } catch (error) {
         console.error('Error deleting user:', error.response || error);
@@ -159,139 +177,261 @@ const Users = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Users Management</h2>
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="mb-6 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        disabled={warehouses.length === 0}
-      >
-        Create User
-      </button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">User Management</h2>
+          <p className="text-sm text-gray-500">Manage all system users and their permissions</p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaSearch className="text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search users..."
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className={`flex items-center justify-center px-4 py-2 rounded-lg text-white font-medium transition-colors ${
+              warehouses.length === 0 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+            disabled={warehouses.length === 0}
+          >
+            <FaPlus className="mr-2" />
+            Add User
+          </button>
+        </div>
+      </div>
+
       {isLoading ? (
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
-        <div>
-          {isModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded-lg w-full max-w-md">
-                <h3 className="text-lg font-bold mb-4">{editingId ? 'Edit User' : 'Create User'}</h3>
-                <form onSubmit={handleCreateOrUpdateUser} className="space-y-4">
+        <div className="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-200">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredUsers.length > 0 ? (
+                  filteredUsers.map((user) => (
+                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium">
+                            {user.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{user.username}</div>
+                            <div className="text-sm text-gray-500">{user.lastName}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          user.role === 'admin' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {user.assignedWarehouse?.name || 'None'}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {user.assignedWarehouse?.warehouseCode || '-'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex justify-end space-x-3">
+                          <button
+                            onClick={() => handleEditUser(user)}
+                            className="text-blue-600 hover:text-blue-900 p-1 rounded-md hover:bg-blue-50 transition-colors"
+                            title="Edit"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user._id)}
+                            className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50 transition-colors"
+                            title="Delete"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="px-6 py-8 text-center">
+                      <div className="text-gray-500">No users found</div>
+                      {searchTerm && (
+                        <button 
+                          onClick={() => setSearchTerm('')}
+                          className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+                        >
+                          Clear search
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-gray-900">
+                  {editingId ? 'Edit User' : 'Add New User'}
+                </h3>
+                <button
+                  onClick={resetForm}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <form onSubmit={handleCreateOrUpdateUser} className="space-y-4">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Username</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Username *</label>
                     <input
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      placeholder="Username"
-                      className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required
                       disabled={isLoading}
                     />
                   </div>
+                  
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Password {editingId ? '(Optional)' : ''}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      required
+                      disabled={isLoading}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Password {editingId ? '(Leave blank to keep current)' : '*'}
+                    </label>
                     <input
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Password"
-                      className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required={!editingId}
                       disabled={isLoading}
                     />
                   </div>
+                  
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Role</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
                     <select
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       required
                       disabled={isLoading}
                     >
-                      <option value="admin">Admin</option>
                       <option value="user">User</option>
+                      <option value="admin">Admin</option>
                     </select>
                   </div>
+                  
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Warehouse</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Warehouse</label>
                     <select
                       value={assignedWarehouse}
                       onChange={(e) => setAssignedWarehouse(e.target.value)}
-                      className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                       disabled={isLoading || warehouses.length === 0}
                     >
-                      <option value="">No Warehouse Assigned</option>
+                      <option value="">Not assigned</option>
                       {warehouses.map(warehouse => (
                         <option
                           key={warehouse._id}
                           value={warehouse._id}
                           disabled={warehouse.assignedUser && warehouse.assignedUser._id !== editingId}
+                          className={warehouse.assignedUser && warehouse.assignedUser._id !== editingId ? 'text-gray-400' : ''}
                         >
-                          {warehouse.name}
+                          {warehouse.name} ({warehouse.warehouseCode})
+                          {warehouse.assignedUser && warehouse.assignedUser._id !== editingId && ' (Assigned)'}
                         </option>
                       ))}
                     </select>
+                    {warehouses.length === 0 && (
+                      <p className="mt-1 text-sm text-red-600">No warehouses available. Please create a warehouse first.</p>
+                    )}
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="submit"
-                      className={`w-full py-2 px-4 rounded text-white ${isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? 'Processing...' : (editingId ? 'Update User' : 'Create User')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={resetForm}
-                      className="w-full py-2 px-4 rounded bg-gray-500 text-white hover:bg-gray-600"
-                      disabled={isLoading}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
+                </div>
+                
+                <div className="flex justify-end space-x-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className={`px-4 py-2 rounded-lg text-white transition-colors ${
+                      isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </span>
+                    ) : editingId ? 'Update User' : 'Create User'}
+                  </button>
+                </div>
+              </form>
             </div>
-          )}
-          <table className="w-full border-collapse bg-white shadow rounded-lg">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Username</th>
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Role</th>
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Assigned Warehouse</th>
-                <th className="border p-3 text-right text-sm font-semibold text-gray-600">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user._id} className="border-b hover:bg-gray-50">
-                  <td className="border p-3">{user.username}</td>
-                  <td className="border p-3">{user.role}</td>
-                  <td className="border p-3">{user.assignedWarehouse ? user.assignedWarehouse.name : 'None'}</td>
-                  <td className="border p-3 text-right">
-                    <button
-                      onClick={() => handleEditUser(user)}
-                      className="text-blue-500 hover:text-blue-700 mr-3"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteUser(user._id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          </div>
         </div>
       )}
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
