@@ -12,9 +12,10 @@ const Warehouse = require('../models/Warehouse');
 const Category = require('../models/Category');
 const XLSX = require('xlsx');
 const Supplier = require('../models/Suppliers');
-
 const StockTransaction = require('../models/StockTransactions');
 const TransactionCounter = require('../models/TransactionCounter');
+const logger = require('../config/logger');
+
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -1116,7 +1117,91 @@ router.post('/receive', authMiddleware, async (req, res) => {
 });
 
 
+router.post('/receive', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Received request to /api/receive', { user: req.user, body: req.body });
 
+    // Validate request body
+    const receiveSchema = z.object({
+      lots: z.array(
+        z.object({
+          productId: z.string().min(1),
+          lotCode: z.string().min(1),
+          productionDate: z.string().datetime(),
+          expDate: z.string().datetime(),
+          quantity: z.number().positive(),
+          boxCount: z.number().positive(),
+          qtyPerBox: z.number().positive(),
+          warehouse: z.string().min(1),
+          supplierId: z.string().min(1),
+        }).refine((data) => data.quantity === data.boxCount * data.qtyPerBox, {
+          message: 'Quantity must equal Box Count * Quantity per Box',
+          path: ['quantity'],
+        })
+      ),
+    });
+
+    const { lots } = receiveSchema.parse(req.body);
+
+    const session = await Lot.startSession();
+    session.startTransaction();
+
+    try {
+      for (const lot of lots) {
+        logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
+
+        const existingLot = await Lot.findOne({ lotCode: lot.lotCode, warehouse: lot.warehouse }).session(session);
+        if (existingLot) {
+          throw new Error(`Lot ${lot.lotCode} already exists in ${lot.warehouse}`);
+        }
+
+        const transactionCounter = await TransactionCounter.findOneAndUpdate(
+          { warehouse: lot.warehouse },
+          { $inc: { sequence: 1 } },
+          { new: true, upsert: true, session }
+        );
+
+        const transactionNumber = `${lot.warehouse}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
+        const newLot = new Lot({
+          ...lot,
+          transactionNumber,
+        });
+        await newLot.save({ session });
+
+        const transaction = new StockTransaction({
+          transactionNumber,
+          productId: lot.productId,
+          lotCode: lot.lotCode,
+          quantity: lot.quantity,
+          boxCount: lot.boxCount,
+          qtyPerBox: lot.qtyPerBox,
+          productionDate: lot.productionDate,
+          expDate: lot.expDate,
+          warehouse: lot.warehouse,
+          supplierId: lot.supplierId,
+          type: 'receive',
+          userId: req.user._id,
+        });
+        await transaction.save({ session });
+
+        logger.info('Successfully processed lot', { lotCode: lot.lotCode, transactionNumber });
+      }
+
+      await session.commitTransaction();
+      logger.info('Transaction committed successfully');
+      res.status(201).json({ message: 'Stock received successfully' });
+    } catch (error) {
+      await session.abortTransaction();
+      logger.error('Transaction failed', { error: error.message });
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  } catch (error) {
+    logger.error('Error in /api/receive', { error: error.message, stack: error.stack });
+    res.status(400).json({ message: error.message });
+  }
+});
 
 
 

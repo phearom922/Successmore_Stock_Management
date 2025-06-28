@@ -162,7 +162,7 @@ const ReceiveStock = () => {
       toast.error(`Please ensure ${!warehouseValid ? 'Warehouse' : ''}${!warehouseValid && !supplierValid ? ' and ' : ''}${!supplierValid ? 'Supplier' : ''} are valid and add at least one lot`);
       return;
     }
-    
+
     // Validate all lots before submission
     for (const lot of addedLots) {
       if (!lot.productId || !lot.lotCode || !lot.quantity || !lot.boxCount || !lot.qtyPerBox || !lot.productionDate || !lot.expDate) {
@@ -194,14 +194,14 @@ const ReceiveStock = () => {
           supplierId: lot.supplierId
         }))
       };
-      
-      const response = await axios.post('http://localhost:3000/api/receive', payload, { 
-        headers: { 
+
+      const response = await axios.post('http://localhost:3000/api/receive', payload, {
+        headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
-        } 
+        }
       });
-      
+
       toast.success(response.data.message || 'Stock received successfully!');
       setAddedLots([]);
       setCurrentLot({
@@ -259,14 +259,14 @@ const ReceiveStock = () => {
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="mb-6">
               <Tabs onSelect={index => setSelectedCategory(index === 0 ? 'All' : categories[index - 1]._id)}>
-                <TabList className="flex space-x-1 border-b border-gray-200">
-                  <Tab className="px-4 py-2.5 text-sm font-medium rounded-t-lg focus:outline-none ui-selected:bg-blue-50 ui-selected:text-blue-600 ui-selected:border-b-2 ui-selected:border-blue-600 ui-not-selected:text-gray-500 ui-not-selected:hover:text-gray-700 ui-not-selected:hover:border-gray-300">
-                    All
+                <TabList className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                  <Tab className="px-4 py-2 text-sm font-medium rounded-md cursor-pointer ui-selected:bg-white ui-selected:shadow ui-selected:text-blue-600 text-gray-600 hover:text-blue-500">
+                    All Products
                   </Tab>
                   {categories.map(category => (
-                    <Tab 
-                      key={category._id} 
-                      className="px-4 py-2.5 text-sm font-medium rounded-t-lg focus:outline-none ui-selected:bg-blue-50 ui-selected:text-blue-600 ui-selected:border-b-2 ui-selected:border-blue-600 ui-not-selected:text-gray-500 ui-not-selected:hover:text-gray-700 ui-not-selected:hover:border-gray-300"
+                    <Tab
+                      key={category._id}
+                      className="px-4 py-2 text-sm font-medium rounded-md cursor-pointer ui-selected:bg-white ui-selected:shadow ui-selected:text-blue-600 text-gray-600 hover:text-blue-500"
                     >
                       {category.name}
                     </Tab>
@@ -314,7 +314,7 @@ const ReceiveStock = () => {
 
             <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Stock Item</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Product <span className="text-red-500">*</span></label>
@@ -332,7 +332,7 @@ const ReceiveStock = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Lot Code <span className="text-red-500">*</span></label>
                   <input
@@ -344,7 +344,7 @@ const ReceiveStock = () => {
                     disabled={isLoading}
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Box Count <span className="text-red-500">*</span></label>
                   <input
@@ -357,7 +357,7 @@ const ReceiveStock = () => {
                     min="1"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Quantity per Box <span className="text-red-500">*</span></label>
                   <input
@@ -370,8 +370,8 @@ const ReceiveStock = () => {
                     min="1"
                   />
                 </div>
-                
-                <div>
+
+                <div className='mt-1'>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (auto-calculated)</label>
                   <input
                     type="number"
@@ -381,7 +381,7 @@ const ReceiveStock = () => {
                     disabled
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Production Date <span className="text-red-500">*</span></label>
@@ -410,7 +410,7 @@ const ReceiveStock = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-6 flex justify-end">
                 <button
                   type="button"
@@ -428,7 +428,7 @@ const ReceiveStock = () => {
           {addedLots.length > 0 && (
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Stock Items to Receive ({addedLots.length})</h3>
-              
+
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -447,7 +447,7 @@ const ReceiveStock = () => {
                     {addedLots.map((lot, index) => (
                       <tr key={index} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {products.find(p => p._id === lot.productId)?.name || '-'} 
+                          {products.find(p => p._id === lot.productId)?.name || '-'}
                           <span className="block text-xs text-gray-500">{products.find(p => p._id === lot.productId)?.productCode || '-'}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
