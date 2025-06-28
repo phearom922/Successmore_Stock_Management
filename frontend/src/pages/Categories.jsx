@@ -3,9 +3,10 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaSearch } from 'react-icons/fa';
 import { AiFillStop } from "react-icons/ai";
 import { SiTicktick } from "react-icons/si";
+import { FiLoader } from "react-icons/fi";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -15,6 +16,7 @@ const Categories = () => {
   const [editingId, setEditingId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
@@ -133,118 +135,196 @@ const Categories = () => {
   const getCategoryStatus = (categoryId) => {
     const usedCategories = products.filter(p => p.category && p.category._id && p.category._id.toString() === categoryId.toString());
     return usedCategories.length > 0 ? (
-      <span className="flex items-center">
-        <SiTicktick className="mr-1 text-green-500" /> In Use
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        <SiTicktick className="mr-1" /> In Use
       </span>
     ) : (
-      <span className="flex items-center">
-        <AiFillStop className="mr-1 text-red-500" /> Not In Use
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+        <AiFillStop className="mr-1" /> Not In Use
       </span>
     );
   };
 
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Categories</h2>
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="mb-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-      >
-        Add Category
-      </button>
-      {isLoading ? (
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
-      ) : (
-        <div>
-          {isModalOpen && (
-            <div className="fixed inset-0 bg-[rgb(0,0,0)]/50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded-lg w-full max-w-md">
-                <h3 className="text-lg font-bold mb-4">{editingId ? 'Edit Category' : 'Create Category'}</h3>
-                <form onSubmit={handleCreateOrUpdateCategory} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Category Name</label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Category Name"
-                      className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Description</label>
-                    <input
-                      type="text"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Description"
-                      className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="submit"
-                      className={`w-full py-2 px-4 rounded text-white ${isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? 'Processing...' : (editingId ? 'Update Category' : 'Create Category')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { setIsModalOpen(false); setEditingId(null); setName(''); setDescription(''); }}
-                      className="w-full py-2 px-4 rounded bg-gray-500 text-white hover:bg-gray-600"
-                      disabled={isLoading}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Category Management</h1>
+            <p className="text-gray-600">Manage product categories and their status</p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto mt-4 md:mt-0">
+            <div className="relative flex-grow">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search categories..."
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-          )}
-          <table className="w-full border-collapse bg-white shadow rounded-lg">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Name</th>
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Description</th>
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Create Date</th>
-                <th className="border p-3 text-left text-sm font-semibold text-gray-600">Status</th>
-                <th className="border p-3 text-right text-sm font-semibold text-gray-600">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories.map((category) => (
-                <tr key={category._id} className="border-b hover:bg-gray-50">
-                  <td className="border p-3">{category.name}</td>
-                  <td className="border p-3">{category.description || '-'}</td>
-                  <td className="border p-3">{new Date(category.createdAt).toLocaleDateString()}</td>
-                  <td className="border p-3">{getCategoryStatus(category._id)}</td>
-                  <td className="border p-3 text-right">
-                    <button
-                      onClick={() => handleEditCategory(category)}
-                      className="text-blue-500 hover:text-blue-700 mr-3"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCategory(category._id)}
-                      className="text-red-500 hover:text-red-700"
-                      disabled={products.some(p => p.category?._id.toString() === category._id.toString())}
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors duration-200"
+            >
+              <FaPlus className="mr-2" />
+              Add Category
+            </button>
+          </div>
         </div>
-      )}
+
+        {/* Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-[rgb(0,0,0)]/50 flex justify-center items-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+              <div className="bg-indigo-600 p-4 text-white">
+                <h3 className="text-lg font-bold">{editingId ? 'Edit Category' : 'Create New Category'}</h3>
+              </div>
+              
+              <form onSubmit={handleCreateOrUpdateCategory} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category Name *</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Electronics"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Description (optional)"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    rows="3"
+                    disabled={isLoading}
+                  />
+                </div>
+                
+                <div className="flex justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => { setIsModalOpen(false); setEditingId(null); setName(''); setDescription(''); }}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className={`px-4 py-2 flex items-center justify-center ${isLoading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-md transition-colors duration-200`}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <FiLoader className="animate-spin mr-2" />
+                        Processing...
+                      </>
+                    ) : editingId ? 'Update Category' : 'Create Category'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <FiLoader className="animate-spin text-4xl text-indigo-600" />
+          </div>
+        ) : (
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category Name
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Created Date
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredCategories.length > 0 ? (
+                    filteredCategories.map((category) => (
+                      <tr key={category._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{category.name}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-500 max-w-xs truncate">
+                            {category.description || '-'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-500">
+                            {new Date(category.createdAt).toLocaleDateString()}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {getCategoryStatus(category._id)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            onClick={() => handleEditCategory(category)}
+                            className="text-indigo-600 hover:text-indigo-900 mr-4"
+                            title="Edit"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCategory(category._id)}
+                            className={`${products.some(p => p.category?._id.toString() === category._id.toString()) 
+                              ? 'text-gray-400 cursor-not-allowed' 
+                              : 'text-red-600 hover:text-red-900'}`}
+                            disabled={products.some(p => p.category?._id.toString() === category._id.toString())}
+                            title={products.some(p => p.category?._id.toString() === category._id.toString()) 
+                              ? "Cannot delete category in use" 
+                              : "Delete category"}
+                          >
+                            <FaTrash />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
+                        No categories found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );

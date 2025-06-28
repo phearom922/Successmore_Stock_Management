@@ -1,5 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FiHome, FiUpload, FiPackage, FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers } from 'react-icons/fi';
+import {
+  FiHome,
+  FiUpload,
+  FiPackage,
+  FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers,
+  FiArrowDownCircle
+} from 'react-icons/fi';
 import { FaBuilding } from "react-icons/fa";
 
 
@@ -117,6 +123,30 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               </div>
             </div>
           )}
+        </div>
+
+        <div className="mt-6">
+          {isOpen ? (
+            <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              Product
+            </span>
+          ) : (
+            <div className="border-t border-gray-700 mx-2 my-2"></div>
+          )}
+
+          <div className="mt-1 space-y-1">
+            {userRole === 'admin' && (
+              <>
+                <Link
+                  to="/receive-stock"
+                  className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/receive-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                >
+                  <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-lg`} />
+                  {isOpen && <span>Receive Stock</span>}
+                </Link>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="mt-6">

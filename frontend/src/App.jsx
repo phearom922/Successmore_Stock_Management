@@ -13,7 +13,7 @@ import Categories from './pages/Categories';
 import Products from './pages/Products';
 import { toast } from 'react-toastify';
 import Suppliers from './pages/Suppliers';
-
+import ReceiveStock from './pages/ReceiveStock';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -77,6 +77,7 @@ function App() {
               <Route path="/settings" element={<div className="p-6"><h2>Settings</h2><p>Settings page under construction</p></div>} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/suppliers" element={<Suppliers />} />
+              <Route path="/receive-stock" element={<ReceiveStock />} />
             </Routes>
           </div>
         </main>
