@@ -105,9 +105,18 @@ const ReceiveStock = () => {
 
   const addLot = () => {
     if (!currentLot.productId || !currentLot.lotCode || !currentLot.boxCount || !currentLot.qtyPerBox || !currentLot.productionDate || !currentLot.expDate) {
-      toast.error('กรุณากรอกข้อมูลให้ครบก่อนเพิ่มล็อต');
+      toast.error('Please fill all required fields before adding a lot');
       return;
     }
+    if (Number(currentLot.boxCount) <= 0 || Number(currentLot.qtyPerBox) <= 0) {
+      toast.error('Box count and quantity per box must be positive numbers');
+      return;
+    }
+    if (new Date(currentLot.expDate) <= new Date(currentLot.productionDate)) {
+      toast.error('Expiration date must be after production date');
+      return;
+    }
+
     const computedQuantity = Number(currentLot.boxCount) * Number(currentLot.qtyPerBox);
     setAddedLots([
       ...addedLots,
@@ -153,6 +162,8 @@ const ReceiveStock = () => {
       toast.error(`Please ensure ${!warehouseValid ? 'Warehouse' : ''}${!warehouseValid && !supplierValid ? ' and ' : ''}${!supplierValid ? 'Supplier' : ''} are valid and add at least one lot`);
       return;
     }
+    
+    // Validate all lots before submission
     for (const lot of addedLots) {
       if (!lot.productId || !lot.lotCode || !lot.quantity || !lot.boxCount || !lot.qtyPerBox || !lot.productionDate || !lot.expDate) {
         toast.error('All fields in added lots must be filled');
@@ -167,6 +178,7 @@ const ReceiveStock = () => {
         return;
       }
     }
+
     setIsLoading(true);
     try {
       const payload = {
@@ -182,8 +194,15 @@ const ReceiveStock = () => {
           supplierId: lot.supplierId
         }))
       };
-      const response = await axios.post('http://localhost:3000/api/receive', payload, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success(response.data.message);
+      
+      const response = await axios.post('http://localhost:3000/api/receive', payload, { 
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        } 
+      });
+      
+      toast.success(response.data.message || 'Stock received successfully!');
       setAddedLots([]);
       setCurrentLot({
         productId: '',
@@ -198,7 +217,12 @@ const ReceiveStock = () => {
       });
     } catch (error) {
       console.error('Error receiving stock:', error.response || error);
-      toast.error(error.response?.data?.message || 'Network Error');
+      if (error.response?.status === 401) {
+        toast.error('Session expired, please login again');
+        navigate('/login');
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to receive stock. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -211,283 +235,321 @@ const ReceiveStock = () => {
   if (!token) return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Receive Stock</h2>
-      {isLoading ? (
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    <div className="p-6 max-w-7xl mx-auto bg-gray-50 rounded-xl">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-bold text-gray-800">Receive Stock</h2>
+        <div className="flex space-x-3">
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className={`inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white ${isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'}`}
+            disabled={isLoading || addedLots.length === 0}
+          >
+            {isLoading ? 'Processing...' : 'Receive Stock'}
+          </button>
+        </div>
+      </div>
+
+      {isLoading && !products.length ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
-          <Tabs onSelect={index => setSelectedCategory(index === 0 ? 'All' : categories[index - 1]._id)}>
-            <TabList className="flex space-x-4 border-b mb-4">
-              <Tab className="px-4 py-2 cursor-pointer text-gray-600 hover:text-blue-500 border-b-2 border-transparent hover:border-blue-500">All</Tab>
-              {categories.map(category => (
-                <Tab key={category._id} className="px-4 py-2 cursor-pointer text-gray-600 hover:text-blue-500 border-b-2 border-transparent hover:border-blue-500">
-                  {category.name}
-                </Tab>
-              ))}
-            </TabList>
-            {['All', ...categories.map(c => c._id)].map((_, index) => (
-              <TabPanel key={index}></TabPanel>
-            ))}
-          </Tabs>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Warehouse</label>
-              <select
-                value={selectedWarehouse}
-                onChange={e => {
-                  setSelectedWarehouse(e.target.value);
-                  setCurrentLot(prev => ({ ...prev, warehouse: e.target.value }));
-                }}
-                className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-              >
-                {warehouses.map(w => (
-                  <option key={w._id} value={w.name}>{w.name} ({w.warehouseCode})</option>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="mb-6">
+              <Tabs onSelect={index => setSelectedCategory(index === 0 ? 'All' : categories[index - 1]._id)}>
+                <TabList className="flex space-x-1 border-b border-gray-200">
+                  <Tab className="px-4 py-2.5 text-sm font-medium rounded-t-lg focus:outline-none ui-selected:bg-blue-50 ui-selected:text-blue-600 ui-selected:border-b-2 ui-selected:border-blue-600 ui-not-selected:text-gray-500 ui-not-selected:hover:text-gray-700 ui-not-selected:hover:border-gray-300">
+                    All
+                  </Tab>
+                  {categories.map(category => (
+                    <Tab 
+                      key={category._id} 
+                      className="px-4 py-2.5 text-sm font-medium rounded-t-lg focus:outline-none ui-selected:bg-blue-50 ui-selected:text-blue-600 ui-selected:border-b-2 ui-selected:border-blue-600 ui-not-selected:text-gray-500 ui-not-selected:hover:text-gray-700 ui-not-selected:hover:border-gray-300"
+                    >
+                      {category.name}
+                    </Tab>
+                  ))}
+                </TabList>
+                {['All', ...categories.map(c => c._id)].map((_, index) => (
+                  <TabPanel key={index}></TabPanel>
                 ))}
-              </select>
+              </Tabs>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Supplier</label>
-              <select
-                value={selectedSupplier}
-                onChange={e => {
-                  setSelectedSupplier(e.target.value);
-                  setCurrentLot(prev => ({ ...prev, supplierId: e.target.value }));
-                }}
-                className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-              >
-                {suppliers.map(s => (
-                  <option key={s._id} value={s._id}>{s.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Product</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
                 <select
-                  value={currentLot.productId}
-                  onChange={e => updateCurrentLot('productId', e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={isLoading}
+                  value={selectedWarehouse}
+                  onChange={e => {
+                    setSelectedWarehouse(e.target.value);
+                    setCurrentLot(prev => ({ ...prev, warehouse: e.target.value }));
+                  }}
+                  className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
+                  disabled={user.role !== 'admin'}
                 >
-                  <option value="">Select Product</option>
-                  {filteredProducts.map(product => (
-                    <option key={product._id} value={product._id}>
-                      {product.name} ({product.productCode})
-                    </option>
+                  {warehouses.map(w => (
+                    <option key={w._id} value={w.name}>{w.name} ({w.warehouseCode})</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Lot Code</label>
-                <input
-                  type="text"
-                  value={currentLot.lotCode}
-                  onChange={e => updateCurrentLot('lotCode', e.target.value)}
-                  placeholder="Lot Code"
-                  className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={isLoading}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Quantity (คำนวณอัตโนมัติ)</label>
-                <input
-                  type="number"
-                  value={currentLot.quantity}
-                  placeholder="Quantity"
-                  className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3"
-                  disabled
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Box Count</label>
-                <input
-                  type="number"
-                  value={currentLot.boxCount}
-                  onChange={e => updateCurrentLot('boxCount', e.target.value)}
-                  placeholder="Box Count"
-                  className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={isLoading}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Quantity per Box</label>
-                <input
-                  type="number"
-                  value={currentLot.qtyPerBox}
-                  onChange={e => updateCurrentLot('qtyPerBox', e.target.value)}
-                  placeholder="Quantity per Box"
-                  className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={isLoading}
-                />
-              </div>
-              <div className='flex justify-between w-full gap-5'>
-                <div className=' inline-flex w-full flex-col'>
-                  <label className="block text-sm font-medium text-gray-700">Production Date</label>
-                  <DatePicker
-                    selected={currentLot.productionDate}
-                    onChange={date => updateCurrentLot('productionDate', date)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                    disabled={isLoading}
-                    dateFormat="yyyy-MM-dd"
-                  />
-                </div>
-                <div className='inline-flex w-full flex-col'>
-                  <label className="block text-sm font-medium text-gray-700">Expiration Date</label>
-                  <DatePicker
-                    selected={currentLot.expDate}
-                    onChange={date => updateCurrentLot('expDate', date)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3 focus:ring-blue-500 focus:border-blue-500"
-                    disabled={isLoading}
-                    dateFormat="yyyy-MM-dd"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                onClick={addLot}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600"
-                disabled={isLoading}
-              >
-                <FaPlus className="mr-2" />
-                Add Stock
-              </button>
-            </div>
-          </div>
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">Added Lots</h3>
-            {addedLots.length > 0 && (
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Product</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lot Code</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Quantity</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Box Count</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Qty per Box</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Production Date</th>
-                    <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Expiration Date</th>
-                    <th className="px-4 py-2 text-right text-sm font-semibold text-gray-600">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {addedLots.map((lot, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-sm text-gray-900">
-                        {products.find(p => p._id === lot.productId)?.name || '-'} ({products.find(p => p._id === lot.productId)?.productCode || '-'})
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-500">
-                        <input
-                          type="text"
-                          value={lot.lotCode}
-                          onChange={e => {
-                            const updatedLots = [...addedLots];
-                            updatedLots[index].lotCode = e.target.value;
-                            setAddedLots(updatedLots);
-                          }}
-                          className="mt-1 block w-full border border-gray-300 rounded-md py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-500">
-                        <input
-                          type="number"
-                          value={lot.quantity}
-                          disabled
-                          className="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md py-1 px-2"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-500">
-                        <input
-                          type="number"
-                          value={lot.boxCount}
-                          onChange={e => {
-                            const updatedLots = [...addedLots];
-                            updatedLots[index].boxCount = Number(e.target.value);
-                            updatedLots[index].quantity = updatedLots[index].boxCount * updatedLots[index].qtyPerBox;
-                            setAddedLots(updatedLots);
-                          }}
-                          className="mt-1 block w-full border border-gray-300 rounded-md py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-500">
-                        <input
-                          type="number"
-                          value={lot.qtyPerBox}
-                          onChange={e => {
-                            const updatedLots = [...addedLots];
-                            updatedLots[index].qtyPerBox = Number(e.target.value);
-                            updatedLots[index].quantity = updatedLots[index].boxCount * updatedLots[index].qtyPerBox;
-                            setAddedLots(updatedLots);
-                          }}
-                          className="mt-1 block w-full border border-gray-300 rounded-md py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-500">
-                        <DatePicker
-                          selected={lot.productionDate}
-                          onChange={date => {
-                            const updatedLots = [...addedLots];
-                            updatedLots[index].productionDate = date;
-                            setAddedLots(updatedLots);
-                          }}
-                          className="mt-1 block w-full border border-gray-300 rounded-md py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                          dateFormat="yyyy-MM-dd"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-sm text-gray-500">
-                        <DatePicker
-                          selected={lot.expDate}
-                          onChange={date => {
-                            const updatedLots = [...addedLots];
-                            updatedLots[index].expDate = date;
-                            setAddedLots(updatedLots);
-                          }}
-                          className="mt-1 block w-full border border-gray-300 rounded-md py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                          dateFormat="yyyy-MM-dd"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-right">
-                        <button
-                          type="button"
-                          onClick={() => removeLot(index)}
-                          className="text-red-500 hover:text-red-700 mr-2"
-                          disabled={isLoading}
-                        >
-                          Remove
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => editLot(index)}
-                          className="text-blue-500 hover:text-blue-700"
-                          disabled={isLoading}
-                        >
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                <select
+                  value={selectedSupplier}
+                  onChange={e => {
+                    setSelectedSupplier(e.target.value);
+                    setCurrentLot(prev => ({ ...prev, supplierId: e.target.value }));
+                  }}
+                  className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
+                >
+                  {suppliers.map(s => (
+                    <option key={s._id} value={s._id}>{s.name}</option>
                   ))}
-                </tbody>
-              </table>
-            )}
+                </select>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-5 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Stock Item</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Product <span className="text-red-500">*</span></label>
+                  <select
+                    value={currentLot.productId}
+                    onChange={e => updateCurrentLot('productId', e.target.value)}
+                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
+                    disabled={isLoading}
+                  >
+                    <option value="">Select Product</option>
+                    {filteredProducts.map(product => (
+                      <option key={product._id} value={product._id}>
+                        {product.name} ({product.productCode})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Lot Code <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    value={currentLot.lotCode}
+                    onChange={e => updateCurrentLot('lotCode', e.target.value)}
+                    placeholder="Enter lot code"
+                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    disabled={isLoading}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Box Count <span className="text-red-500">*</span></label>
+                  <input
+                    type="number"
+                    value={currentLot.boxCount}
+                    onChange={e => updateCurrentLot('boxCount', e.target.value)}
+                    placeholder="Enter box count"
+                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    disabled={isLoading}
+                    min="1"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Quantity per Box <span className="text-red-500">*</span></label>
+                  <input
+                    type="number"
+                    value={currentLot.qtyPerBox}
+                    onChange={e => updateCurrentLot('qtyPerBox', e.target.value)}
+                    placeholder="Enter quantity per box"
+                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    disabled={isLoading}
+                    min="1"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Quantity (auto-calculated)</label>
+                  <input
+                    type="number"
+                    value={currentLot.quantity}
+                    placeholder="Auto-calculated"
+                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 bg-gray-100 rounded-lg shadow-sm sm:text-sm"
+                    disabled
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Production Date <span className="text-red-500">*</span></label>
+                    <DatePicker
+                      selected={currentLot.productionDate}
+                      onChange={date => updateCurrentLot('productionDate', date)}
+                      className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      disabled={isLoading}
+                      dateFormat="yyyy-MM-dd"
+                      placeholderText="Select date"
+                      minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 5))}
+                      maxDate={new Date()}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date <span className="text-red-500">*</span></label>
+                    <DatePicker
+                      selected={currentLot.expDate}
+                      onChange={date => updateCurrentLot('expDate', date)}
+                      className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      disabled={isLoading}
+                      dateFormat="yyyy-MM-dd"
+                      placeholderText="Select date"
+                      minDate={currentLot.productionDate || new Date()}
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  onClick={addLot}
+                  className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+                  disabled={isLoading || !currentLot.productId || !currentLot.lotCode || !currentLot.boxCount || !currentLot.qtyPerBox || !currentLot.productionDate || !currentLot.expDate}
+                >
+                  <FaPlus className="mr-2" />
+                  Add Stock Item
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="mt-4 flex justify-end">
-            <button
-              type="submit"
-              className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white ${isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-              disabled={isLoading}
-            >
-              Receive Stock
-            </button>
-          </div>
+
+          {addedLots.length > 0 && (
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Stock Items to Receive ({addedLots.length})</h3>
+              
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot Code</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Boxes</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty/Box</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prod Date</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exp Date</th>
+                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {addedLots.map((lot, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {products.find(p => p._id === lot.productId)?.name || '-'} 
+                          <span className="block text-xs text-gray-500">{products.find(p => p._id === lot.productId)?.productCode || '-'}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="text"
+                            value={lot.lotCode}
+                            onChange={e => {
+                              const updatedLots = [...addedLots];
+                              updatedLots[index].lotCode = e.target.value;
+                              setAddedLots(updatedLots);
+                            }}
+                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="number"
+                            value={lot.quantity}
+                            disabled
+                            className="block w-full px-3 py-1.5 border border-gray-300 bg-gray-100 rounded-md shadow-sm sm:text-sm"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="number"
+                            value={lot.boxCount}
+                            onChange={e => {
+                              const updatedLots = [...addedLots];
+                              updatedLots[index].boxCount = Number(e.target.value);
+                              updatedLots[index].quantity = updatedLots[index].boxCount * updatedLots[index].qtyPerBox;
+                              setAddedLots(updatedLots);
+                            }}
+                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            min="1"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="number"
+                            value={lot.qtyPerBox}
+                            onChange={e => {
+                              const updatedLots = [...addedLots];
+                              updatedLots[index].qtyPerBox = Number(e.target.value);
+                              updatedLots[index].quantity = updatedLots[index].boxCount * updatedLots[index].qtyPerBox;
+                              setAddedLots(updatedLots);
+                            }}
+                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            min="1"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <DatePicker
+                            selected={lot.productionDate}
+                            onChange={date => {
+                              const updatedLots = [...addedLots];
+                              updatedLots[index].productionDate = date;
+                              setAddedLots(updatedLots);
+                            }}
+                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <DatePicker
+                            selected={lot.expDate}
+                            onChange={date => {
+                              const updatedLots = [...addedLots];
+                              updatedLots[index].expDate = date;
+                              setAddedLots(updatedLots);
+                            }}
+                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            dateFormat="yyyy-MM-dd"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button
+                            type="button"
+                            onClick={() => removeLot(index)}
+                            className="text-red-600 hover:text-red-900 mr-4"
+                            disabled={isLoading}
+                          >
+                            Remove
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => editLot(index)}
+                            className="text-blue-600 hover:text-blue-900"
+                            disabled={isLoading}
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </form>
       )}
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 };
