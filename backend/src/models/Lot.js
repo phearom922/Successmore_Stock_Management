@@ -3,15 +3,16 @@ const mongoose = require('mongoose');
 const lotSchema = new mongoose.Schema({
   lotCode: { type: String, required: true, unique: true },
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  expDate: { type: Date, required: true },
   productionDate: { type: Date, required: true },
-  qtyOnHand: { type: Number, required: true },
+  expDate: { type: Date, required: true },
+  quantity: { type: Number, required: true },
   boxCount: { type: Number, required: true },
   qtyPerBox: { type: Number, required: true },
-  warehouse: { type: String, required: true },
-  status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' }
-}, { timestamps: true });
-
-lotSchema.index({ productId: 1, lotCode: 1 });
+  warehouse: { type: String, required: true }, // ตรวจสอบว่า field นี้มี
+  supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier', required: true },
+  transactionNumber: { type: String, required: true },
+  status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
+  qtyOnHand: { type: Number, default: 0 } // ถ้ามี field นี้
+});
 
 module.exports = mongoose.model('Lot', lotSchema);

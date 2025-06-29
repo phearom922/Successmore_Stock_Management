@@ -12,8 +12,8 @@ const logger = createLogger({
     logFormat
   ),
   transports: [
-    new transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new transports.File({ filename: 'logs/combined.log' }),
+    new transports.File({ filename: 'E:/Personal Documents/Stock-Management/backend/logs/error.log', level: 'error' }),
+    new transports.File({ filename: 'E:/Personal Documents/Stock-Management/backend/logs/combined.log' }),
     new transports.Console({
       format: combine(
         colorize(),
@@ -22,5 +22,8 @@ const logger = createLogger({
     })
   ]
 });
+
+// ทดสอบการ log ทันทีที่โหลดไฟล์
+logger.info('Logger initialized successfully');
 
 module.exports = logger;

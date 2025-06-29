@@ -8,7 +8,14 @@ const stockTransactionSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true },
   boxCount: { type: Number, required: true },
-  action: { type: String, enum: ['receive', 'issue', 'adjust'], required: true }
+  qtyPerBox: { type: Number, required: true },
+  productionDate: { type: Date, required: true },
+  expDate: { type: Date, required: true },
+  warehouse: { type: String, required: true },
+  type: { type: String, enum: ['receive', 'issue', 'adjust'], required: true }, // เปลี่ยนจาก action เป็น type
+  auditTrail: { type: mongoose.Schema.Types.ObjectId, ref: 'UserTransaction' },
+  timestamp: { type: Date, default: Date.now },
+  status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'completed' }
 }, { timestamps: true });
 
 stockTransactionSchema.index({ transactionNumber: 1, productId: 1 });

@@ -1,0 +1,155 @@
+2025-06-29 12:29:24 [info]: Logger initialized successfully
+2025-06-29 12:29:24 [info]: Server running on port 3000
+2025-06-29 12:29:25 [info]: Connected to MongoDB
+2025-06-29 12:29:39 [info]: Received GET request to /api/products
+2025-06-29 12:29:39 [info]: Received GET request to /api/categories
+2025-06-29 12:29:39 [info]: Received GET request to /api/warehouses
+2025-06-29 12:29:39 [info]: Received GET request to /api/suppliers
+2025-06-29 12:29:39 [info]: Received GET request to /api/categories
+2025-06-29 12:29:39 [info]: Received GET request to /api/warehouses
+2025-06-29 12:29:39 [info]: Received GET request to /api/suppliers
+2025-06-29 12:29:39 [info]: Received GET request to /api/products
+2025-06-29 12:37:00 [info]: Logger initialized successfully
+2025-06-29 12:37:01 [info]: Server running on port 3000
+2025-06-29 12:37:31 [error]: Connection error:
+2025-06-29 12:38:33 [info]: Logger initialized successfully
+2025-06-29 12:38:34 [info]: Server running on port 3000
+2025-06-29 12:39:04 [error]: Connection error:
+2025-06-29 12:39:14 [info]: Logger initialized successfully
+2025-06-29 12:39:14 [info]: Server running on port 3000
+2025-06-29 12:39:44 [error]: Connection error:
+2025-06-29 12:40:26 [info]: Logger initialized successfully
+2025-06-29 12:40:26 [info]: Server running on port 3000
+2025-06-29 12:40:31 [info]: Received POST request to /api/login
+2025-06-29 12:40:31 [info]: Login attempt:
+2025-06-29 12:40:41 [error]: Error during login:
+2025-06-29 12:40:56 [error]: Connection error:
+2025-06-29 12:41:26 [info]: Logger initialized successfully
+2025-06-29 12:41:27 [info]: Server running on port 3000
+2025-06-29 12:41:36 [info]: Received POST request to /api/login
+2025-06-29 12:41:36 [info]: Login attempt:
+2025-06-29 12:41:46 [error]: Error during login:
+2025-06-29 12:41:57 [error]: Connection error:
+2025-06-29 12:42:15 [info]: Logger initialized successfully
+2025-06-29 12:42:15 [info]: Server running on port 3000
+2025-06-29 12:42:15 [info]: Connected to MongoDB
+2025-06-29 12:42:30 [info]: Received POST request to /api/login
+2025-06-29 12:42:30 [info]: Login attempt:
+2025-06-29 12:42:30 [info]: Received GET request to /api/products
+2025-06-29 12:42:30 [info]: Received GET request to /api/lots
+2025-06-29 12:42:30 [info]: Received GET request to /api/warehouses
+2025-06-29 12:42:31 [info]: Received GET request to /api/lots
+2025-06-29 12:42:31 [info]: Received GET request to /api/warehouses
+2025-06-29 12:42:31 [info]: Received GET request to /api/products
+2025-06-29 12:42:32 [info]: Received GET request to /api/lots
+2025-06-29 12:42:32 [info]: Received GET request to /api/products
+2025-06-29 12:42:32 [info]: Received GET request to /api/warehouses
+2025-06-29 12:42:32 [info]: Received GET request to /api/lots
+2025-06-29 12:42:32 [info]: Received GET request to /api/warehouses
+2025-06-29 12:42:32 [info]: Received GET request to /api/products
+2025-06-29 12:42:53 [info]: Received GET request to /api/products
+2025-06-29 12:42:53 [info]: Received GET request to /api/categories
+2025-06-29 12:42:53 [info]: Received GET request to /api/warehouses
+2025-06-29 12:42:53 [info]: Received GET request to /api/suppliers
+2025-06-29 12:42:53 [info]: Received GET request to /api/warehouses
+2025-06-29 12:42:53 [info]: Received GET request to /api/categories
+2025-06-29 12:42:53 [info]: Received GET request to /api/products
+2025-06-29 12:42:53 [info]: Received GET request to /api/suppliers
+2025-06-29 12:43:25 [info]: Received POST request to /api/receive
+2025-06-29 12:43:25 [info]: Starting /api/receive request
+2025-06-29 12:43:25 [info]: Attempting to save UserTransaction
+2025-06-29 12:43:25 [error]: Transaction failed
+2025-06-29 12:44:44 [info]: Logger initialized successfully
+2025-06-29 12:44:44 [info]: Server running on port 3000
+2025-06-29 12:45:06 [info]: Received POST request to /api/login
+2025-06-29 12:45:06 [info]: Login attempt:
+2025-06-29 12:45:14 [error]: Connection error:
+2025-06-29 12:46:40 [info]: Logger initialized successfully
+2025-06-29 12:46:40 [info]: Server running on port 3000
+2025-06-29 12:46:40 [info]: Connected to MongoDB
+2025-06-29 12:46:47 [info]: Received POST request to /api/login
+2025-06-29 12:46:47 [info]: Login attempt:
+2025-06-29 12:46:47 [info]: Received GET request to /api/products
+2025-06-29 12:46:47 [info]: Received GET request to /api/lots
+2025-06-29 12:46:47 [info]: Received GET request to /api/warehouses
+2025-06-29 12:46:47 [info]: Received GET request to /api/warehouses
+2025-06-29 12:46:47 [info]: Received GET request to /api/lots
+2025-06-29 12:46:47 [info]: Received GET request to /api/products
+2025-06-29 12:46:52 [info]: Received GET request to /api/products
+2025-06-29 12:46:52 [info]: Received GET request to /api/warehouses
+2025-06-29 12:46:52 [info]: Received GET request to /api/lots
+2025-06-29 12:46:52 [info]: Received GET request to /api/warehouses
+2025-06-29 12:46:52 [info]: Received GET request to /api/products
+2025-06-29 12:46:52 [info]: Received GET request to /api/lots
+2025-06-29 12:47:30 [info]: Received GET request to /api/products
+2025-06-29 12:47:30 [info]: Received GET request to /api/categories
+2025-06-29 12:47:30 [info]: Received GET request to /api/warehouses
+2025-06-29 12:47:30 [info]: Received GET request to /api/suppliers
+2025-06-29 12:47:30 [info]: Received GET request to /api/warehouses
+2025-06-29 12:47:30 [info]: Received GET request to /api/categories
+2025-06-29 12:47:30 [info]: Received GET request to /api/suppliers
+2025-06-29 12:47:30 [info]: Received GET request to /api/products
+2025-06-29 12:47:56 [info]: Received POST request to /api/receive
+2025-06-29 12:47:56 [info]: Starting /api/receive request
+2025-06-29 12:47:56 [info]: Attempting to save UserTransaction
+2025-06-29 12:47:56 [info]: UserTransaction saved successfully
+2025-06-29 12:47:56 [info]: Processing lot
+2025-06-29 12:47:56 [info]: Successfully processed lot
+2025-06-29 12:47:56 [info]: Transaction committed successfully
+2025-06-29 12:57:34 [info]: Received GET request to /api/products
+2025-06-29 12:57:35 [info]: Received GET request to /api/categories
+2025-06-29 12:57:35 [info]: Received GET request to /api/warehouses
+2025-06-29 12:57:35 [info]: Received GET request to /api/suppliers
+2025-06-29 12:57:35 [info]: Received GET request to /api/categories
+2025-06-29 12:57:35 [info]: Received GET request to /api/warehouses
+2025-06-29 12:57:35 [info]: Received GET request to /api/suppliers
+2025-06-29 12:57:35 [info]: Received GET request to /api/products
+2025-06-29 12:59:08 [info]: Received GET request to /api/products
+2025-06-29 12:59:08 [info]: Received GET request to /api/categories
+2025-06-29 12:59:08 [info]: Received GET request to /api/warehouses
+2025-06-29 12:59:08 [info]: Received GET request to /api/suppliers
+2025-06-29 12:59:08 [info]: Received GET request to /api/categories
+2025-06-29 12:59:08 [info]: Received GET request to /api/warehouses
+2025-06-29 12:59:08 [info]: Received GET request to /api/suppliers
+2025-06-29 12:59:08 [info]: Received GET request to /api/products
+2025-06-29 12:59:09 [info]: Received GET request to /api/products
+2025-06-29 12:59:09 [info]: Received GET request to /api/warehouses
+2025-06-29 12:59:09 [info]: Received GET request to /api/lots
+2025-06-29 12:59:09 [info]: Received GET request to /api/warehouses
+2025-06-29 12:59:09 [info]: Received GET request to /api/lots
+2025-06-29 12:59:09 [info]: Received GET request to /api/products
+2025-06-29 12:59:11 [info]: Received GET request to /api/products
+2025-06-29 12:59:11 [info]: Received GET request to /api/categories
+2025-06-29 12:59:11 [info]: Received GET request to /api/warehouses
+2025-06-29 12:59:11 [info]: Received GET request to /api/suppliers
+2025-06-29 12:59:11 [info]: Received GET request to /api/categories
+2025-06-29 12:59:11 [info]: Received GET request to /api/warehouses
+2025-06-29 12:59:11 [info]: Received GET request to /api/suppliers
+2025-06-29 12:59:11 [info]: Received GET request to /api/products
+2025-06-29 12:59:48 [info]: Received POST request to /api/receive
+2025-06-29 12:59:48 [info]: Starting /api/receive request
+2025-06-29 12:59:48 [info]: Attempting to save UserTransaction
+2025-06-29 12:59:48 [info]: UserTransaction saved successfully
+2025-06-29 12:59:48 [info]: Processing lot
+2025-06-29 12:59:48 [info]: Successfully processed lot
+2025-06-29 12:59:48 [info]: Transaction committed successfully
+2025-06-29 13:41:49 [info]: Received GET request to /api/lots
+2025-06-29 13:41:49 [info]: Received GET request to /api/products
+2025-06-29 13:41:49 [info]: Received GET request to /api/warehouses
+2025-06-29 13:41:50 [info]: Received GET request to /api/warehouses
+2025-06-29 13:41:50 [info]: Received GET request to /api/lots
+2025-06-29 13:41:50 [info]: Received GET request to /api/products
+2025-06-29 13:41:52 [info]: Received POST request to /api/login
+2025-06-29 13:41:52 [info]: Login attempt:
+2025-06-29 13:41:52 [info]: Received GET request to /api/products
+2025-06-29 13:41:52 [info]: Received GET request to /api/lots
+2025-06-29 13:41:52 [info]: Received GET request to /api/warehouses
+2025-06-29 13:41:52 [info]: Received GET request to /api/warehouses
+2025-06-29 13:41:52 [info]: Received GET request to /api/products
+2025-06-29 13:41:52 [info]: Received GET request to /api/lots
+2025-06-29 13:41:55 [info]: Received GET request to /api/products
+2025-06-29 13:41:55 [info]: Received GET request to /api/lots
+2025-06-29 13:41:55 [info]: Received GET request to /api/warehouses
+2025-06-29 13:41:55 [info]: Received GET request to /api/warehouses
+2025-06-29 13:41:55 [info]: Received GET request to /api/lots
+2025-06-29 13:41:55 [info]: Received GET request to /api/products

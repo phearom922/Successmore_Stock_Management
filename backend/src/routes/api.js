@@ -15,6 +15,8 @@ const Supplier = require('../models/Suppliers');
 const StockTransaction = require('../models/StockTransactions');
 const TransactionCounter = require('../models/TransactionCounter');
 const logger = require('../config/logger');
+const UserTransaction = require('../models/UserTransaction');
+
 
 
 // Validation Schemas
@@ -30,6 +32,9 @@ const receiveSchema = z.object({
       qtyPerBox: z.number().positive(),
       warehouse: z.string().min(1),
       supplierId: z.string().min(1),
+    }).refine((data) => data.quantity === data.boxCount * data.qtyPerBox, {
+      message: 'Quantity must equal Box Count * Quantity per Box',
+      path: ['quantity'],
     })
   ),
 });
@@ -69,7 +74,7 @@ const issueSchema = z.object({
 // Login Endpoint
 router.post('/login', async (req, res) => {
   try {
-    console.log('Login attempt:', req.body.username);
+    logger.info('Login attempt:', req.body.username); // ใช้ logger แทน console.log
     const { username, password } = req.body;
     const user = await User.findOne({ username }).populate('assignedWarehouse');
     if (!user) {
@@ -79,14 +84,14 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     const token = jwt.sign({
-      id: user._id,
+      id: user._id, // ตรวจสอบว่า _id ถูกส่ง
       role: user.role,
       username: user.username,
       warehouse: user.assignedWarehouse ? user.assignedWarehouse.name : 'All'
     }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (error) {
-    console.error('Error during login:', error);
+    logger.error('Error during login:', { error: error.message, stack: error.stack }); // ใช้ logger
     res.status(500).json({ message: 'Error during login', error: error.message });
   }
 });
@@ -1002,214 +1007,102 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
 });
 
 
+
+
+
+
+
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
+  const session = await Lot.startSession();
   try {
-    console.log('Receiving stock:', req.body, 'user:', req.user);
-    const data = receiveSchema.parse(req.body);
-    const { lots } = data;
+    logger.info('Starting /api/receive request', { user: req.user, body: req.body });
 
-    if (!lots.length) {
-      return res.status(400).json({ message: 'No lots provided' });
+    if (!req.user || !req.user._id) {
+      throw new Error('User authentication data missing');
     }
-
-    const session = await mongoose.startSession();
-
-    session.startTransaction();
-    try {
-      const createdLots = [];
-      const transactions = [];
-
-      for (const lot of lots) {
-        const { productId, lotCode, productionDate, expDate, quantity, boxCount, qtyPerBox, warehouse, supplierId } = lot;
-
-        // Validate product
-        const product = await Product.findById(productId).session(session);
-        if (!product) {
-          throw new Error(`Invalid product ID: ${productId}`);
-        }
-
-        // Validate warehouse
-        const warehouseDoc = await Warehouse.findOne({ name: warehouse }).session(session);
-        if (!warehouseDoc) {
-          throw new Error(`Invalid warehouse: ${warehouse}`);
-        }
-        if (req.user.role !== 'admin' && warehouse !== req.user.warehouse) {
-          throw new Error('Unauthorized to receive stock to this warehouse');
-        }
-
-        // Validate supplier
-        const supplier = await Supplier.findById(supplierId).session(session);
-        if (!supplier) {
-          throw new Error(`Invalid supplier ID: ${supplierId}`);
-        }
-
-        // Validate lotCode
-        const existingLot = await Lot.findOne({ lotCode }).session(session);
-        if (existingLot) {
-          throw new Error(`Lot code already exists: ${lotCode}`);
-        }
-
-        // Validate dates
-        if (new Date(expDate) <= new Date(productionDate)) {
-          throw new Error(`Expiration date must be after production date for lot: ${lotCode}`);
-        }
-
-        // Generate transaction number
-        const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        const counterDoc = await TransactionCounter.findOneAndUpdate(
-          { warehouseCode: warehouseDoc.warehouseCode },
-          { $inc: { counter: 1 } },
-          { upsert: true, new: true, session }
-        );
-        const transactionNumber = `${warehouseDoc.warehouseCode}-${date}-${counterDoc.counter.toString().padStart(3, '0')}`;
-
-        // Create lot
-        const newLot = await Lot.create([{
-          lotCode,
-          productId,
-          productionDate: new Date(productionDate),
-          expDate: new Date(expDate),
-          qtyOnHand: quantity,
-          boxCount,
-          qtyPerBox,
-          warehouse,
-          status: 'active'
-        }], { session });
-        createdLots.push(newLot[0]);
-
-        // Create transaction
-        const transaction = await StockTransaction.create([{
-          transactionNumber,
-          userId: req.user.id,
-          supplierId,
-          lotId: newLot[0]._id,
-          productId,
-          quantity,
-          boxCount,
-          action: 'receive'
-        }], { session });
-        transactions.push(transaction[0]);
-      }
-
-      await session.commitTransaction();
-      res.json({ message: 'Stock received successfully', lots: createdLots, transactions });
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
-
-    for (const lot of lots) {
-      if (lot.quantity !== lot.boxCount * lot.qtyPerBox) {
-        throw new Error('Quantity must equal Box Count * Quantity per Box');
-      }
-    }
-
-  } catch (error) {
-    console.error('Error receiving stock:', error);
-    res.status(error instanceof z.ZodError ? 400 : 500).json({
-      message: error instanceof z.ZodError ? 'Invalid input' : error.message || 'Error receiving stock',
-      error: error.message
-    });
-  }
-});
-
-
-router.post('/receive', authMiddleware, async (req, res) => {
-  try {
-    logger.info('Received request to /api/receive', { user: req.user, body: req.body });
-
-    // Validate request body
-    const receiveSchema = z.object({
-      lots: z.array(
-        z.object({
-          productId: z.string().min(1),
-          lotCode: z.string().min(1),
-          productionDate: z.string().datetime(),
-          expDate: z.string().datetime(),
-          quantity: z.number().positive(),
-          boxCount: z.number().positive(),
-          qtyPerBox: z.number().positive(),
-          warehouse: z.string().min(1),
-          supplierId: z.string().min(1),
-        }).refine((data) => data.quantity === data.boxCount * data.qtyPerBox, {
-          message: 'Quantity must equal Box Count * Quantity per Box',
-          path: ['quantity'],
-        })
-      ),
-    });
 
     const { lots } = receiveSchema.parse(req.body);
 
-    const session = await Lot.startSession();
     session.startTransaction();
 
-    try {
-      for (const lot of lots) {
-        logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
+    // บันทึก UserTransaction
+    logger.info('Attempting to save UserTransaction');
+    const userTransaction = new UserTransaction({
+      userId: req.user._id,
+      action: 'receive_stock',
+      description: `User ${req.user.username} received stock for ${lots.length} lots`,
+      ipAddress: req.ip,
+      details: { lotCount: lots.length }
+    });
+    await userTransaction.save({ session });
+    logger.info('UserTransaction saved successfully', { userTransactionId: userTransaction._id });
 
-        const existingLot = await Lot.findOne({ lotCode: lot.lotCode, warehouse: lot.warehouse }).session(session);
-        if (existingLot) {
-          throw new Error(`Lot ${lot.lotCode} already exists in ${lot.warehouse}`);
-        }
+    for (const lot of lots) {
+      logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
 
-        const transactionCounter = await TransactionCounter.findOneAndUpdate(
-          { warehouse: lot.warehouse },
-          { $inc: { sequence: 1 } },
-          { new: true, upsert: true, session }
-        );
-
-        const transactionNumber = `${lot.warehouse}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
-        const newLot = new Lot({
-          ...lot,
-          transactionNumber,
-        });
-        await newLot.save({ session });
-
-        const transaction = new StockTransaction({
-          transactionNumber,
-          productId: lot.productId,
-          lotCode: lot.lotCode,
-          quantity: lot.quantity,
-          boxCount: lot.boxCount,
-          qtyPerBox: lot.qtyPerBox,
-          productionDate: lot.productionDate,
-          expDate: lot.expDate,
-          warehouse: lot.warehouse,
-          supplierId: lot.supplierId,
-          type: 'receive',
-          userId: req.user._id,
-        });
-        await transaction.save({ session });
-
-        logger.info('Successfully processed lot', { lotCode: lot.lotCode, transactionNumber });
+      const existingLot = await Lot.findOne({ lotCode: lot.lotCode, warehouse: lot.warehouse }).session(session);
+      if (existingLot) {
+        throw new Error(`Lot ${lot.lotCode} already exists in ${lot.warehouse}`);
       }
 
-      await session.commitTransaction();
-      logger.info('Transaction committed successfully');
-      res.status(201).json({ message: 'Stock received successfully' });
-    } catch (error) {
-      await session.abortTransaction();
-      logger.error('Transaction failed', { error: error.message });
-      throw error;
-    } finally {
-      session.endSession();
+      const warehouseDoc = await Warehouse.findOne({ name: lot.warehouse }).session(session);
+      if (!warehouseDoc) {
+        throw new Error(`Warehouse ${lot.warehouse} not found`);
+      }
+      const transactionCounter = await TransactionCounter.findOneAndUpdate(
+        { warehouseCode: warehouseDoc.warehouseCode },
+        { $inc: { sequence: 1 } },
+        { new: true, upsert: true, session }
+      );
+
+      const transactionNumber = `${warehouseDoc.warehouseCode}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
+      const newLot = new Lot({
+        productId: lot.productId,
+        lotCode: lot.lotCode,
+        productionDate: new Date(lot.productionDate),
+        expDate: new Date(lot.expDate),
+        quantity: lot.quantity,
+        boxCount: lot.boxCount,
+        qtyPerBox: lot.qtyPerBox,
+        warehouse: lot.warehouse,
+        supplierId: lot.supplierId,
+        transactionNumber,
+        status: 'active'
+      });
+      await newLot.save({ session });
+
+      const transaction = new StockTransaction({
+        transactionNumber,
+        userId: req.user._id,
+        supplierId: lot.supplierId,
+        lotId: newLot._id,
+        productId: lot.productId,
+        quantity: lot.quantity,
+        boxCount: lot.boxCount,
+        qtyPerBox: lot.qtyPerBox,
+        productionDate: lot.productionDate,
+        expDate: lot.expDate,
+        warehouse: lot.warehouse,
+        type: 'receive', // ใช้ type ตาม schema ใหม่
+        auditTrail: userTransaction._id
+      });
+      await transaction.save({ session });
+
+      logger.info('Successfully processed lot', { lotCode: lot.lotCode, transactionNumber });
     }
+
+    await session.commitTransaction();
+    logger.info('Transaction committed successfully');
+    res.status(201).json({ message: 'Stock received successfully' });
   } catch (error) {
-    logger.error('Error in /api/receive', { error: error.message, stack: error.stack });
+    await session.abortTransaction();
+    logger.error('Transaction failed', { error: error.message, stack: error.stack });
     res.status(400).json({ message: error.message });
+  } finally {
+    session.endSession();
   }
 });
-
-
-
-
-
-
-
-
 
 
 module.exports = router;
