@@ -57,10 +57,10 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
         <div className="space-y-1">
           <Link
             to="/"
-            className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+            className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
           >
-            <FiHome className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-            {isOpen && <span>Dashboard</span>}
+            <FiHome className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+            {isOpen && <span className='text-sm'>Dashboard</span>}
           </Link>
 
 
@@ -69,18 +69,18 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
 
           <Link
             to="/suppliers"
-            className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/suppliers') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+            className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/suppliers') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
           >
-            <FaBuilding className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-            {isOpen && <span>Suppliers</span>}
+            <FaBuilding className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+            {isOpen && <span className='text-sm'>Suppliers</span>}
           </Link>
 
           <Link
             to="/issue"
-            className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/issue') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+            className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/issue') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
           >
-            <FiUpload className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-            {isOpen && <span>Issue</span>}
+            <FiUpload className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+            {isOpen && <span className='text-sm'>Issue</span>}
           </Link>
 
 
@@ -93,20 +93,20 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
           {userRole === 'admin' && (
             <Link
               to="/create-stock"
-              className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/create-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+              className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/create-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
             >
-              <FiPackage className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-              {isOpen && <span>Create Stock</span>}
+              <FiPackage className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+              {isOpen && <span className='text-sm'>Create Stock</span>}
             </Link>
           )}
 
           {(userRole === 'admin' || userRole === 'user') && (
             <Link
               to="/manage-stock-status"
-              className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/manage-stock-status') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+              className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/manage-stock-status') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
             >
-              <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-              {isOpen && <span>Manage Status</span>}
+              <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+              {isOpen && <span className='text-sm'>Manage Status</span>}
             </Link>
           )}
 
@@ -115,10 +115,10 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <div className="mt-1">
                 <Link
                   to="/warehouses"
-                  className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/warehouses') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/warehouses') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
                 >
-                  <FiTruck className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-                  {isOpen && <span>Warehouses</span>}
+                  <FiTruck className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                  {isOpen && <span className='text-sm'>Warehouses</span>}
                 </Link>
               </div>
             </div>
@@ -139,10 +139,17 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <>
                 <Link
                   to="/receive-stock"
-                  className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/receive-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/receive-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
                 >
-                  <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-                  {isOpen && <span>Receive Stock</span>}
+                  <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                  {isOpen && <span className='text-sm'>Receive Stock</span>}
+                </Link>
+                <Link
+                  to="/receive-history"
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/receive-history') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                >
+                  <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
+                  {isOpen && <span className='text-sm'>Receive History</span>}
                 </Link>
               </>
             )}
@@ -163,23 +170,25 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <>
                 <Link
                   to="/categories"
-                  className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/categories') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/categories') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
                 >
-                  <FiLayers className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-                  {isOpen && <span>Category</span>}
+                  <FiLayers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                  {isOpen && <span className='text-sm'>Category</span>}
                 </Link>
 
                 <Link
                   to="/products"
-                  className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/products') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/products') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
                 >
-                  <FiDatabase className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-                  {isOpen && <span>Products</span>}
+                  <FiDatabase className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                  {isOpen && <span className='text-sm'>Products</span>}
                 </Link>
               </>
             )}
           </div>
+
         </div>
+
 
         {userRole === 'admin' && (
           <div className="mt-6">
@@ -194,10 +203,10 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             <div className="mt-1 space-y-1">
               <Link
                 to="/users"
-                className={`flex items-center ${isOpen ? 'px-4 py-3 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/users') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-lg transition-colors ${isActive('/users') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
               >
-                <FiUsers className={`${isOpen ? 'mr-3' : ''} text-lg`} />
-                {isOpen && <span>Users Management</span>}
+                <FiUsers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Users Management</span>}
               </Link>
             </div>
           </div>

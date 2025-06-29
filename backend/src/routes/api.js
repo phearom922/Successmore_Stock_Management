@@ -19,6 +19,12 @@ const UserTransaction = require('../models/UserTransaction');
 const Notification = require('../models/Notification');
 
 
+
+
+
+
+
+
 // Validation Schemas
 const receiveSchema = z.object({
   lots: z.array(
@@ -1140,5 +1146,52 @@ router.put('/notifications/:id', authMiddleware, async (req, res) => {
 });
 
 
+
+//receive history
+router.get('/receive-history', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Fetching receive history', { user: req.user, query: req.query });
+
+    const { startDate, endDate, warehouse, page = 1, limit = 25 } = req.query;
+    const skip = (page - 1) * limit;
+
+    // เงื่อนไขการค้นหา
+    const query = {
+      type: 'receive', // กรองเฉพาะการรับสินค้า
+      timestamp: {
+        $gte: startDate ? new Date(startDate) : new Date(0), // เริ่มต้น
+        $lte: endDate ? new Date(endDate) : new Date() // สิ้นสุด
+      }
+    };
+
+    // กรองตาม Warehouse
+    if (req.user.role !== 'admin' && req.user.warehouse) {
+      query.warehouse = req.user.warehouse; // User ดูเฉพาะ Warehouse ของตัวเอง
+    } else if (warehouse) {
+      query.warehouse = warehouse; // Admin สามารถเลือก Warehouse ได้
+    }
+
+    // ดึงข้อมูลพร้อม populate
+    const transactions = await StockTransaction.find(query)
+      .populate('userId', 'username lastName')
+      .populate('supplierId', 'name')
+      .populate('productId', 'name')
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ timestamp: -1 }); // เรียงจากใหม่ไปเก่า
+
+    const total = await StockTransaction.countDocuments(query);
+
+    res.json({
+      data: transactions,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit)
+    });
+  } catch (error) {
+    logger.error('Error fetching receive history', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error fetching receive history', error: error.message });
+  }
+});
 
 module.exports = router;

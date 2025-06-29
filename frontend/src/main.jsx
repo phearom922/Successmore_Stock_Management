@@ -12,6 +12,8 @@ import Categories from './pages/Categories';
 import Products from './pages/Products';
 import Warehouses from './pages/Warehouses';
 import Users from './pages/Users';
+import ReceiveHistory from './pages/ReceiveHistory';
+
 
 const ProtectedRoute = ({ children, requiredRoles = [] }) => {
   const token = localStorage.getItem('token');
@@ -61,6 +63,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/warehouses" element={<ProtectedRoute requiredRoles={['admin']}><Warehouses /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute requiredRoles={['admin']}><Users /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          <Route path="/receive-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ReceiveHistory /></ProtectedRoute>} /> {/* เพิ่มบรรทัดนี้ */}
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />
