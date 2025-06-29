@@ -16,7 +16,7 @@ const StockTransaction = require('../models/StockTransactions');
 const TransactionCounter = require('../models/TransactionCounter');
 const logger = require('../config/logger');
 const UserTransaction = require('../models/UserTransaction');
-
+const Notification = require('../models/Notification');
 
 
 // Validation Schemas
@@ -1006,12 +1006,6 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
   }
 });
 
-
-
-
-
-
-
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
   const session = await Lot.startSession();
@@ -1038,6 +1032,7 @@ router.post('/receive', authMiddleware, async (req, res) => {
     await userTransaction.save({ session });
     logger.info('UserTransaction saved successfully', { userTransactionId: userTransaction._id });
 
+    let lastTransaction; // ตัวแปรสำหรับเก็บ transaction ล่าสุด
     for (const lot of lots) {
       logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
 
@@ -1084,13 +1079,23 @@ router.post('/receive', authMiddleware, async (req, res) => {
         productionDate: lot.productionDate,
         expDate: lot.expDate,
         warehouse: lot.warehouse,
-        type: 'receive', // ใช้ type ตาม schema ใหม่
+        type: 'receive',
         auditTrail: userTransaction._id
       });
       await transaction.save({ session });
+      lastTransaction = transaction; // เก็บ transaction ล่าสุด
 
       logger.info('Successfully processed lot', { lotCode: lot.lotCode, transactionNumber });
     }
+
+    // สร้างการแจ้งเตือนโดยใช้ transaction ล่าสุด
+    const notification = new Notification({
+      userId: req.user._id,
+      message: `Successfully received ${lots.length} lots of stock.`,
+      type: 'success',
+      relatedTransaction: lastTransaction._id // ใช้ lastTransaction
+    });
+    await notification.save({ session });
 
     await session.commitTransaction();
     logger.info('Transaction committed successfully');
@@ -1103,6 +1108,37 @@ router.post('/receive', authMiddleware, async (req, res) => {
     session.endSession();
   }
 });
+
+
+
+//Notifications
+router.get('/notifications', authMiddleware, async (req, res) => {
+  try {
+    const notifications = await Notification.find({ userId: req.user._id }).populate('relatedTransaction', 'transactionNumber');
+    res.json(notifications);
+  } catch (error) {
+    logger.error('Error fetching notifications', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error fetching notifications' });
+  }
+});
+
+router.put('/notifications/:id', authMiddleware, async (req, res) => {
+  try {
+    const notification = await Notification.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      { read: true },
+      { new: true }
+    );
+    if (!notification) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+    res.json(notification);
+  } catch (error) {
+    logger.error('Error updating notification', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error updating notification' });
+  }
+});
+
 
 
 module.exports = router;

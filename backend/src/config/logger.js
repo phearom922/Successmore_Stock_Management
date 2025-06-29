@@ -1,9 +1,15 @@
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, printf, colorize } = format;
+const DailyRotateFile = require('winston-daily-rotate-file');
+const path = require('path');
+
+require('dotenv').config();
 
 const logFormat = printf(({ level, message, timestamp }) => {
   return `${timestamp} [${level}]: ${message}`;
 });
+
+const logDirectory = process.env.LOG_DIR || path.join(__dirname, '../../logs');
 
 const logger = createLogger({
   level: 'info',
@@ -12,8 +18,19 @@ const logger = createLogger({
     logFormat
   ),
   transports: [
-    new transports.File({ filename: 'E:/Personal Documents/Stock-Management/backend/logs/error.log', level: 'error' }),
-    new transports.File({ filename: 'E:/Personal Documents/Stock-Management/backend/logs/combined.log' }),
+    new DailyRotateFile({
+      filename: `${logDirectory}/error-%DATE%.log`,
+      level: 'error',
+      datePattern: 'YYYY-MM-DD',
+      maxFiles: '30d',
+      zippedArchive: true
+    }),
+    new DailyRotateFile({
+      filename: `${logDirectory}/combined-%DATE%.log`,
+      datePattern: 'YYYY-MM-DD',
+      maxFiles: '30d',
+      zippedArchive: true
+    }),
     new transports.Console({
       format: combine(
         colorize(),
