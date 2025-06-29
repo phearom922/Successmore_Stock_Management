@@ -325,7 +325,7 @@ router.get('/lots', authMiddleware, async (req, res) => {
 // Issue stock
 router.post('/issue', authMiddleware, async (req, res) => {
   try {
-    console.log('Issuing stock:', req.body);
+    logger.info('Issuing stock:', req.body);
     const data = issueSchema.parse(req.body);
     const { productId, quantity, warehouse, issueType, lotId } = data;
 
@@ -337,7 +337,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
     let lots = [];
     if (issueType === 'expired') {
       lots = await Lot.find({ productId, qtyOnHand: { $gt: 0 }, expDate: { $lt: new Date() } }).sort({ expDate: 1 });
-    } else if (issueType == 'waste') {
+    } else if (issueType === 'waste') {
       if (!lotId) return res.status(400).json({ message: 'Lot ID is required for waste issue' });
       const lot = await Lot.findOne({ _id: lotId });
       if (!lot) return res.status(400).json({ message: 'Lot not found' });
@@ -357,7 +357,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
     if (req.user.role !== 'admin') {
       lots = lots.filter(lot => lot.warehouse === warehouse);
     }
-    console.log('Filtered lots:', lots);
+    logger.info('Filtered lots:', lots);
     const totalAvailable = lots.reduce((sum, lot) => sum + lot.qtyOnHand, 0);
 
     if (totalAvailable < quantity) {
@@ -390,7 +390,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
       totalIssued: quantity,
     });
   } catch (error) {
-    console.error('Error issuing stock:', error);
+    logger.error('Error issuing stock:', error);
     res.status(error instanceof z.ZodError ? 400 : 500).json({
       message: error instanceof z.ZodError ? 'Invalid input' : 'Error issuing stock',
       error: error.message
@@ -1032,7 +1032,7 @@ router.post('/receive', authMiddleware, async (req, res) => {
     await userTransaction.save({ session });
     logger.info('UserTransaction saved successfully', { userTransactionId: userTransaction._id });
 
-    let lastTransaction; // ตัวแปรสำหรับเก็บ transaction ล่าสุด
+    let lastTransaction;
     for (const lot of lots) {
       logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
 
@@ -1063,7 +1063,8 @@ router.post('/receive', authMiddleware, async (req, res) => {
         warehouse: lot.warehouse,
         supplierId: lot.supplierId,
         transactionNumber,
-        status: 'active'
+        status: 'active',
+        qtyOnHand: lot.quantity // ตั้งค่า qtyOnHand เท่ากับ quantity เริ่มต้น
       });
       await newLot.save({ session });
 
@@ -1083,17 +1084,16 @@ router.post('/receive', authMiddleware, async (req, res) => {
         auditTrail: userTransaction._id
       });
       await transaction.save({ session });
-      lastTransaction = transaction; // เก็บ transaction ล่าสุด
+      lastTransaction = transaction;
 
       logger.info('Successfully processed lot', { lotCode: lot.lotCode, transactionNumber });
     }
 
-    // สร้างการแจ้งเตือนโดยใช้ transaction ล่าสุด
     const notification = new Notification({
       userId: req.user._id,
       message: `Successfully received ${lots.length} lots of stock.`,
       type: 'success',
-      relatedTransaction: lastTransaction._id // ใช้ lastTransaction
+      relatedTransaction: lastTransaction._id
     });
     await notification.save({ session });
 
