@@ -162,7 +162,7 @@ const Suppliers = () => {
   if (!token || userRole !== 'admin') return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-screen mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Suppliers Management</h2>
       <div className="flex justify-between items-center mb-6">
         <div className="relative w-64">

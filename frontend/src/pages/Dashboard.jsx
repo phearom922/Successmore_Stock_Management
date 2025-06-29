@@ -58,7 +58,7 @@ const Dashboard = () => {
   }, [token, navigate]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-screen mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Dashboard</h2>
       {isLoading ? (
         <div className="flex justify-center">

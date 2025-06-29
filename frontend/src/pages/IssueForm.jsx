@@ -139,7 +139,7 @@ const IssueForm = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-screen mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Issue Stock</h2>
       {isLoading ? (
         <div className="flex justify-center">

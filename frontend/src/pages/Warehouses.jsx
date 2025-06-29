@@ -135,7 +135,7 @@ const Warehouses = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-screen mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div className="flex items-center mb-4 md:mb-0">
             <FaWarehouse className="text-indigo-600 text-3xl mr-3" />

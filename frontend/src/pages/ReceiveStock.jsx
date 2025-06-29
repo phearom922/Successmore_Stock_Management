@@ -235,7 +235,7 @@ const ReceiveStock = () => {
   if (!token) return null;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-50 rounded-xl">
+    <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold text-gray-800">Receive Stock</h2>
         <div className="flex space-x-3">

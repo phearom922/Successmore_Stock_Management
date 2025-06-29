@@ -75,7 +75,7 @@ const TopBar = ({ handleLogout, username, toggleSidebar }) => {
 
   return (
     <div className="bg-white shadow-sm border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="max-w-screen mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <button 
