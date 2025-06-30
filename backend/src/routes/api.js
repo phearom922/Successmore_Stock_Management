@@ -1011,6 +1011,7 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
   }
 });
 
+
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
   const session = await Lot.startSession();
@@ -1042,9 +1043,6 @@ router.post('/receive', authMiddleware, async (req, res) => {
       logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
 
       const existingLot = await Lot.findOne({ lotCode: lot.lotCode, warehouse: lot.warehouse }).session(session);
-      if (existingLot) {
-        throw new Error(`Lot ${lot.lotCode} already exists in ${lot.warehouse}`);
-      }
 
       const warehouseDoc = await Warehouse.findOne({ name: lot.warehouse }).session(session);
       if (!warehouseDoc) {
@@ -1057,41 +1055,78 @@ router.post('/receive', authMiddleware, async (req, res) => {
       );
 
       const transactionNumber = `${warehouseDoc.warehouseCode}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
-      const newLot = new Lot({
-        productId: lot.productId,
-        lotCode: lot.lotCode,
-        productionDate: new Date(lot.productionDate),
-        expDate: new Date(lot.expDate),
-        quantity: lot.quantity,
-        boxCount: lot.boxCount,
-        qtyPerBox: lot.qtyPerBox,
-        warehouse: lot.warehouse,
-        supplierId: lot.supplierId,
-        transactionNumber,
-        status: 'active',
-        qtyOnHand: lot.quantity // ตั้งค่า qtyOnHand เท่ากับ quantity เริ่มต้น
-      });
-      await newLot.save({ session });
 
-      const transaction = new StockTransaction({
-        transactionNumber,
-        userId: req.user._id,
-        supplierId: lot.supplierId,
-        lotId: newLot._id,
-        productId: lot.productId,
-        quantity: lot.quantity,
-        boxCount: lot.boxCount,
-        qtyPerBox: lot.qtyPerBox,
-        productionDate: lot.productionDate,
-        expDate: lot.expDate,
-        warehouse: lot.warehouse,
-        type: 'receive',
-        auditTrail: userTransaction._id
-      });
-      await transaction.save({ session });
-      lastTransaction = transaction;
+      if (existingLot) {
+        // อัปเดต Lot เดิมถ้ามีอยู่
+        existingLot.quantity = Number(existingLot.quantity) + Number(lot.quantity);
+        existingLot.boxCount = Number(existingLot.boxCount) + Number(lot.boxCount);
+        existingLot.qtyOnHand = Number(existingLot.qtyOnHand) + Number(lot.quantity); // อัปเดต qtyOnHand ด้วย
+        await existingLot.save({ session });
+        logger.info(`Updated existing lot ${lot.lotCode} with new quantity: ${existingLot.quantity}`);
 
-      logger.info('Successfully processed lot', { lotCode: lot.lotCode, transactionNumber });
+        // อัปเดต StockTransaction เดิม (ถ้ามี) หรือสร้างใหม่
+        const existingTransaction = await StockTransaction.findOne({ lotId: existingLot._id, type: 'receive' }).session(session);
+        if (existingTransaction) {
+          existingTransaction.quantity = existingLot.quantity;
+          existingTransaction.boxCount = existingLot.boxCount;
+          await existingTransaction.save({ session });
+        } else {
+          const transaction = new StockTransaction({
+            transactionNumber,
+            userId: req.user._id,
+            supplierId: lot.supplierId,
+            lotId: existingLot._id,
+            productId: lot.productId,
+            quantity: existingLot.quantity,
+            boxCount: existingLot.boxCount,
+            qtyPerBox: lot.qtyPerBox,
+            productionDate: lot.productionDate,
+            expDate: lot.expDate,
+            warehouse: lot.warehouse,
+            type: 'receive',
+            auditTrail: userTransaction._id
+          });
+          await transaction.save({ session });
+        }
+        lastTransaction = existingTransaction || transaction;
+      } else {
+        // สร้าง Lot ใหม่ถ้าไม่มี
+        const newLot = new Lot({
+          productId: lot.productId,
+          lotCode: lot.lotCode,
+          productionDate: new Date(lot.productionDate),
+          expDate: new Date(lot.expDate),
+          quantity: lot.quantity,
+          boxCount: lot.boxCount,
+          qtyPerBox: lot.qtyPerBox,
+          warehouse: lot.warehouse,
+          supplierId: lot.supplierId,
+          transactionNumber,
+          status: 'active',
+          qtyOnHand: lot.quantity
+        });
+        await newLot.save({ session });
+
+        const transaction = new StockTransaction({
+          transactionNumber,
+          userId: req.user._id,
+          supplierId: lot.supplierId,
+          lotId: newLot._id,
+          productId: lot.productId,
+          quantity: lot.quantity,
+          boxCount: lot.boxCount,
+          qtyPerBox: lot.qtyPerBox,
+          productionDate: lot.productionDate,
+          expDate: lot.expDate,
+          warehouse: lot.warehouse,
+          type: 'receive',
+          auditTrail: userTransaction._id
+        });
+        await transaction.save({ session });
+        lastTransaction = transaction;
+
+        logger.info('Successfully processed new lot', { lotCode: lot.lotCode, transactionNumber });
+      }
     }
 
     const notification = new Notification({

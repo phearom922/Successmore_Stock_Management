@@ -105,6 +105,9 @@ const ReceiveStock = () => {
     setCurrentLot(updatedLot);
   };
 
+
+
+
   const addLot = () => {
     if (!currentLot.productId || !currentLot.lotCode || !currentLot.boxCount || !currentLot.qtyPerBox || !currentLot.productionDate || !currentLot.expDate) {
       toast.error('Please fill all required fields before adding a lot');
@@ -120,15 +123,28 @@ const ReceiveStock = () => {
     }
 
     const computedQuantity = Number(currentLot.boxCount) * Number(currentLot.qtyPerBox);
-    setAddedLots([
-      ...addedLots,
-      {
-        ...currentLot,
-        quantity: computedQuantity,
-        warehouse: selectedWarehouse,
-        supplierId: selectedSupplier
-      }
-    ]);
+    const newLot = {
+      ...currentLot,
+      quantity: computedQuantity,
+      warehouse: selectedWarehouse,
+      supplierId: selectedSupplier
+    };
+
+    // ตรวจสอบว่ามี Lot Code ซ้ำใน addedLots
+    const existingIndex = addedLots.findIndex(lot => lot.lotCode === currentLot.lotCode);
+    if (existingIndex !== -1) {
+      // ถ้ามีซ้ำ ให้อัปเดตข้อมูลในตำแหน่งเดิม
+      setAddedLots(prevLots => {
+        const updatedLots = [...prevLots];
+        updatedLots[existingIndex] = newLot;
+        return updatedLots;
+      });
+    } else {
+      // ถ้าไม่มีซ้ำ ให้เพิ่มรายการใหม่
+      setAddedLots(prevLots => [...prevLots, newLot]);
+    }
+
+    // รีเซ็ต currentLot หลังจากเพิ่มหรืออัปเดต
     setCurrentLot({
       productId: '',
       lotCode: '',
@@ -142,6 +158,10 @@ const ReceiveStock = () => {
     });
   };
 
+
+
+
+
   const removeLot = index => {
     setAddedLots(addedLots.filter((_, i) => i !== index));
   };
@@ -151,6 +171,10 @@ const ReceiveStock = () => {
     setCurrentLot(lotToEdit);
     removeLot(index);
   };
+
+
+
+
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -193,7 +217,8 @@ const ReceiveStock = () => {
           productionDate: lot.productionDate.toISOString(),
           expDate: lot.expDate.toISOString(),
           warehouse: lot.warehouse,
-          supplierId: lot.supplierId
+          supplierId: lot.supplierId,
+          action: 'updateOrCreate' // เพิ่มคำสั่งให้ backend ตรวจสอบและอัปเดต
         }))
       };
 
