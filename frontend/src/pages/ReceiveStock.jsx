@@ -3,11 +3,13 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaCalendarAlt } from 'react-icons/fa';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import * as Select from '@radix-ui/react-select'; // นำเข้า Select component
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'; // ไอคอนจาก Radix
 
 const ReceiveStock = () => {
   const [selectedWarehouse, setSelectedWarehouse] = useState('');
@@ -277,38 +279,99 @@ const ReceiveStock = () => {
                 ))}
               </Tabs>
             </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
-                <select
+                <Select.Root
                   value={selectedWarehouse}
-                  onChange={e => {
-                    setSelectedWarehouse(e.target.value);
-                    setCurrentLot(prev => ({ ...prev, warehouse: e.target.value }));
+                  onValueChange={(value) => {
+                    setSelectedWarehouse(value);
+                    setCurrentLot(prev => ({ ...prev, warehouse: value }));
                   }}
-                  className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
-                  disabled={user.role !== 'admin'}
+                  disabled={user.role !== 'admin' || isLoading}
                 >
-                  {warehouses.map(w => (
-                    <option key={w._id} value={w.name}>{w.name} ({w.warehouseCode})</option>
-                  ))}
-                </select>
+                  <Select.Trigger
+                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <Select.Value placeholder="Select warehouse" />
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <ChevronDownIcon />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
+                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                      <ChevronUpIcon />
+                    </Select.ScrollUpButton>
+                    <Select.Viewport>
+                      <Select.Group>
+                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Warehouses</Select.Label>
+                        {warehouses.map(w => (
+                          <Select.Item
+                            key={w._id}
+                            value={w.name}
+                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
+                          >
+                            <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
+                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                              <CheckIcon />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        ))}
+                      </Select.Group>
+                    </Select.Viewport>
+                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                      <ChevronDownIcon />
+                    </Select.ScrollDownButton>
+                  </Select.Content>
+                </Select.Root>
               </div>
+
+
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
-                <select
+                <Select.Root
                   value={selectedSupplier}
-                  onChange={e => {
-                    setSelectedSupplier(e.target.value);
-                    setCurrentLot(prev => ({ ...prev, supplierId: e.target.value }));
+                  onValueChange={(value) => {
+                    setSelectedSupplier(value);
+                    setCurrentLot(prev => ({ ...prev, supplierId: value }));
                   }}
-                  className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
+                  disabled={isLoading}
                 >
-                  {suppliers.map(s => (
-                    <option key={s._id} value={s._id}>{s.name}</option>
-                  ))}
-                </select>
+                  <Select.Trigger
+                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    <Select.Value placeholder="Select supplier" />
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <ChevronDownIcon />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
+                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                      <ChevronUpIcon />
+                    </Select.ScrollUpButton>
+                    <Select.Viewport>
+                      <Select.Group>
+                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Suppliers</Select.Label>
+                        {suppliers.map(s => (
+                          <Select.Item
+                            key={s._id}
+                            value={s._id}
+                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
+                          >
+                            <Select.ItemText>{s.name}</Select.ItemText>
+                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                              <CheckIcon />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        ))}
+                      </Select.Group>
+                    </Select.Viewport>
+                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                      <ChevronDownIcon />
+                    </Select.ScrollDownButton>
+                  </Select.Content>
+                </Select.Root>
               </div>
             </div>
 
@@ -318,19 +381,47 @@ const ReceiveStock = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Product <span className="text-red-500">*</span></label>
-                  <select
-                    value={currentLot.productId}
-                    onChange={e => updateCurrentLot('productId', e.target.value)}
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg"
-                    disabled={isLoading}
-                  >
-                    <option value="">Select Product</option>
-                    {filteredProducts.map(product => (
-                      <option key={product._id} value={product._id}>
-                        {product.name} ({product.productCode})
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <Select.Root
+                      value={currentLot.productId}
+                      onValueChange={(value) => updateCurrentLot('productId', value)}
+                      disabled={isLoading}
+                    >
+                      <Select.Trigger
+                        className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                      >
+                        <Select.Value placeholder="Select product" />
+                        <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <ChevronDownIcon />
+                        </Select.Icon>
+                      </Select.Trigger>
+                      <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
+                        <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                          <ChevronUpIcon />
+                        </Select.ScrollUpButton>
+                        <Select.Viewport>
+                          <Select.Group>
+                            <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Products</Select.Label>
+                            {filteredProducts.map(product => (
+                              <Select.Item
+                                key={product._id}
+                                value={product._id}
+                                className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
+                              >
+                                <Select.ItemText>{product.name} ({product.productCode})</Select.ItemText>
+                                <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                                  <CheckIcon />
+                                </Select.ItemIndicator>
+                              </Select.Item>
+                            ))}
+                          </Select.Group>
+                        </Select.Viewport>
+                        <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                          <ChevronDownIcon />
+                        </Select.ScrollDownButton>
+                      </Select.Content>
+                    </Select.Root>
+                  </div>
                 </div>
 
                 <div>
@@ -385,28 +476,46 @@ const ReceiveStock = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Production Date <span className="text-red-500">*</span></label>
-                    <DatePicker
-                      selected={currentLot.productionDate}
-                      onChange={date => updateCurrentLot('productionDate', date)}
-                      className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      disabled={isLoading}
-                      dateFormat="yyyy-MM-dd"
-                      placeholderText="Select date"
-                      minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 5))}
-                      maxDate={new Date()}
-                    />
+                    <div className="relative">
+                      <DatePicker
+                        selected={currentLot.productionDate}
+                        onChange={date => updateCurrentLot('productionDate', date)}
+                        className="mt-1 block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        disabled={isLoading}
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText="Select production date"
+                        minDate={new Date(new Date().setFullYear(new Date().getFullYear() - 5))}
+                        maxDate={new Date()}
+                        showYearDropdown
+                        scrollableYearDropdown
+                        yearDropdownItemNumber={15}
+                        showMonthDropdown
+                        dropdownMode="select"
+                      />
+                      <FaCalendarAlt className="absolute left-3 top-3.5 text-gray-400" />
+                    </div>
                   </div>
+
+                  {/* Expiration Date Picker */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date <span className="text-red-500">*</span></label>
-                    <DatePicker
-                      selected={currentLot.expDate}
-                      onChange={date => updateCurrentLot('expDate', date)}
-                      className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      disabled={isLoading}
-                      dateFormat="yyyy-MM-dd"
-                      placeholderText="Select date"
-                      minDate={currentLot.productionDate || new Date()}
-                    />
+                    <div className="relative">
+                      <DatePicker
+                        selected={currentLot.expDate}
+                        onChange={date => updateCurrentLot('expDate', date)}
+                        className="mt-1 block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        disabled={isLoading}
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText="Select expiration date"
+                        minDate={currentLot.productionDate || new Date()}
+                        showYearDropdown
+                        scrollableYearDropdown
+                        yearDropdownItemNumber={15}
+                        showMonthDropdown
+                        dropdownMode="select"
+                      />
+                      <FaCalendarAlt className="absolute left-3 top-3.5 text-gray-400" />
+                    </div>
                   </div>
                 </div>
               </div>

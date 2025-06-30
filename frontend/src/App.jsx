@@ -17,6 +17,7 @@ import ReceiveStock from './pages/ReceiveStock';
 import ReceiveHistory from './pages/ReceiveHistory';
 
 
+
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();

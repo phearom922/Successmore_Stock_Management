@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { FaSearch, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { FaSearch, FaChevronLeft, FaChevronRight, FaCalendarAlt } from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
 
 const ReceiveHistory = () => {
@@ -9,9 +11,10 @@ const ReceiveHistory = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit] = useState(25);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [warehouse, setWarehouse] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('token') ? 
@@ -43,7 +46,14 @@ const ReceiveHistory = () => {
       const token = localStorage.getItem('token');
       const { data } = await axios.get('http://localhost:3000/api/receive-history', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { startDate, endDate, warehouse, page, limit }
+        params: { 
+          startDate: startDate ? format(startDate, 'yyyy-MM-dd') : '',
+          endDate: endDate ? format(endDate, 'yyyy-MM-dd') : '',
+          warehouse, 
+          searchQuery,
+          page, 
+          limit 
+        }
       });
       setTransactions(data.data);
       setTotal(data.total);
@@ -63,7 +73,12 @@ const ReceiveHistory = () => {
       const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:3000/api/receive-history/export', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { startDate, endDate, warehouse },
+        params: { 
+          startDate: startDate ? format(startDate, 'yyyy-MM-dd') : '',
+          endDate: endDate ? format(endDate, 'yyyy-MM-dd') : '',
+          warehouse,
+          searchQuery
+        },
         responseType: 'blob'
       });
       
@@ -80,8 +95,22 @@ const ReceiveHistory = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1); // Reset to first page when searching
+    fetchTransactions();
+  };
+
+  const clearFilters = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setWarehouse('');
+    setSearchQuery('');
+    setPage(1);
+  };
+
   return (
-    <div className=" max-w-screen mx-auto">
+    <div className="max-w-screen mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Receive History</h1>
@@ -102,64 +131,106 @@ const ReceiveHistory = () => {
 
       {/* Filter Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">Start Date</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">End Date</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              disabled={isLoading}
-            />
-          </div>
-          
-          {isAdmin ? (
+        <form onSubmit={handleSearch}>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">Warehouse</label>
-              <select
-                value={warehouse}
-                onChange={(e) => setWarehouse(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                disabled={isLoading}
-              >
-                <option value="">All Warehouses</option>
-                {warehouses.map((w) => (
-                  <option key={w._id} value={w.name}>{w.name}</option>
-                ))}
-              </select>
-            </div>
-          ) : (
-            <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700">Warehouse</label>
-              <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-200">
-                {warehouse || 'Not assigned'}
+              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+              <div className="relative">
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  maxDate={endDate || new Date()}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  placeholderText="Select start date"
+                  disabled={isLoading}
+                />
+                <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
               </div>
             </div>
-          )}
-          
-          <div className="flex items-end space-y-1">
-            <button
-              onClick={fetchTransactions}
-              className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              disabled={isLoading}
-            >
-              <FaSearch className="mr-2" />
-              Search
-            </button>
+            
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+              <div className="relative">
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={startDate}
+                  maxDate={new Date()}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  placeholderText="Select end date"
+                  disabled={isLoading}
+                />
+                <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
+              </div>
+            </div>
+            
+            {isAdmin ? (
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
+                <select
+                  value={warehouse}
+                  onChange={(e) => setWarehouse(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  disabled={isLoading}
+                >
+                  <option value="">All Warehouses</option>
+                  {warehouses.map((w) => (
+                    <option key={w._id} value={w.name}>{w.name}</option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
+                <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-200">
+                  {warehouse || 'Not assigned'}
+                </div>
+              </div>
+            )}
+            
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search transactions..."
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  disabled={isLoading}
+                />
+                <FaSearch className="absolute left-3 top-3 text-gray-400" />
+              </div>
+            </div>
+            
+            <div className="flex items-end space-x-2">
+              <button
+                type="submit"
+                className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                disabled={isLoading}
+              >
+                <FaSearch className="mr-2" />
+                Search
+              </button>
+              {(startDate || endDate || warehouse || searchQuery) && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="flex items-center justify-center px-3 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                  disabled={isLoading}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* Results Section */}
@@ -192,10 +263,10 @@ const ReceiveHistory = () => {
                         {trans.transactionNumber}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {format(new Date(trans.timestamp), 'MMM dd, yyyy HH:mm')}
+                        {format(new Date(trans.timestamp), 'dd-MM-yyyy HH:mm')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.userId?.username || 'N/A'} {trans.userId?.lastName || ''}
+                        {trans.userId?.username || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {trans.supplierId?.name || 'N/A'}
@@ -229,18 +300,14 @@ const ReceiveHistory = () => {
                   <tr>
                     <td colSpan="9" className="px-6 py-8 text-center">
                       <div className="text-gray-500">No transactions found</div>
-                      {startDate || endDate || warehouse ? (
+                      {(startDate || endDate || warehouse || searchQuery) && (
                         <button 
-                          onClick={() => {
-                            setStartDate('');
-                            setEndDate('');
-                            setWarehouse('');
-                          }}
+                          onClick={clearFilters}
                           className="mt-2 text-sm text-blue-600 hover:text-blue-800"
                         >
                           Clear filters
                         </button>
-                      ) : null}
+                      )}
                     </td>
                   </tr>
                 )}
