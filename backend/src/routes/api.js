@@ -24,7 +24,6 @@ const Notification = require('../models/Notification');
 
 
 
-
 // Validation Schemas
 const receiveSchema = z.object({
   lots: z.array(
@@ -1155,30 +1154,35 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
     const { startDate, endDate, warehouse, page = 1, limit = 25 } = req.query;
     const skip = (page - 1) * limit;
 
-    // เงื่อนไขการค้นหา
     const query = {
-      type: 'receive', // กรองเฉพาะการรับสินค้า
+      type: 'receive',
       timestamp: {
-        $gte: startDate ? new Date(startDate) : new Date(0), // เริ่มต้น
-        $lte: endDate ? new Date(endDate) : new Date() // สิ้นสุด
+        $gte: startDate ? new Date(startDate) : new Date(0),
+        $lte: endDate ? new Date(endDate) : new Date()
       }
     };
 
-    // กรองตาม Warehouse
     if (req.user.role !== 'admin' && req.user.warehouse) {
-      query.warehouse = req.user.warehouse; // User ดูเฉพาะ Warehouse ของตัวเอง
+      query.warehouse = req.user.warehouse;
     } else if (warehouse) {
-      query.warehouse = warehouse; // Admin สามารถเลือก Warehouse ได้
+      query.warehouse = warehouse;
     }
 
-    // ดึงข้อมูลพร้อม populate
     const transactions = await StockTransaction.find(query)
       .populate('userId', 'username lastName')
       .populate('supplierId', 'name')
       .populate('productId', 'name')
+      .populate('lotId', 'lotCode') // ตรวจสอบการ populate
       .skip(skip)
       .limit(Number(limit))
-      .sort({ timestamp: -1 }); // เรียงจากใหม่ไปเก่า
+      .sort({ timestamp: -1 });
+
+    // ดีบั๊กเพื่อตรวจสอบข้อมูล
+    transactions.forEach(trans => {
+      if (!trans.lotId || !trans.lotId.lotCode) {
+        logger.warn('Missing lotCode in transaction', { transactionId: trans._id, lotId: trans.lotId });
+      }
+    });
 
     const total = await StockTransaction.countDocuments(query);
 
@@ -1193,5 +1197,59 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching receive history', error: error.message });
   }
 });
+
+//receive history export
+router.get('/receive-history/export', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Exporting receive history', { user: req.user, query: req.query });
+
+    const { startDate, endDate, warehouse } = req.query;
+
+    const query = {
+      type: 'receive',
+      timestamp: {
+        $gte: startDate ? new Date(startDate) : new Date(0),
+        $lte: endDate ? new Date(endDate) : new Date()
+      }
+    };
+
+    if (req.user.role !== 'admin' && req.user.warehouse) {
+      query.warehouse = req.user.warehouse;
+    } else if (warehouse) {
+      query.warehouse = warehouse;
+    }
+
+    const transactions = await StockTransaction.find(query)
+      .populate('userId', 'username lastName')
+      .populate('supplierId', 'name')
+      .populate('productId', 'name')
+      .populate('lotId', 'lotCode'); // เพิ่ม populate lotCode
+
+    const worksheetData = transactions.map(trans => ({
+      'Transaction Number': trans.transactionNumber,
+      'Date': new Date(trans.timestamp).toISOString().split('T')[0], // ใช้ toISOString
+      'User': `${trans.userId.username} ${trans.userId.lastName || ''}`,
+      'Supplier': trans.supplierId.name,
+      'Product': trans.productId.name,
+      'LotCode': trans.lotId?.lotCode || 'N/A', // ดึง lotCode จาก lotId
+      'Quantity': trans.quantity,
+      'Warehouse': trans.warehouse,
+      'Status': trans.status
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(worksheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Receive History');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    res.setHeader('Content-Disposition', 'attachment; filename=receive-history.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(excelBuffer);
+  } catch (error) {
+    logger.error('Error exporting receive history', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error exporting receive history', error: error.message });
+  }
+});
+
 
 module.exports = router;

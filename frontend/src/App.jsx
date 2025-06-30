@@ -65,7 +65,7 @@ function App() {
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
         <main className="flex-1 p-6 overflow-auto">
-          <div className="max-w-svw mx-auto">
+          <div className="max-w-screen mx-auto">
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/users" element={<Users />} />

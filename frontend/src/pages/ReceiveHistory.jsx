@@ -14,7 +14,8 @@ const ReceiveHistory = () => {
   const [warehouse, setWarehouse] = useState('');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin] = useState(localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role === 'admin' : false);
+  const [isAdmin] = useState(localStorage.getItem('token') ? 
+    JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role === 'admin' : false);
 
   useEffect(() => {
     fetchWarehouses();
@@ -69,61 +70,69 @@ const ReceiveHistory = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `receive-history-${new Date().toISOString()}.xlsx`);
+      link.setAttribute('download', `receive-history-${new Date().toISOString().split('T')[0]}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (error) {
       console.error('Error exporting data:', error);
+      alert('Failed to export data. Please try again or check the server logs.');
     }
   };
 
   return (
-    <div className="p-6 max-w-screen mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <div className=" max-w-screen mx-auto">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Receive History</h2>
-          <p className="text-sm text-gray-500">View all product receiving transactions</p>
+          <h1 className="text-2xl font-bold text-gray-800">Receive History</h1>
+          <p className="text-sm text-gray-500 mt-1">Track and manage all product receiving transactions</p>
         </div>
         
-        <button
-          onClick={handleExport}
-          className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          <FiDownload className="mr-2" />
-          Export to Excel
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <button
+            onClick={handleExport}
+            className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            disabled={isLoading}
+          >
+            <FiDownload className="mr-2" />
+            Export to Excel
+          </button>
+        </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+      {/* Filter Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-gray-700">Start Date</label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              disabled={isLoading}
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+          <div className="space-y-1">
+            <label className="block text-sm font-medium text-gray-700">End Date</label>
             <input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              disabled={isLoading}
             />
           </div>
           
-          {isAdmin && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
+          {isAdmin ? (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">Warehouse</label>
               <select
                 value={warehouse}
                 onChange={(e) => setWarehouse(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                disabled={isLoading}
               >
                 <option value="">All Warehouses</option>
                 {warehouses.map((w) => (
@@ -131,46 +140,48 @@ const ReceiveHistory = () => {
                 ))}
               </select>
             </div>
-          )}
-          
-          {!isAdmin && warehouse && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
-              <div className="px-3 py-2 bg-gray-100 rounded-lg">{warehouse}</div>
+          ) : (
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">Warehouse</label>
+              <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-200">
+                {warehouse || 'Not assigned'}
+              </div>
             </div>
           )}
-        </div>
-        
-        <div className="mt-4">
-          <button
-            onClick={fetchTransactions}
-            className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full md:w-auto"
-          >
-            <FaSearch className="mr-2" />
-            Search
-          </button>
+          
+          <div className="flex items-end space-y-1">
+            <button
+              onClick={fetchTransactions}
+              className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              disabled={isLoading}
+            >
+              <FaSearch className="mr-2" />
+              Search
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Results Section */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction #</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot Code</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Transaction #</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Date/Time</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Supplier</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Lot Code</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Qty</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Warehouse</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -181,25 +192,25 @@ const ReceiveHistory = () => {
                         {trans.transactionNumber}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {format(new Date(trans.timestamp), 'yyyy-MM-dd HH:mm')}
+                        {format(new Date(trans.timestamp), 'MMM dd, yyyy HH:mm')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {`${trans.userId.username} ${trans.userId.lastName || ''}`}
+                        {trans.userId?.username || 'N/A'} {trans.userId?.lastName || ''}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.supplierId.name}
+                        {trans.supplierId?.name || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.productId.name}
+                        {trans.productId?.name || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.lotCode || 'N/A'}
+                        {trans.lotId?.lotCode || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {trans.quantity}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.warehouse}
+                        {trans.warehouse || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -209,7 +220,7 @@ const ReceiveHistory = () => {
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-red-100 text-red-800'
                         }`}>
-                          {trans.status}
+                          {trans.status || 'N/A'}
                         </span>
                       </td>
                     </tr>
@@ -218,6 +229,18 @@ const ReceiveHistory = () => {
                   <tr>
                     <td colSpan="9" className="px-6 py-8 text-center">
                       <div className="text-gray-500">No transactions found</div>
+                      {startDate || endDate || warehouse ? (
+                        <button 
+                          onClick={() => {
+                            setStartDate('');
+                            setEndDate('');
+                            setWarehouse('');
+                          }}
+                          className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+                        >
+                          Clear filters
+                        </button>
+                      ) : null}
                     </td>
                   </tr>
                 )}
@@ -225,34 +248,29 @@ const ReceiveHistory = () => {
             </table>
           </div>
           
+          {/* Pagination */}
           {transactions.length > 0 && (
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+            <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-500">
-                Showing {(page - 1) * limit + 1} to {Math.min(page * limit, total)} of {total} results
+                Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to <span className="font-medium">{Math.min(page * limit, total)}</span> of <span className="font-medium">{total}</span> results
               </div>
-              <div className="flex space-x-2">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => handlePageChange(page - 1)}
                   disabled={page === 1}
-                  className={`px-3 py-1 rounded-md ${
-                    page === 1 
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`p-2 rounded-md ${page === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+                  aria-label="Previous page"
                 >
                   <FaChevronLeft />
                 </button>
-                <span className="px-3 py-1 text-sm text-gray-700">
+                <span className="px-3 py-1 bg-gray-100 rounded-md text-sm text-gray-700">
                   Page {page} of {Math.ceil(total / limit)}
                 </span>
                 <button
                   onClick={() => handlePageChange(page + 1)}
                   disabled={page * limit >= total}
-                  className={`px-3 py-1 rounded-md ${
-                    page * limit >= total 
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  className={`p-2 rounded-md ${page * limit >= total ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+                  aria-label="Next page"
                 >
                   <FaChevronRight />
                 </button>
