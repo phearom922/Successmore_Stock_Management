@@ -613,7 +613,7 @@ const ReceiveStock = () => {
                               setAddedLots(updatedLots);
                             }}
                             className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            dateFormat="yyyy-MM-dd"
+                            dateFormat="dd-MM-yyyy"
                           />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -625,7 +625,7 @@ const ReceiveStock = () => {
                               setAddedLots(updatedLots);
                             }}
                             className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            dateFormat="yyyy-MM-dd"
+                            dateFormat="dd-MM-yyyy"
                           />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
