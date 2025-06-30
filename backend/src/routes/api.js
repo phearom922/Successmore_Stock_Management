@@ -17,7 +17,7 @@ const TransactionCounter = require('../models/TransactionCounter');
 const logger = require('../config/logger');
 const UserTransaction = require('../models/UserTransaction');
 const Notification = require('../models/Notification');
-
+const { format } = require('date-fns'); // นำเข้า date-fns
 
 
 
@@ -1146,12 +1146,11 @@ router.put('/notifications/:id', authMiddleware, async (req, res) => {
 
 
 
-//receive history
 router.get('/receive-history', authMiddleware, async (req, res) => {
   try {
     logger.info('Fetching receive history', { user: req.user, query: req.query });
 
-    const { startDate, endDate, warehouse, page = 1, limit = 25 } = req.query;
+    const { startDate, endDate, warehouse, searchQuery, page = 1, limit = 25 } = req.query;
     const skip = (page - 1) * limit;
 
     const query = {
@@ -1168,21 +1167,23 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
       query.warehouse = warehouse;
     }
 
+    if (searchQuery) {
+      query.$or = [
+        { transactionNumber: { $regex: searchQuery, $options: 'i' } },
+        { 'lotId.lotCode': { $regex: searchQuery, $options: 'i' } },
+        { 'productId.name': { $regex: searchQuery, $options: 'i' } },
+        { 'supplierId.name': { $regex: searchQuery, $options: 'i' } }
+      ];
+    }
+
     const transactions = await StockTransaction.find(query)
       .populate('userId', 'username lastName')
       .populate('supplierId', 'name')
       .populate('productId', 'name')
-      .populate('lotId', 'lotCode') // ตรวจสอบการ populate
+      .populate('lotId', 'lotCode productionDate expDate') // เพิ่ม productionDate และ expDate
       .skip(skip)
       .limit(Number(limit))
       .sort({ timestamp: -1 });
-
-    // ดีบั๊กเพื่อตรวจสอบข้อมูล
-    transactions.forEach(trans => {
-      if (!trans.lotId || !trans.lotId.lotCode) {
-        logger.warn('Missing lotCode in transaction', { transactionId: trans._id, lotId: trans.lotId });
-      }
-    });
 
     const total = await StockTransaction.countDocuments(query);
 
@@ -1198,12 +1199,13 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
   }
 });
 
-//receive history export
+
+//Export excel
 router.get('/receive-history/export', authMiddleware, async (req, res) => {
   try {
     logger.info('Exporting receive history', { user: req.user, query: req.query });
 
-    const { startDate, endDate, warehouse } = req.query;
+    const { startDate, endDate, warehouse, searchQuery } = req.query;
 
     const query = {
       type: 'receive',
@@ -1219,22 +1221,33 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
       query.warehouse = warehouse;
     }
 
+    if (searchQuery) {
+      query.$or = [
+        { transactionNumber: { $regex: searchQuery, $options: 'i' } },
+        { 'lotId.lotCode': { $regex: searchQuery, $options: 'i' } },
+        { 'productId.name': { $regex: searchQuery, $options: 'i' } },
+        { 'supplierId.name': { $regex: searchQuery, $options: 'i' } }
+      ];
+    }
+
     const transactions = await StockTransaction.find(query)
       .populate('userId', 'username lastName')
       .populate('supplierId', 'name')
       .populate('productId', 'name')
-      .populate('lotId', 'lotCode'); // เพิ่ม populate lotCode
+      .populate('lotId', 'lotCode productionDate expDate');
 
     const worksheetData = transactions.map(trans => ({
-      'Transaction Number': trans.transactionNumber,
-      'Date': new Date(trans.timestamp).toISOString().split('T')[0], // ใช้ toISOString
+      'Transaction #': trans.transactionNumber,
+      'Date/Time': format(new Date(trans.timestamp), 'dd-MM-yyyy HH:mm'),
       'User': `${trans.userId.username} ${trans.userId.lastName || ''}`,
       'Supplier': trans.supplierId.name,
       'Product': trans.productId.name,
-      'LotCode': trans.lotId?.lotCode || 'N/A', // ดึง lotCode จาก lotId
-      'Quantity': trans.quantity,
+      'Lot Code': trans.lotId?.lotCode || 'N/A',
+      'Qty': trans.quantity,
       'Warehouse': trans.warehouse,
-      'Status': trans.status
+      'Status': trans.status,
+      'Production Date': trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A',
+      'Expiration Date': trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A'
     }));
 
     const ws = XLSX.utils.json_to_sheet(worksheetData);

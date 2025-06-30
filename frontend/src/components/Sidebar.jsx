@@ -138,37 +138,6 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             {userRole === 'admin' && (
               <>
                 <Link
-                  to="/receive-stock"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
-                >
-                  <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-                  {isOpen && <span className='text-sm'>Receive Stock</span>}
-                </Link>
-                <Link
-                  to="/receive-history"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-history') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
-                >
-                  <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
-                  {isOpen && <span className='text-sm'>Receive History</span>}
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-6">
-          {isOpen ? (
-            <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-              Product
-            </span>
-          ) : (
-            <div className="border-t border-gray-700 mx-2 my-2"></div>
-          )}
-
-          <div className="mt-1 space-y-1">
-            {userRole === 'admin' && (
-              <>
-                <Link
                   to="/categories"
                   className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/categories') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
                 >
@@ -188,6 +157,39 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
           </div>
 
         </div>
+
+        <div className="mt-6">
+          {isOpen ? (
+            <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              Stock Management
+            </span>
+          ) : (
+            <div className="border-t border-gray-700 mx-2 my-2"></div>
+          )}
+
+          <div className="mt-1 space-y-1">
+            {userRole === 'admin' && (
+              <>
+                <Link
+                  to="/receive-stock"
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-stock') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                >
+                  <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                  {isOpen && <span className='text-sm'>Receive Stock</span>}
+                </Link>
+                <Link
+                  to="/receive-history"
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-history') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                >
+                  <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
+                  {isOpen && <span className='text-sm'>Receive History</span>}
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
+
 
 
         {userRole === 'admin' && (

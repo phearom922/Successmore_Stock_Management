@@ -47,8 +47,8 @@ const ReceiveHistory = () => {
       const { data } = await axios.get('http://localhost:3000/api/receive-history', {
         headers: { Authorization: `Bearer ${token}` },
         params: { 
-          startDate: startDate ? format(startDate, 'yyyy-MM-dd') : '',
-          endDate: endDate ? format(endDate, 'yyyy-MM-dd') : '',
+          startDate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
+          endDate: endDate ? format(endDate, 'dd-MM-yyyy') : '',
           warehouse, 
           searchQuery,
           page, 
@@ -74,8 +74,8 @@ const ReceiveHistory = () => {
       const response = await axios.get('http://localhost:3000/api/receive-history/export', {
         headers: { Authorization: `Bearer ${token}` },
         params: { 
-          startDate: startDate ? format(startDate, 'yyyy-MM-dd') : '',
-          endDate: endDate ? format(endDate, 'yyyy-MM-dd') : '',
+          startDate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
+          endDate: endDate ? format(endDate, 'dd-MM-yyyy') : '',
           warehouse,
           searchQuery
         },
@@ -110,7 +110,7 @@ const ReceiveHistory = () => {
   };
 
   return (
-    <div className="max-w-screen mx-auto">
+    <div className="p-6 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Receive History</h1>
@@ -253,6 +253,8 @@ const ReceiveHistory = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Qty</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Warehouse</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Production Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Expiration Date</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -294,11 +296,17 @@ const ReceiveHistory = () => {
                           {trans.status || 'N/A'}
                         </span>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A'}
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="9" className="px-6 py-8 text-center">
+                    <td colSpan="11" className="px-6 py-8 text-center">
                       <div className="text-gray-500">No transactions found</div>
                       {(startDate || endDate || warehouse || searchQuery) && (
                         <button 

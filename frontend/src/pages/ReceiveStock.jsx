@@ -8,8 +8,8 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import * as Select from '@radix-ui/react-select'; // นำเข้า Select component
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons'; // ไอคอนจาก Radix
+import * as Select from '@radix-ui/react-select';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 
 const ReceiveStock = () => {
   const [selectedWarehouse, setSelectedWarehouse] = useState('');
@@ -280,7 +280,7 @@ const ReceiveStock = () => {
               </Tabs>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div>
+              <div >
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
                 <Select.Root
                   value={selectedWarehouse}
@@ -291,10 +291,10 @@ const ReceiveStock = () => {
                   disabled={user.role !== 'admin' || isLoading}
                 >
                   <Select.Trigger
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                    className="mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
                   >
                     <Select.Value placeholder="Select warehouse" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-3 top-1/2  transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
@@ -326,8 +326,6 @@ const ReceiveStock = () => {
                 </Select.Root>
               </div>
 
-
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
                 <Select.Root
@@ -339,10 +337,10 @@ const ReceiveStock = () => {
                   disabled={isLoading}
                 >
                   <Select.Trigger
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                    className="mt-1 block relative w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
                   >
                     <Select.Value placeholder="Select supplier" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-3 top-1/2  transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
@@ -496,7 +494,6 @@ const ReceiveStock = () => {
                     </div>
                   </div>
 
-                  {/* Expiration Date Picker */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date <span className="text-red-500">*</span></label>
                     <div className="relative">
