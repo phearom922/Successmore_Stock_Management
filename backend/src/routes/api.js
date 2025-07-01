@@ -1178,89 +1178,7 @@ router.put('/notifications/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Receive History
-router.get('/receive-history', authMiddleware, async (req, res) => {
-  try {
-    let {
-      startDate, endDate,
-      warehouse, searchQuery, userQuery,
-      page = '1', limit = '25'
-    } = req.query;
 
-    page = Number(page);
-    limit = Number(limit);
-    const skip = (page - 1) * limit;
-
-    const query = {};
-
-    if (startDate && endDate) {
-      const parsedStart = parse(startDate, 'dd-MM-yyyy', new Date());
-      const parsedEnd = parse(endDate, 'dd-MM-yyyy', new Date());
-
-      query.createdAt = {
-        $gte: startOfDay(parsedStart),
-        $lte: endOfDay(parsedEnd),
-      };
-    } else {
-      const today = new Date();
-      query.createdAt = {
-        $gte: startOfDay(today),
-        $lte: endOfDay(today),
-      };
-    }
-
-    if (warehouse && warehouse !== 'all') {
-      query.warehouse = warehouse;
-    }
-
-    if (searchQuery) {
-      query.$or = [
-        { 'lotId.lotCode': { $regex: searchQuery, $options: 'i' } },
-        { 'productId.name': { $regex: searchQuery, $options: 'i' } },
-        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
-      ];
-    }
-
-    if (userQuery) {
-      query['userId.username'] = { $regex: userQuery, $options: 'i' };
-    }
-
-    const [transactions, total] = await Promise.all([
-      StockTransaction.find(query)
-        .populate('userId', 'username')
-        .populate('supplierId', 'name')
-        .populate('productId', 'name productCode')
-        .populate('lotId', 'lotCode productionDate expDate')
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: -1 })
-        .lean(),
-      StockTransaction.countDocuments(query),
-    ]);
-
-    if (transactions.length === 0) {
-      return res.json({ data: [], total: 0, page, pages: 0 });
-    }
-
-    res.json({
-      data: transactions,
-      total,
-      page,
-      pages: Math.ceil(total / limit),
-    });
-
-  } catch (error) {
-    logger.error('Error fetching receive history', {
-      message: error.message,
-      stack: error.stack,
-      query: req.query,
-    });
-    res.status(500).json({
-      message: 'Error fetching receive history',
-      error: error.message,
-    });
-  }
-});
 
 // Receive History Export Excel
 router.get('/receive-history/export', authMiddleware, async (req, res) => {
@@ -1304,7 +1222,14 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
     }
 
     if (userQuery) {
-      query['userId.username'] = { $regex: userQuery, $options: 'i' };
+      // แก้ไข: ค้นหา userId จาก username ก่อน แล้วใช้ userId ใน query
+      const user = await User.findOne({ username: { $regex: userQuery, $options: 'i' } });
+      if (user) {
+        query.userId = user._id;
+      } else {
+        // ถ้าไม่เจอ user ให้คืนผลลัพธ์ว่างทันที
+        return res.json({ data: [], total: 0, page, pages: 0 });
+      }
     }
 
     console.log('Export query:', query); // ดีบั๊ก query
@@ -1529,6 +1454,117 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
   } catch (error) {
     logger.error('Error exporting lot management data', { error: error.message, stack: error.stack });
     res.status(500).json({ message: 'Error exporting lot management data', error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+// Receive History
+router.get('/receive-history', authMiddleware, async (req, res) => {
+  try {
+    let {
+      startDate, endDate,
+      warehouse, searchQuery, userQuery,
+      page = '1', limit = '25'
+    } = req.query;
+
+    page = Number(page);
+    limit = Number(limit);
+    const skip = (page - 1) * limit;
+
+    const query = {};
+
+    if (startDate && endDate) {
+      const parsedStart = parse(startDate, 'dd-MM-yyyy', new Date());
+      const parsedEnd = parse(endDate, 'dd-MM-yyyy', new Date());
+
+      query.createdAt = {
+        $gte: startOfDay(parsedStart),
+        $lte: endOfDay(parsedEnd),
+      };
+    } else {
+      const today = new Date();
+      query.createdAt = {
+        $gte: startOfDay(today),
+        $lte: endOfDay(today),
+      };
+    }
+
+    if (warehouse && warehouse !== 'all') {
+      query.warehouse = { $regex: new RegExp(warehouse, 'i') }; // Case-insensitive search for warehouse
+    }
+
+    if (searchQuery) {
+      query.$or = [
+        { transactionNumber: { $regex: searchQuery, $options: 'i' } },
+        { 'lotId.lotCode': { $regex: searchQuery, $options: 'i' } },
+        { 'productId.name': { $regex: searchQuery, $options: 'i' } },
+        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
+      ];
+    }
+
+    if (userQuery) {
+      // แก้ไข: ค้นหา userId จาก username ก่อน แล้วใช้ userId ใน query
+      const user = await User.findOne({ username: { $regex: userQuery, $options: 'i' } });
+      if (user) {
+        query.userId = user._id;
+      } else {
+        // ถ้าไม่เจอ user ให้คืนผลลัพธ์ว่างทันที
+        return res.json({ data: [], total: 0, page, pages: 0 });
+      }
+    }
+
+    console.log('Query:', query); // ดีบั๊ก query
+    const [transactions, total] = await Promise.all([
+      StockTransaction.find(query)
+        .populate({
+          path: 'userId',
+          select: 'username -_id', // เลือกเฉพาะ username และป้องกัน _id
+          match: { username: { $exists: true, $ne: null } } // กรอง userId ที่มี username
+        })
+        .populate('supplierId', 'name')
+        .populate('productId', 'name productCode')
+        .populate('lotId', 'lotCode productionDate expDate')
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean(),
+      StockTransaction.countDocuments(query),
+    ]);
+
+    // กรอง transactions ที่ userId populate ไม่สำเร็จ
+    const validTransactions = transactions.filter(trans => trans.userId && trans.userId.username);
+    if (transactions.length > validTransactions.length) {
+      console.warn('Some transactions have invalid userId data, filtered out:', transactions.length - validTransactions.length);
+    }
+
+    if (validTransactions.length === 0) {
+      console.log('No transactions found for query:', query); // ดีบั๊กเพิ่มเติม
+      return res.json({ data: [], total: 0, page, pages: 0 });
+    }
+
+    res.json({
+      data: validTransactions,
+      total: validTransactions.length, // อัปเดต total ตาม transactions ที่กรองแล้ว
+      page,
+      pages: Math.ceil(validTransactions.length / limit),
+    });
+
+  } catch (error) {
+    logger.error('Error fetching receive history', {
+      message: error.message,
+      stack: error.stack,
+      query: req.query,
+    });
+    res.status(500).json({
+      message: 'Error fetching receive history',
+      error: error.message,
+    });
   }
 });
 

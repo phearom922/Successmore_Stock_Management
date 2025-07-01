@@ -31,6 +31,7 @@ const ReceiveHistory = () => {
 
   useEffect(() => {
     fetchWarehouses();
+    // เรียก fetchTransactions เฉพาะเมื่อโหลดหน้าใหม่หรือเปลี่ยนหน้า/วันที่/warehouse
     fetchTransactions();
   }, [page, startDate, endDate, warehouse]); // ลบ searchQuery และ userQuery ออกจาก dependency
 

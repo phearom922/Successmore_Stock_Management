@@ -2,7 +2,7 @@ require("dotenv").config();
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
-const apiRoutes = require('./routes/api'); // ตรวจสอบ path
+const apiRoutes = require('./routes/api');
 const logger = require('./config/logger'); // ปรับ path จาก root
 
 const app = express();
