@@ -13,8 +13,12 @@ const LotManagement = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit] = useState(25);
+  // input state สำหรับฟอร์ม
+  const [inputSearch, setInputSearch] = useState('');
+  const [inputWarehouse, setInputWarehouse] = useState('all');
+  // query state สำหรับ fetch
   const [searchQuery, setSearchQuery] = useState('');
-  const [warehouse, setWarehouse] = useState('');
+  const [warehouse, setWarehouse] = useState('all');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role === 'admin' : false);
@@ -22,8 +26,11 @@ const LotManagement = () => {
 
   useEffect(() => {
     fetchWarehouses();
+  }, []);
+
+  useEffect(() => {
     fetchLots();
-  }, [page, searchQuery, warehouse]);
+  }, [searchQuery, warehouse, page]);
 
   const fetchWarehouses = async () => {
     try {
@@ -146,13 +153,16 @@ const LotManagement = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    setSearchQuery(inputSearch);
+    setWarehouse(inputWarehouse);
     setPage(1);
-    fetchLots();
   };
 
   const clearFilters = () => {
+    setInputSearch('');
+    setInputWarehouse('all');
     setSearchQuery('');
-    setWarehouse('');
+    setWarehouse('all');
     setPage(1);
   };
 
@@ -181,9 +191,9 @@ const LotManagement = () => {
             <div className="relative">
               <input
                 type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by Lot Code or Product..."
+                value={inputSearch}
+                onChange={(e) => setInputSearch(e.target.value)}
+                placeholder="Search by Lot Code, Product Name or Code Product..."
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 disabled={isLoading}
               />
@@ -192,7 +202,7 @@ const LotManagement = () => {
           </div>
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Warehouse</label>
-            <Select.Root value={warehouse} onValueChange={setWarehouse} disabled={isLoading}>
+            <Select.Root value={inputWarehouse} onValueChange={setInputWarehouse} disabled={isLoading}>
               <Select.Trigger className="w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-lg">
                 <Select.Value placeholder="All Warehouses" />
                 <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">

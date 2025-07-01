@@ -1290,38 +1290,90 @@ router.get('/lot-management', authMiddleware, async (req, res) => {
     const { searchQuery, warehouse, page = 1, limit = 25 } = req.query;
     const skip = (page - 1) * limit;
 
+    // ถ้ามี searchQuery ให้ใช้ aggregate เพื่อค้นหา productCode หรือ productName
+    if (searchQuery) {
+      // ใช้ aggregate เพื่อ join กับ product แล้ว match
+      const matchStage = {};
+      if (warehouse && warehouse !== 'all') matchStage.warehouse = warehouse;
+      const pipeline = [
+        { $match: matchStage },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'productId',
+            foreignField: '_id',
+            as: 'productObj'
+          }
+        },
+        { $unwind: '$productObj' },
+        {
+          $match: {
+            $or: [
+              { lotCode: { $regex: searchQuery, $options: 'i' } },
+              { 'productObj.productCode': { $regex: searchQuery, $options: 'i' } },
+              { 'productObj.name': { $regex: searchQuery, $options: 'i' } }
+            ]
+          }
+        },
+        { $sort: { lotCode: 1 } },
+        { $skip: Number(skip) },
+        { $limit: Number(limit) }
+      ];
+      const lots = await Lot.aggregate(pipeline);
+      // นับจำนวนทั้งหมด (ไม่ใช้ limit/skip)
+      const countPipeline = [
+        { $match: matchStage },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'productId',
+            foreignField: '_id',
+            as: 'productObj'
+          }
+        },
+        { $unwind: '$productObj' },
+        {
+          $match: {
+            $or: [
+              { lotCode: { $regex: searchQuery, $options: 'i' } },
+              { 'productObj.productCode': { $regex: searchQuery, $options: 'i' } },
+              { 'productObj.name': { $regex: searchQuery, $options: 'i' } }
+            ]
+          }
+        },
+        { $count: 'total' }
+      ];
+      const totalResult = await Lot.aggregate(countPipeline);
+      const total = totalResult[0]?.total || 0;
+      // แปลง productObj -> productId ให้เหมือน populate
+      const enrichedLots = lots.map(lot => ({
+        ...lot,
+        productId: lot.productObj,
+        availableQty: lot.quantity - (lot.damaged || 0),
+        expanded: true
+      }));
+      res.json({
+        data: enrichedLots,
+        total,
+        page: Number(page),
+        pages: Math.ceil(total / limit)
+      });
+      return;
+    }
+    // ...เดิม: ถ้าไม่มี searchQuery ใช้ populate ปกติ...
     const query = {};
     if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
-    if (searchQuery) {
-      query.$or = [
-        { lotCode: { $regex: searchQuery, $options: 'i' } },
-        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
-        { 'productId.name': { $regex: searchQuery, $options: 'i' } }
-      ];
-    }
-
     const lots = await Lot.find(query)
-      .populate('productId', 'productCode name') // ใช้ productId ถ้า schema ใช้ reference นี้
+      .populate('productId', 'productCode name')
       .skip(skip)
       .limit(Number(limit))
       .sort({ lotCode: 1 });
-
     const total = await Lot.countDocuments(query);
-
-    // ตรวจสอบและเพิ่ม expanded และ availableQty
-    const enrichedLots = lots.map(lot => {
-      if (!lot.productId) {
-        console.warn('Lot without productId:', lot._id);
-      } else {
-        console.log('Lot product data:', lot.productId); // ดีบั๊กข้อมูล product
-      }
-      return {
-        ...lot.toObject(),
-        availableQty: lot.quantity - (lot.damaged || 0),
-        expanded: true // ตั้งค่าเริ่มต้นเป็น true
-      };
-    });
-
+    const enrichedLots = lots.map(lot => ({
+      ...lot.toObject(),
+      availableQty: lot.quantity - (lot.damaged || 0),
+      expanded: true
+    }));
     res.json({
       data: enrichedLots,
       total,
@@ -1333,8 +1385,6 @@ router.get('/lot-management', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching lot management data', error: error.message });
   }
 });
-
-
 
 
 
