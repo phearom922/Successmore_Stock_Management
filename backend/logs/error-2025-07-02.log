@@ -1,0 +1,21 @@
+2025-07-02 00:29:10 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:29:29 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:30:52 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:35:00 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:37:00 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:37:58 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:38:29 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:40:53 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:43:31 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:44:09 [error]: Error receiving stock: Path "name" is not in schema, strict mode is `true`, and upsert is `true`.
+2025-07-02 00:46:08 [error]: Error receiving stock: StockTransaction validation failed: lotId: Path `lotId` is required.
+2025-07-02 00:46:59 [error]: Error receiving stock: StockTransaction validation failed: lotId: Path `lotId` is required.
+2025-07-02 00:47:05 [error]: Error receiving stock: StockTransaction validation failed: lotId: Path `lotId` is required.
+2025-07-02 00:48:38 [error]: Error receiving stock: Lot validation failed: qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+2025-07-02 00:50:03 [error]: Error receiving stock: Lot validation failed: qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+2025-07-02 00:50:19 [error]: Error receiving stock: Lot validation failed: qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+2025-07-02 00:54:54 [error]: Error receiving stock: Lot validation failed: qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+2025-07-02 00:58:08 [error]: Error receiving stock: UserTransaction validation failed: description: Path `description` is required.
+2025-07-02 00:59:31 [error]: Error receiving stock: UserTransaction validation failed: description: Path `description` is required.
+2025-07-02 01:00:59 [error]: Error receiving stock: UserTransaction validation failed: description: Path `description` is required.
+2025-07-02 01:01:20 [error]: Error receiving stock: UserTransaction validation failed: description: Path `description` is required.

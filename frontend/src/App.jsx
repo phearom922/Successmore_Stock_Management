@@ -16,7 +16,7 @@ import Suppliers from './pages/Suppliers';
 import ReceiveStock from './pages/ReceiveStock';
 import ReceiveHistory from './pages/ReceiveHistory';
 import LotManagement from './pages/LotManagement';
-
+import ManageDamage from './pages/ManageDamage';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -83,6 +83,7 @@ function App() {
               <Route path="/receive-stock" element={<ReceiveStock />} />
               <Route path="/receive-history" element={<ReceiveHistory />} />
               <Route path="/lot-management" element={<LotManagement />} />
+              <Route path="/manage-damage" element={<ManageDamage />} />
             </Routes>
           </div>
         </main>

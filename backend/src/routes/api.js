@@ -18,7 +18,7 @@ const logger = require('../config/logger');
 const UserTransaction = require('../models/UserTransaction');
 const Notification = require('../models/Notification');
 const { format, parse, startOfDay, endOfDay } = require('date-fns');
-
+const DamagedAuditTrail = require('../models/DamagedAuditTrail');
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -59,9 +59,14 @@ const userSchema = z.object({
 const lotSchema = z.object({
   lotCode: z.string().min(1),
   productId: z.string().min(1),
+  productionDate: z.string().datetime(),
   expDate: z.string().datetime(),
+  quantity: z.number().positive(),
+  boxCount: z.number().positive(),
+  qtyPerBox: z.number().positive(),
   qtyOnHand: z.number().positive(),
   warehouse: z.string().min(1),
+  supplierId: z.string().min(1),
 });
 
 const issueSchema = z.object({
@@ -72,7 +77,11 @@ const issueSchema = z.object({
   lotId: z.string().optional(),
 });
 
-
+const supplierSchema = z.object({
+  name: z.string().min(1),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+});
 
 
 
@@ -107,6 +116,9 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Error during login', error: error.message });
   }
 });
+
+
+
 
 // Create User
 router.post('/users', authMiddleware, async (req, res) => {
@@ -319,17 +331,39 @@ router.post('/lots', authMiddleware, async (req, res) => {
   }
 });
 
+
 // Get all lots
 router.get('/lots', authMiddleware, async (req, res) => {
   try {
-    console.log('Fetching lots for user:', req.user);
+    const { productId, warehouse } = req.query;
     const user = req.user;
-    const query = user.role === 'admin' ? {} : { warehouse: user.warehouse };
+    const query = {};
+    if (productId) {
+      // แปลง productId เป็น ObjectId
+      query.productId = mongoose.Types.ObjectId.isValid(productId) ? new mongoose.Types.ObjectId(productId) : productId;
+    }
+    if (warehouse) {
+      let warehouseName = warehouse;
+      if (warehouse.length === 24) {
+        const warehouseDoc = await Warehouse.findById(warehouse);
+        if (!warehouseDoc) {
+          return res.status(400).json({ message: 'Invalid warehouse' });
+        }
+        warehouseName = warehouseDoc.name;
+      }
+      query.warehouse = warehouseName;
+    } else if (user.role !== 'admin' && user.assignedWarehouse) {
+      const warehouseDoc = await Warehouse.findById(user.assignedWarehouse);
+      if (warehouseDoc) {
+        query.warehouse = warehouseDoc.name;
+      }
+    }
+    console.log('Lot query:', query);
     const lots = await Lot.find(query).populate('productId');
-    console.log('Fetched lots:', lots);
+    console.log('Lots found:', lots.length);
     res.json(lots);
   } catch (error) {
-    console.error('Error fetching lots:', error);
+    logger.error('Error fetching lots:', { message: error.message, stack: error.stack });
     res.status(500).json({ message: 'Error fetching lots', error: error.message });
   }
 });
@@ -410,11 +444,25 @@ router.post('/issue', authMiddleware, async (req, res) => {
   }
 });
 
-// Get all products
+
+// Get all products (ปรับให้ใช้ Lot เพื่อกรองตาม Warehouse)
 router.get('/products', authMiddleware, async (req, res) => {
   try {
     console.log('Fetching products for user:', req.user);
-    const products = await Product.find().populate('category', 'name description');
+    const { warehouse } = req.query;
+    let products;
+    if (warehouse && warehouse !== 'all') {
+      // แปลง warehouse id เป็น name ก่อน
+      const warehouseDoc = await Warehouse.findById(warehouse);
+      if (!warehouseDoc) {
+        return res.status(400).json({ message: 'Invalid warehouse' });
+      }
+      const lots = await Lot.find({ warehouse: warehouseDoc.name }).select('productId');
+      const productIds = [...new Set(lots.map(l => l.productId?.toString()).filter(Boolean))];
+      products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description');
+    } else {
+      products = await Product.find().populate('category', 'name description');
+    }
     res.json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -732,11 +780,10 @@ router.delete('/warehouses/:id', authMiddleware, async (req, res) => {
 // Get all warehouses
 router.get('/warehouses', authMiddleware, async (req, res) => {
   try {
-    console.log('Fetching warehouses for user:', req.user);
-    const warehouses = await Warehouse.find().populate('assignedUser', 'username lastName');
+    const warehouses = await Warehouse.find();
     res.json(warehouses);
   } catch (error) {
-    console.error('Error fetching warehouses:', error);
+    logger.error('Error fetching warehouses:', { message: error.message, stack: error.stack });
     res.status(500).json({ message: 'Error fetching warehouses', error: error.message });
   }
 });
@@ -920,12 +967,7 @@ router.post('/lots/split-status', authMiddleware, async (req, res) => {
   }
 });
 
-// Validation Schemas
-const supplierSchema = z.object({
-  name: z.string().min(1),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-});
+
 
 // Create Supplier
 router.post('/suppliers', authMiddleware, async (req, res) => {
@@ -1020,127 +1062,95 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
 
 
 
-
-
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
-  const session = await Lot.startSession();
   try {
-    logger.info('Starting /api/receive request', { user: req.user, body: req.body });
-
-    if (!req.user || !req.user._id) {
-      throw new Error('User authentication data missing');
+    const result = receiveSchema.safeParse(req.body);
+    if (!result.success) {
+      return res.status(400).json({ message: result.error.errors[0].message });
     }
 
-    const { lots } = receiveSchema.parse(req.body);
+    const { lots } = result.data;
+    const userId = req.user._id;
+    // Use warehouseCode for transaction counter (assume single warehouse for now)
+    const warehouseCode = 'PNH-WH-01';
+    const transactionCounter = await TransactionCounter.findOneAndUpdate(
+      { warehouseCode },
+      { $inc: { sequence: 1 } },
+      { new: true, upsert: true }
+    );
+    const transactionNumber = `${warehouseCode}-${format(new Date(), 'yyyyMMdd')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
 
-    session.startTransaction();
-
-    // บันทึก UserTransaction
-    logger.info('Attempting to save UserTransaction');
-    const userTransaction = new UserTransaction({
-      userId: req.user._id,
-      action: 'receive_stock',
-      description: `User ${req.user.username} received stock for ${lots.length} lots`,
-      ipAddress: req.ip,
-      details: { lotCount: lots.length }
-    });
-    await userTransaction.save({ session });
-    logger.info('UserTransaction saved successfully', { userTransactionId: userTransaction._id });
-
-    let lastTransaction;
-    for (const lot of lots) {
-      logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
-
-      const existingLot = await Lot.findOne({ lotCode: lot.lotCode, warehouse: lot.warehouse }).session(session);
-      if (!existingLot) {
-        logger.warn('No existing lot found, creating new lot', { lotCode: lot.lotCode });
-      }
-
-      const warehouseDoc = await Warehouse.findOne({ name: lot.warehouse }).session(session);
-      if (!warehouseDoc) {
-        throw new Error(`Warehouse ${lot.warehouse} not found`);
-      }
-      const transactionCounter = await TransactionCounter.findOneAndUpdate(
-        { warehouseCode: warehouseDoc.warehouseCode },
-        { $inc: { sequence: 1 } },
-        { new: true, upsert: true, session }
-      );
-
-      const transactionNumber = `${warehouseDoc.warehouseCode}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
-
-      let updatedLot;
+    const transactions = await Promise.all(lots.map(async lot => {
+      // First, ensure the Lot exists and get its _id
+      let existingLot = await Lot.findOne({ lotCode: lot.lotCode });
+      let lotId;
       if (existingLot) {
-        // อัปเดต Lot เดิมถ้ามีอยู่
-        existingLot.quantity = Number(existingLot.quantity) + Number(lot.quantity);
-        existingLot.boxCount = Number(existingLot.boxCount) + Number(lot.boxCount);
-        existingLot.qtyOnHand = Number(existingLot.qtyOnHand) + Number(lot.quantity);
-        existingLot.damaged = existingLot.damaged || 0; // รักษาค่า damaged เดิม
-        await existingLot.save({ session });
-        updatedLot = existingLot;
-        logger.info(`Updated existing lot ${lot.lotCode} with new quantity: ${existingLot.quantity}`);
+        existingLot.qtyOnHand += lot.quantity;
+        await existingLot.save();
+        lotId = existingLot._id;
       } else {
-        // สร้าง Lot ใหม่ถ้าไม่มี
-        const newLot = new Lot({
-          productId: lot.productId,
+        const newLot = await Lot.create({
           lotCode: lot.lotCode,
+          productId: lot.productId,
           productionDate: new Date(lot.productionDate),
           expDate: new Date(lot.expDate),
           quantity: lot.quantity,
           boxCount: lot.boxCount,
           qtyPerBox: lot.qtyPerBox,
+          qtyOnHand: lot.quantity,
           warehouse: lot.warehouse,
           supplierId: lot.supplierId,
           transactionNumber,
           status: 'active',
-          qtyOnHand: lot.quantity,
-          damaged: 0 // ตั้งค่าเริ่มต้นเป็น 0
         });
-        await newLot.save({ session });
-        updatedLot = newLot;
-        logger.info('Successfully processed new lot', { lotCode: lot.lotCode, transactionNumber });
+        lotId = newLot._id;
       }
 
-      // สร้าง StockTransaction ใหม่ทุกครั้ง
+      // Now create the StockTransaction with the correct lotId
       const transaction = new StockTransaction({
         transactionNumber,
-        userId: req.user._id,
+        userId,
         supplierId: lot.supplierId,
-        lotId: updatedLot._id,
+        lotId,
         productId: lot.productId,
-        quantity: lot.quantity, // บันทึกจำนวนที่รับใหม่
+        quantity: lot.quantity,
         boxCount: lot.boxCount,
         qtyPerBox: lot.qtyPerBox,
-        productionDate: lot.productionDate,
-        expDate: lot.expDate,
+        productionDate: new Date(lot.productionDate),
+        expDate: new Date(lot.expDate),
         warehouse: lot.warehouse,
         type: 'receive',
-        auditTrail: userTransaction._id
+        status: 'completed',
       });
-      await transaction.save({ session });
-      lastTransaction = transaction;
-    }
+      await transaction.save();
+      return transaction;
+    }));
 
-    const notification = new Notification({
-      userId: req.user._id,
-      message: `Successfully received ${lots.length} lots of stock.`,
-      type: 'success',
-      relatedTransaction: lastTransaction._id
+    await UserTransaction.create({
+      userId,
+      action: 'receive',
+      description: `Received stock with transaction number ${transactionNumber}`,
+      details: { transactionNumber },
+      timestamp: new Date(),
     });
-    await notification.save({ session });
 
-    await session.commitTransaction();
-    logger.info('Transaction committed successfully');
-    res.status(201).json({ message: 'Stock received successfully' });
+    await Notification.create({
+      userId,
+      message: `Stock received successfully with transaction number ${transactionNumber}`,
+      type: 'success',
+      timestamp: new Date(),
+    });
+
+    res.json({ message: 'Stock received successfully', transactionNumber });
   } catch (error) {
-    await session.abortTransaction();
-    logger.error('Transaction failed', { error: error.message, stack: error.stack, body: req.body }); // เพิ่ม body ใน log
-    res.status(400).json({ message: error.message || 'Validation or processing error occurred' });
-  } finally {
-    session.endSession();
+    logger.error('Error receiving stock:', {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(500).json({ message: 'Error receiving stock', error: error.message });
   }
 });
-
 
 
 
@@ -1278,7 +1288,6 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error exporting receive history', error: error.message });
   }
 });
-
 
 
 
@@ -1617,5 +1626,72 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
     });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Manage Damage
+router.post('/manage-damage', authMiddleware, async (req, res) => {
+  try {
+    const { lotId, quantity, reason } = req.body;
+    const userId = req.user._id;
+    const assignedWarehouse = req.user.assignedWarehouse ? req.user.assignedWarehouse.toString() : null;
+
+    // ตรวจสอบ Warehouse
+    if (!assignedWarehouse && req.user.role !== 'admin') {
+      return res.status(400).json({ message: 'Warehouse is required for non-admin users' });
+    }
+    if (req.user.role !== 'admin' && assignedWarehouse) {
+      const lot = await Lot.findById(lotId);
+      if (!lot || lot.warehouse !== assignedWarehouse) {
+        return res.status(403).json({ message: 'Access denied to this warehouse' });
+      }
+    }
+
+    // ตรวจสอบสต็อกคงเหลือ
+    const lot = await Lot.findById(lotId);
+    if (!lot) return res.status(404).json({ message: 'Lot not found' });
+    const remainingStock = lot.qtyOnHand - lot.damaged;
+    if (quantity > remainingStock) {
+      return res.status(400).json({ message: `Insufficient stock. Remaining: ${remainingStock}` });
+    }
+
+    // อัปเดต Lot
+    lot.damaged += quantity;
+    lot.qtyOnHand -= quantity;
+    await lot.save();
+
+    // บันทึกประวัติ
+    await DamagedAuditTrail.create({ lotId, userId, quantity, reason });
+
+    res.json({ message: 'Damage recorded successfully', remainingStock: lot.qtyOnHand });
+  } catch (error) {
+    logger.error('Error managing damage:', {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(500).json({ message: 'Error managing damage', error: error.message });
+  }
+});
+
+
+
+
 
 module.exports = router;

@@ -165,90 +165,92 @@ const ReceiveStock = () => {
     removeLot(index);
   };
 
-// ... (โค้ดเดิมจนถึง handleSubmit)
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!token) {
+      toast.error('Please login first');
+      return;
+    }
+    const warehouseValid = warehouses.some(w => w.name === selectedWarehouse || w._id === selectedWarehouse);
+    const supplierValid = suppliers.some(s => s._id === selectedSupplier);
+    if (!warehouseValid || !supplierValid || addedLots.length === 0) {
+      toast.error(`Please ensure ${!warehouseValid ? 'Warehouse' : ''}${!warehouseValid && !supplierValid ? ' and ' : ''}${!supplierValid ? 'Supplier' : ''} are valid and add at least one lot`);
+      return;
+    }
 
-const handleSubmit = async e => {
-  e.preventDefault();
-  if (!token) {
-    toast.error('Please login first');
-    return;
-  }
-  const warehouseValid = warehouses.some(w => w.name === selectedWarehouse);
-  const supplierValid = suppliers.some(s => s._id === selectedSupplier);
-  if (!warehouseValid || !supplierValid || addedLots.length === 0) {
-    toast.error(`Please ensure ${!warehouseValid ? 'Warehouse' : ''}${!warehouseValid && !supplierValid ? ' and ' : ''}${!supplierValid ? 'Supplier' : ''} are valid and add at least one lot`);
-    return;
-  }
-
-  // Validate all lots before submission
-  for (const lot of addedLots) {
-    if (!lot.productId || !lot.lotCode || !lot.quantity || !lot.boxCount || !lot.qtyPerBox || !lot.productionDate || !lot.expDate) {
-      toast.error('All fields in added lots must be filled');
-      return;
-    }
-    if (lot.quantity <= 0 || lot.boxCount <= 0 || lot.qtyPerBox <= 0) {
-      toast.error('Quantity, box count, and quantity per box must be positive');
-      return;
-    }
-    if (new Date(lot.expDate) <= new Date(lot.productionDate)) {
-      toast.error('Expiration date must be after production date');
-      return;
-    }
-    if (lot.quantity !== lot.boxCount * lot.qtyPerBox) {
-      toast.error('Quantity must equal Box Count * Quantity per Box');
-      return;
-    }
-  }
-
-  setIsLoading(true);
-  try {
-    const payload = {
-      lots: addedLots.map(lot => ({
-        productId: lot.productId,
-        lotCode: lot.lotCode,
-        quantity: Number(lot.quantity),
-        boxCount: Number(lot.boxCount),
-        qtyPerBox: Number(lot.qtyPerBox),
-        productionDate: lot.productionDate.toISOString(),
-        expDate: lot.expDate.toISOString(),
-        warehouse: lot.warehouse,
-        supplierId: lot.supplierId
-      }))
+    // Map warehouse id to name for all lots
+    const getWarehouseName = (val) => {
+      const found = warehouses.find(w => w._id === val || w.name === val);
+      return found ? found.name : val;
     };
-    console.log('Payload being sent:', JSON.stringify(payload, null, 2)); // ดีบั๊ก payload
-    const response = await axios.post('http://localhost:3000/api/receive', payload, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+
+    // Validate all lots before submission
+    for (const lot of addedLots) {
+      if (!lot.productId || !lot.lotCode || !lot.quantity || !lot.boxCount || !lot.qtyPerBox || !lot.productionDate || !lot.expDate) {
+        toast.error('All fields in added lots must be filled');
+        return;
       }
-    });
-
-    toast.success(response.data.message || 'Stock received successfully!');
-    setAddedLots([]);
-    setCurrentLot({
-      productId: '',
-      lotCode: '',
-      quantity: '',
-      boxCount: '',
-      qtyPerBox: '',
-      productionDate: null,
-      expDate: null,
-      warehouse: selectedWarehouse,
-      supplierId: selectedSupplier
-    });
-  } catch (error) {
-    console.error('Error receiving stock:', error.response || error);
-    const errorMessage = error.response?.data?.message || 'Failed to receive stock. Please try again.';
-    if (typeof toast === 'function' && toast.error) toast.error(errorMessage); // ตรวจสอบ toast และ method
-    if (error.response?.status === 401) {
-      navigate('/login');
+      if (lot.quantity <= 0 || lot.boxCount <= 0 || lot.qtyPerBox <= 0) {
+        toast.error('Quantity, box count, and quantity per box must be positive');
+        return;
+      }
+      if (new Date(lot.expDate) <= new Date(lot.productionDate)) {
+        toast.error('Expiration date must be after production date');
+        return;
+      }
+      if (lot.quantity !== lot.boxCount * lot.qtyPerBox) {
+        toast.error('Quantity must equal Box Count * Quantity per Box');
+        return;
+      }
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
 
-// ... (โค้ดเดิมต่อจากนี้)
+    setIsLoading(true);
+    try {
+      const payload = {
+        lots: addedLots.map(lot => ({
+          productId: lot.productId,
+          lotCode: lot.lotCode,
+          quantity: Number(lot.quantity),
+          boxCount: Number(lot.boxCount),
+          qtyPerBox: Number(lot.qtyPerBox),
+          productionDate: lot.productionDate.toISOString(),
+          expDate: lot.expDate.toISOString(),
+          warehouse: getWarehouseName(lot.warehouse),
+          supplierId: lot.supplierId
+        }))
+      };
+      console.log('Payload being sent:', JSON.stringify(payload, null, 2)); // ดีบั๊ก payload
+      const response = await axios.post('http://localhost:3000/api/receive', payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      toast.success(response.data.message || 'Stock received successfully!');
+      setAddedLots([]);
+      setCurrentLot({
+        productId: '',
+        lotCode: '',
+        quantity: '',
+        boxCount: '',
+        qtyPerBox: '',
+        productionDate: null,
+        expDate: null,
+        warehouse: selectedWarehouse,
+        supplierId: selectedSupplier
+      });
+    } catch (error) {
+      console.error('Error receiving stock:', error.response || error);
+      const errorMessage = error.response?.data?.message || 'Failed to receive stock. Please try again.';
+      if (typeof toast === 'function' && toast.error) toast.error(errorMessage); // ตรวจสอบ toast และ method
+      if (error.response?.status === 401) {
+        navigate('/login');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredProducts = selectedCategory === 'All'
     ? products

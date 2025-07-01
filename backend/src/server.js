@@ -2,12 +2,12 @@ require("dotenv").config();
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
-const apiRoutes = require('./routes/api'); // ต้องเป็นแบบนี้ ไม่ต้อง destructure
-const logger = require('./config/logger'); // ปรับ path จาก root
+const apiRoutes = require('./routes/api'); 
+const logger = require('./config/logger');
 
 const app = express();
 
-// Enable CORS for frontend
+
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],

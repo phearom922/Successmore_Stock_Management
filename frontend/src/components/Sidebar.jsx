@@ -7,6 +7,7 @@ import {
   FiArrowDownCircle,
 } from 'react-icons/fi';
 import { FaBuilding, FaCubes } from "react-icons/fa";
+import { GiBrokenPottery } from "react-icons/gi";
 
 
 const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
@@ -108,6 +109,17 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} />
               {isOpen && <span className='text-sm'>Manage Status</span>}
             </Link>
+            
+          )}
+          {(userRole === 'admin' || userRole === 'user') && (
+            <Link
+              to="/manage-damage"
+              className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/manage-damage') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+            >
+              <GiBrokenPottery className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+              {isOpen && <span className='text-sm'>Manage Damage</span>}
+            </Link>
+            
           )}
 
           {userRole === 'admin' && (

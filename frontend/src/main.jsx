@@ -14,7 +14,7 @@ import Warehouses from './pages/Warehouses';
 import Users from './pages/Users';
 import ReceiveHistory from './pages/ReceiveHistory';
 import LotManagement from './pages/LotManagement';
-
+import ManageDamage from './pages/ManageDamage';
 
 const ProtectedRoute = ({ children, requiredRoles = [] }) => {
   const token = localStorage.getItem('token');
@@ -66,6 +66,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/receive-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ReceiveHistory /></ProtectedRoute>} /> {/* เพิ่มบรรทัดนี้ */}
           <Route path="/lot-management" element={<ProtectedRoute requiredRoles={['admin', 'user']}><LotManagement /></ProtectedRoute>} />
+          <Route path="/manage-damage" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ManageDamage /></ProtectedRoute>} />
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />
