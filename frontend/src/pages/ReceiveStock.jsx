@@ -167,8 +167,6 @@ const ReceiveStock = () => {
 
 // ... (โค้ดเดิมจนถึง handleSubmit)
 
-// ... (โค้ดเดิมจนถึง handleSubmit)
-
 const handleSubmit = async e => {
   e.preventDefault();
   if (!token) {

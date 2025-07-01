@@ -17,7 +17,8 @@ const TransactionCounter = require('../models/TransactionCounter');
 const logger = require('../config/logger');
 const UserTransaction = require('../models/UserTransaction');
 const Notification = require('../models/Notification');
-const { format } = require('date-fns');
+const { format, parse, startOfDay, endOfDay } = require('date-fns');
+
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -1020,8 +1021,6 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
 
 
 
-// Receive Stock
-// ... (โค้ดนำเข้าทั้งหมด)
 
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
@@ -1179,78 +1178,118 @@ router.put('/notifications/:id', authMiddleware, async (req, res) => {
   }
 });
 
-
+// Receive History
 router.get('/receive-history', authMiddleware, async (req, res) => {
   try {
-    logger.info('Fetching receive history', { user: req.user, query: req.query });
+    let {
+      startDate, endDate,
+      warehouse, searchQuery, userQuery,
+      page = '1', limit = '25'
+    } = req.query;
 
-    const { startDate, endDate, warehouse, searchQuery, page = 1, limit = 25 } = req.query;
+    page = Number(page);
+    limit = Number(limit);
     const skip = (page - 1) * limit;
 
-    const query = {
-      type: 'receive',
-      timestamp: {
-        $gte: startDate ? new Date(startDate) : new Date(0),
-        $lte: endDate ? new Date(endDate) : new Date()
-      }
-    };
+    const query = {};
 
-    if (req.user.role !== 'admin' && req.user.warehouse) {
-      query.warehouse = req.user.warehouse;
-    } else if (warehouse) {
+    if (startDate && endDate) {
+      const parsedStart = parse(startDate, 'dd-MM-yyyy', new Date());
+      const parsedEnd = parse(endDate, 'dd-MM-yyyy', new Date());
+
+      query.createdAt = {
+        $gte: startOfDay(parsedStart),
+        $lte: endOfDay(parsedEnd),
+      };
+    } else {
+      const today = new Date();
+      query.createdAt = {
+        $gte: startOfDay(today),
+        $lte: endOfDay(today),
+      };
+    }
+
+    if (warehouse && warehouse !== 'all') {
       query.warehouse = warehouse;
     }
 
     if (searchQuery) {
       query.$or = [
-        { transactionNumber: { $regex: searchQuery, $options: 'i' } },
         { 'lotId.lotCode': { $regex: searchQuery, $options: 'i' } },
         { 'productId.name': { $regex: searchQuery, $options: 'i' } },
-        { 'supplierId.name': { $regex: searchQuery, $options: 'i' } }
+        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
       ];
     }
 
-    const transactions = await StockTransaction.find(query)
-      .populate('userId', 'username lastName')
-      .populate('supplierId', 'name')
-      .populate('productId', 'name')
-      .populate('lotId', 'lotCode productionDate expDate') // เพิ่ม productionDate และ expDate
-      .skip(skip)
-      .limit(Number(limit))
-      .sort({ timestamp: -1 });
+    if (userQuery) {
+      query['userId.username'] = { $regex: userQuery, $options: 'i' };
+    }
 
-    const total = await StockTransaction.countDocuments(query);
+    const [transactions, total] = await Promise.all([
+      StockTransaction.find(query)
+        .populate('userId', 'username')
+        .populate('supplierId', 'name')
+        .populate('productId', 'name productCode')
+        .populate('lotId', 'lotCode productionDate expDate')
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .lean(),
+      StockTransaction.countDocuments(query),
+    ]);
+
+    if (transactions.length === 0) {
+      return res.json({ data: [], total: 0, page, pages: 0 });
+    }
 
     res.json({
       data: transactions,
       total,
-      page: Number(page),
-      pages: Math.ceil(total / limit)
+      page,
+      pages: Math.ceil(total / limit),
     });
+
   } catch (error) {
-    logger.error('Error fetching receive history', { error: error.message, stack: error.stack });
-    res.status(500).json({ message: 'Error fetching receive history', error: error.message });
+    logger.error('Error fetching receive history', {
+      message: error.message,
+      stack: error.stack,
+      query: req.query,
+    });
+    res.status(500).json({
+      message: 'Error fetching receive history',
+      error: error.message,
+    });
   }
 });
 
-//Receive History Export excel
+// Receive History Export Excel
 router.get('/receive-history/export', authMiddleware, async (req, res) => {
   try {
     logger.info('Exporting receive history', { user: req.user, query: req.query });
-
-    const { startDate, endDate, warehouse, searchQuery } = req.query;
+    const { startDate, endDate, warehouse, searchQuery, userQuery } = req.query;
 
     const query = {
       type: 'receive',
-      timestamp: {
-        $gte: startDate ? new Date(startDate) : new Date(0),
-        $lte: endDate ? new Date(endDate) : new Date()
-      }
     };
+
+    if (startDate && endDate) {
+      const parsedStart = parse(startDate, 'dd-MM-yyyy', new Date());
+      const parsedEnd = parse(endDate, 'dd-MM-yyyy', new Date());
+      query.createdAt = {
+        $gte: startOfDay(parsedStart),
+        $lte: endOfDay(parsedEnd),
+      };
+    } else {
+      const today = new Date();
+      query.createdAt = {
+        $gte: startOfDay(today),
+        $lte: endOfDay(today),
+      };
+    }
 
     if (req.user.role !== 'admin' && req.user.warehouse) {
       query.warehouse = req.user.warehouse;
-    } else if (warehouse) {
+    } else if (warehouse && warehouse !== 'all') {
       query.warehouse = warehouse;
     }
 
@@ -1259,29 +1298,47 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
         { transactionNumber: { $regex: searchQuery, $options: 'i' } },
         { 'lotId.lotCode': { $regex: searchQuery, $options: 'i' } },
         { 'productId.name': { $regex: searchQuery, $options: 'i' } },
-        { 'supplierId.name': { $regex: searchQuery, $options: 'i' } }
+        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
+        { 'supplierId.name': { $regex: searchQuery, $options: 'i' } },
       ];
     }
 
+    if (userQuery) {
+      query['userId.username'] = { $regex: userQuery, $options: 'i' };
+    }
+
+    console.log('Export query:', query); // ดีบั๊ก query
     const transactions = await StockTransaction.find(query)
       .populate('userId', 'username lastName')
       .populate('supplierId', 'name')
-      .populate('productId', 'name')
-      .populate('lotId', 'lotCode productionDate expDate');
+      .populate('productId', 'name productCode')
+      .populate('lotId', 'lotCode productionDate expDate')
+      .lean();
+
+    if (!transactions || transactions.length === 0) {
+      logger.warn('No transactions found for export', { query });
+      return res.status(400).json({ message: 'No data available for export' });
+    }
 
     const worksheetData = transactions.map(trans => ({
-      'Transaction #': trans.transactionNumber,
-      'Date/Time': format(new Date(trans.timestamp), 'dd-MM-yyyy HH:mm'),
-      'User': `${trans.userId.username} ${trans.userId.lastName || ''}`,
-      'Supplier': trans.supplierId.name,
-      'Product': trans.productId.name,
+      'Transaction #': trans.transactionNumber || 'N/A',
+      'Date/Time': trans.createdAt ? format(new Date(trans.createdAt), 'dd-MM-yyyy HH:mm') : 'N/A',
+      'User': `${trans.userId?.username || ''} ${trans.userId?.lastName || ''}`.trim() || 'N/A',
+      'Supplier': trans.supplierId?.name || 'N/A',
+      'Product Code': trans.productId?.productCode || 'N/A',
+      'Product': trans.productId?.name || 'N/A',
       'Lot Code': trans.lotId?.lotCode || 'N/A',
-      'Qty': trans.quantity,
-      'Warehouse': trans.warehouse,
-      'Status': trans.status,
+      'Qty': trans.quantity || 0,
+      'Warehouse': trans.warehouse || 'N/A',
+      'Status': trans.status || 'N/A',
       'Production Date': trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A',
-      'Expiration Date': trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A'
+      'Expiration Date': trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A',
     }));
+
+    if (worksheetData.length === 0) {
+      logger.warn('Worksheet data is empty after mapping', { query });
+      return res.status(400).json({ message: 'No data available for export after processing' });
+    }
 
     const ws = XLSX.utils.json_to_sheet(worksheetData);
     const wb = XLSX.utils.book_new();
@@ -1292,7 +1349,7 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.send(excelBuffer);
   } catch (error) {
-    logger.error('Error exporting receive history', { error: error.message, stack: error.stack });
+    logger.error('Error exporting receive history', { error: error.message, stack: error.stack, query: req.query });
     res.status(500).json({ message: 'Error exporting receive history', error: error.message });
   }
 });

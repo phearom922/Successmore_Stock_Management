@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { format, startOfDay, endOfDay, toDate } from 'date-fns';
+import { format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaSearch, FaChevronLeft, FaChevronRight, FaCalendarAlt } from 'react-icons/fa';
@@ -11,18 +11,18 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"; // ใช้ shadcn/ui Select
 
 const ReceiveHistory = () => {
   const [transactions, setTransactions] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit] = useState(25);
-  const [startDate, setStartDate] = useState(startOfDay(new Date())); // เริ่มต้นวันนี้ 00:00 (UTC)
-  const [endDate, setEndDate] = useState(endOfDay(new Date())); // สิ้นสุดวันนี้ 23:59 (UTC)
+  const [startDate, setStartDate] = useState(new Date()); // เริ่มต้นเป็นวันที่ปัจจุบัน
+  const [endDate, setEndDate] = useState(new Date()); // เริ่มต้นเป็นวันที่ปัจจุบัน
   const [warehouse, setWarehouse] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [userQuery, setUserQuery] = useState('');
+  const [userQuery, setUserQuery] = useState(''); // ช่องค้นหา User
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('token')
@@ -32,7 +32,7 @@ const ReceiveHistory = () => {
   useEffect(() => {
     fetchWarehouses();
     fetchTransactions();
-  }, [page, startDate, endDate, warehouse]); // ลบ searchQuery และ userQuery ออกจาก dependency
+  }, [page, startDate, endDate, warehouse, searchQuery, userQuery]);
 
   const fetchWarehouses = async () => {
     try {
@@ -49,31 +49,26 @@ const ReceiveHistory = () => {
     }
   };
 
-  const fetchTransactions = async (params = {}) => {
+  const fetchTransactions = async () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const start = startDate ? format(toDate(startOfDay(startDate)), 'dd-MM-yyyy') : '';
-      const end = endDate ? format(toDate(endOfDay(endDate)), 'dd-MM-yyyy') : '';
-      const queryParams = {
-        startDate: start,
-        endDate: end,
-        warehouse,
-        searchQuery: params.searchQuery || searchQuery,
-        userQuery: params.userQuery || userQuery,
-        page,
-        limit
-      };
-      console.log('Fetching transactions with params:', queryParams); // ดีบั๊กพารามิเตอร์
       const { data } = await axios.get('http://localhost:3000/api/receive-history', {
         headers: { Authorization: `Bearer ${token}` },
-        params: queryParams
+        params: {
+          startDate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
+          endDate: endDate ? format(endDate, 'dd-MM-yyyy') : '',
+          warehouse,
+          searchQuery,
+          userQuery, // เพิ่ม parameter User
+          page,
+          limit
+        }
       });
-      setTransactions(data.data || []);
-      setTotal(data.total || 0);
+      setTransactions(data.data);
+      setTotal(data.total);
     } catch (error) {
-      console.error('Error fetching transactions:', error.response || error);
-      setTransactions([]); // รีเซ็ตข้อมูลถ้ามี error
+      console.error('Error fetching transactions:', error);
     } finally {
       setIsLoading(false);
     }
@@ -89,8 +84,8 @@ const ReceiveHistory = () => {
       const response = await axios.get('http://localhost:3000/api/receive-history/export', {
         headers: { Authorization: `Bearer ${token}` },
         params: {
-          startDate: startDate ? format(startOfDay(startDate), 'dd-MM-yyyy') : '',
-          endDate: endDate ? format(endOfDay(endDate), 'dd-MM-yyyy') : '',
+          startDate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
+          endDate: endDate ? format(endDate, 'dd-MM-yyyy') : '',
           warehouse,
           searchQuery,
           userQuery
@@ -113,13 +108,13 @@ const ReceiveHistory = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setPage(1);
-    fetchTransactions({ searchQuery, userQuery }); // เรียก fetchTransactions ด้วยพารามิเตอร์จาก input
+    setPage(1); // Reset to first page when searching
+    fetchTransactions();
   };
 
   const clearFilters = () => {
-    setStartDate(startOfDay(new Date()));
-    setEndDate(endOfDay(new Date()));
+    setStartDate(new Date()); // รีเซ็ตเป็นวันที่ปัจจุบัน
+    setEndDate(new Date()); // รีเซ็ตเป็นวันที่ปัจจุบัน
     setWarehouse('');
     setSearchQuery('');
     setUserQuery('');
@@ -200,7 +195,7 @@ const ReceiveHistory = () => {
                     <SelectValue placeholder="All Warehouses" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Warehouses</SelectItem>
+                    <SelectItem value="">All Warehouses</SelectItem>
                     {warehouses.map((w) => (
                       <SelectItem key={w._id} value={w.name}>
                         {w.name}
@@ -210,6 +205,7 @@ const ReceiveHistory = () => {
                 </Select>
               </div>
             )}
+
             {!isAdmin && warehouse && (
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
@@ -234,6 +230,8 @@ const ReceiveHistory = () => {
               </div>
             </div>
 
+
+
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
               <div className="relative">
@@ -248,6 +246,8 @@ const ReceiveHistory = () => {
                 <FaSearch className="absolute left-3 top-3 text-gray-400" />
               </div>
             </div>
+
+
 
             <div className="flex items-end space-x-2">
               <button
@@ -288,7 +288,7 @@ const ReceiveHistory = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Date/Time</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">User</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Supplier</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product Code</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product Code</th> {/* เพิ่มหัวตาราง */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Lot Code</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Qty</th>
@@ -306,7 +306,7 @@ const ReceiveHistory = () => {
                         {trans.transactionNumber}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {format(new Date(trans.createdAt), 'dd-MM-yyyy HH:mm')}
+                        {format(new Date(trans.timestamp), 'dd-MM-yyyy HH:mm')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {trans.userId?.username || 'N/A'}
@@ -315,7 +315,7 @@ const ReceiveHistory = () => {
                         {trans.supplierId?.name || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.productId?.productCode || 'N/A'}
+                        {trans.productId?.productCode || 'N/A'} {/* เพิ่ม productCode */}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {trans.productId?.name || 'N/A'}
@@ -324,7 +324,7 @@ const ReceiveHistory = () => {
                         {trans.lotId?.lotCode || 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.quantity}
+                        {trans.quantity} {/* แสดง quantity ของแต่ละการรับ */}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {trans.warehouse || 'N/A'}
