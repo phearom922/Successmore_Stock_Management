@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import Suppliers from './pages/Suppliers';
 import ReceiveStock from './pages/ReceiveStock';
 import ReceiveHistory from './pages/ReceiveHistory';
-
+import LotManagement from './pages/LotManagement';
 
 
 function App() {
@@ -82,6 +82,7 @@ function App() {
               <Route path="/suppliers" element={<Suppliers />} />
               <Route path="/receive-stock" element={<ReceiveStock />} />
               <Route path="/receive-history" element={<ReceiveHistory />} />
+              <Route path="/lot-management" element={<LotManagement />} />
             </Routes>
           </div>
         </main>

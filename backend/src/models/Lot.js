@@ -8,11 +8,12 @@ const lotSchema = new mongoose.Schema({
   quantity: { type: Number, required: true },
   boxCount: { type: Number, required: true },
   qtyPerBox: { type: Number, required: true },
-  warehouse: { type: String, required: true }, // ตรวจสอบว่า field นี้มี
+  warehouse: { type: String, required: true },
   supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier', required: true },
   transactionNumber: { type: String, required: true },
   status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
-  qtyOnHand: { type: Number, default: 0 } // ถ้ามี field นี้
+  qtyOnHand: { type: Number, default: 0 },
+  damaged: { type: Number, default: 0 } // เพิ่ม field damaged
 });
 
 module.exports = mongoose.model('Lot', lotSchema);

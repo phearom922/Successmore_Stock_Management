@@ -4,9 +4,9 @@ import {
   FiUpload,
   FiPackage,
   FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers,
-  FiArrowDownCircle
+  FiArrowDownCircle,
 } from 'react-icons/fi';
-import { FaBuilding } from "react-icons/fa";
+import { FaBuilding, FaCubes } from "react-icons/fa";
 
 
 const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
@@ -168,7 +168,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
           )}
 
           <div className="mt-1 space-y-1">
-            {userRole === 'admin' && (
+            {(userRole === 'admin' || userRole === 'user') && (
               <>
                 <Link
                   to="/receive-stock"
@@ -184,10 +184,18 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
                   <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
                   {isOpen && <span className='text-sm'>Receive History</span>}
                 </Link>
+                <Link
+                  to="/lot-management"
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/lot-management') ? 'bg-blue-600 text-white' : 'hover:bg-gray-700 text-gray-300'}`}
+                >
+                  <FaCubes className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
+                  {isOpen && <span className='text-sm'>Lot Management</span>}
+                </Link>
               </>
             )}
           </div>
         </div>
+
 
 
 

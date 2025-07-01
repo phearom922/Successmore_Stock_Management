@@ -17,12 +17,7 @@ const TransactionCounter = require('../models/TransactionCounter');
 const logger = require('../config/logger');
 const UserTransaction = require('../models/UserTransaction');
 const Notification = require('../models/Notification');
-const { format } = require('date-fns'); // นำเข้า date-fns
-
-
-
-
-
+const { format } = require('date-fns');
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -75,6 +70,17 @@ const issueSchema = z.object({
   issueType: z.enum(['normal', 'expired', 'waste']),
   lotId: z.string().optional(),
 });
+
+
+
+
+
+
+
+
+
+
+
 
 // Login Endpoint
 router.post('/login', async (req, res) => {
@@ -1012,6 +1018,11 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
 });
 
 
+
+
+// Receive Stock
+// ... (โค้ดนำเข้าทั้งหมด)
+
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
   const session = await Lot.startSession();
@@ -1043,6 +1054,9 @@ router.post('/receive', authMiddleware, async (req, res) => {
       logger.info('Processing lot', { lotCode: lot.lotCode, quantity: lot.quantity });
 
       const existingLot = await Lot.findOne({ lotCode: lot.lotCode, warehouse: lot.warehouse }).session(session);
+      if (!existingLot) {
+        logger.warn('No existing lot found, creating new lot', { lotCode: lot.lotCode });
+      }
 
       const warehouseDoc = await Warehouse.findOne({ name: lot.warehouse }).session(session);
       if (!warehouseDoc) {
@@ -1056,39 +1070,16 @@ router.post('/receive', authMiddleware, async (req, res) => {
 
       const transactionNumber = `${warehouseDoc.warehouseCode}-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
 
+      let updatedLot;
       if (existingLot) {
         // อัปเดต Lot เดิมถ้ามีอยู่
         existingLot.quantity = Number(existingLot.quantity) + Number(lot.quantity);
         existingLot.boxCount = Number(existingLot.boxCount) + Number(lot.boxCount);
-        existingLot.qtyOnHand = Number(existingLot.qtyOnHand) + Number(lot.quantity); // อัปเดต qtyOnHand ด้วย
+        existingLot.qtyOnHand = Number(existingLot.qtyOnHand) + Number(lot.quantity);
+        existingLot.damaged = existingLot.damaged || 0; // รักษาค่า damaged เดิม
         await existingLot.save({ session });
+        updatedLot = existingLot;
         logger.info(`Updated existing lot ${lot.lotCode} with new quantity: ${existingLot.quantity}`);
-
-        // อัปเดต StockTransaction เดิม (ถ้ามี) หรือสร้างใหม่
-        const existingTransaction = await StockTransaction.findOne({ lotId: existingLot._id, type: 'receive' }).session(session);
-        if (existingTransaction) {
-          existingTransaction.quantity = existingLot.quantity;
-          existingTransaction.boxCount = existingLot.boxCount;
-          await existingTransaction.save({ session });
-        } else {
-          const transaction = new StockTransaction({
-            transactionNumber,
-            userId: req.user._id,
-            supplierId: lot.supplierId,
-            lotId: existingLot._id,
-            productId: lot.productId,
-            quantity: existingLot.quantity,
-            boxCount: existingLot.boxCount,
-            qtyPerBox: lot.qtyPerBox,
-            productionDate: lot.productionDate,
-            expDate: lot.expDate,
-            warehouse: lot.warehouse,
-            type: 'receive',
-            auditTrail: userTransaction._id
-          });
-          await transaction.save({ session });
-        }
-        lastTransaction = existingTransaction || transaction;
       } else {
         // สร้าง Lot ใหม่ถ้าไม่มี
         const newLot = new Lot({
@@ -1103,30 +1094,32 @@ router.post('/receive', authMiddleware, async (req, res) => {
           supplierId: lot.supplierId,
           transactionNumber,
           status: 'active',
-          qtyOnHand: lot.quantity
+          qtyOnHand: lot.quantity,
+          damaged: 0 // ตั้งค่าเริ่มต้นเป็น 0
         });
         await newLot.save({ session });
-
-        const transaction = new StockTransaction({
-          transactionNumber,
-          userId: req.user._id,
-          supplierId: lot.supplierId,
-          lotId: newLot._id,
-          productId: lot.productId,
-          quantity: lot.quantity,
-          boxCount: lot.boxCount,
-          qtyPerBox: lot.qtyPerBox,
-          productionDate: lot.productionDate,
-          expDate: lot.expDate,
-          warehouse: lot.warehouse,
-          type: 'receive',
-          auditTrail: userTransaction._id
-        });
-        await transaction.save({ session });
-        lastTransaction = transaction;
-
+        updatedLot = newLot;
         logger.info('Successfully processed new lot', { lotCode: lot.lotCode, transactionNumber });
       }
+
+      // สร้าง StockTransaction ใหม่ทุกครั้ง
+      const transaction = new StockTransaction({
+        transactionNumber,
+        userId: req.user._id,
+        supplierId: lot.supplierId,
+        lotId: updatedLot._id,
+        productId: lot.productId,
+        quantity: lot.quantity, // บันทึกจำนวนที่รับใหม่
+        boxCount: lot.boxCount,
+        qtyPerBox: lot.qtyPerBox,
+        productionDate: lot.productionDate,
+        expDate: lot.expDate,
+        warehouse: lot.warehouse,
+        type: 'receive',
+        auditTrail: userTransaction._id
+      });
+      await transaction.save({ session });
+      lastTransaction = transaction;
     }
 
     const notification = new Notification({
@@ -1142,12 +1135,19 @@ router.post('/receive', authMiddleware, async (req, res) => {
     res.status(201).json({ message: 'Stock received successfully' });
   } catch (error) {
     await session.abortTransaction();
-    logger.error('Transaction failed', { error: error.message, stack: error.stack });
-    res.status(400).json({ message: error.message });
+    logger.error('Transaction failed', { error: error.message, stack: error.stack, body: req.body }); // เพิ่ม body ใน log
+    res.status(400).json({ message: error.message || 'Validation or processing error occurred' });
   } finally {
     session.endSession();
   }
 });
+
+
+
+
+
+
+
 
 
 
@@ -1178,7 +1178,6 @@ router.put('/notifications/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error updating notification' });
   }
 });
-
 
 
 router.get('/receive-history', authMiddleware, async (req, res) => {
@@ -1234,8 +1233,7 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
   }
 });
 
-
-//Export excel
+//Receive History Export excel
 router.get('/receive-history/export', authMiddleware, async (req, res) => {
   try {
     logger.info('Exporting receive history', { user: req.user, query: req.query });
@@ -1299,5 +1297,182 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
   }
 });
 
+
+
+
+// Lot Management - Fetch Lots
+router.get('/lot-management', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Fetching lot management data', { user: req.user, query: req.query });
+
+    const { searchQuery, warehouse, page = 1, limit = 25 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const query = {};
+    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
+    if (searchQuery) {
+      query.$or = [
+        { lotCode: { $regex: searchQuery, $options: 'i' } },
+        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
+        { 'productId.name': { $regex: searchQuery, $options: 'i' } }
+      ];
+    }
+
+    const lots = await Lot.find(query)
+      .populate('productId', 'productCode name') // ใช้ productId ถ้า schema ใช้ reference นี้
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ lotCode: 1 });
+
+    const total = await Lot.countDocuments(query);
+
+    // ตรวจสอบและเพิ่ม expanded และ availableQty
+    const enrichedLots = lots.map(lot => {
+      if (!lot.productId) {
+        console.warn('Lot without productId:', lot._id);
+      } else {
+        console.log('Lot product data:', lot.productId); // ดีบั๊กข้อมูล product
+      }
+      return {
+        ...lot.toObject(),
+        availableQty: lot.quantity - (lot.damaged || 0),
+        expanded: true // ตั้งค่าเริ่มต้นเป็น true
+      };
+    });
+
+    res.json({
+      data: enrichedLots,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit)
+    });
+  } catch (error) {
+    logger.error('Error fetching lot management data', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error fetching lot management data', error: error.message });
+  }
+});
+
+
+
+
+
+// Lot Management - Update Lot
+router.put('/lot-management/:id', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity, damaged, productionDate, expDate } = req.body;
+    if (!req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    const lot = await Lot.findById(id);
+    if (!lot) return res.status(404).json({ message: 'Lot not found' });
+
+    if (quantity !== undefined) lot.quantity = Number(quantity);
+    if (damaged !== undefined) lot.damaged = Number(damaged) >= 0 ? Number(damaged) : 0;
+    if (productionDate) lot.productionDate = new Date(productionDate);
+    if (expDate) lot.expDate = new Date(expDate);
+
+    await lot.save();
+    logger.info('Lot updated successfully', { lotId: id });
+    res.json({ message: 'Lot updated successfully' });
+  } catch (error) {
+    logger.error('Error updating lot', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error updating lot', error: error.message });
+  }
+});
+
+
+// Lot Management - Delete Lot
+router.delete('/lot-management/:id', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.user.role === 'admin') {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    const lot = await Lot.findByIdAndDelete(id);
+    if (!lot) return res.status(404).json({ message: 'Lot not found' });
+
+    logger.info('Lot deleted successfully', { lotId: id });
+    res.json({ message: 'Lot deleted successfully' });
+  } catch (error) {
+    logger.error('Error deleting lot', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error deleting lot', error: error.message });
+  }
+});
+
+
+// Lot Management - Export to Excel
+router.get('/lot-management/export', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Exporting lot management data', { user: req.user, query: req.query });
+
+    const { searchQuery, warehouse } = req.query;
+
+    const query = {};
+    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
+    if (searchQuery) {
+      query.$or = [
+        { lotCode: { $regex: searchQuery, $options: 'i' } },
+        { 'productId.productCode': { $regex: searchQuery, $options: 'i' } },
+        { 'productId.name': { $regex: searchQuery, $options: 'i' } }
+      ];
+    }
+
+    const lots = await Lot.find(query)
+      .populate('productId', 'productCode name')
+      .lean();
+
+    // ดีบั๊กข้อมูลที่ดึงมา
+    logger.info('Fetched lots for export:', lots);
+
+    const worksheetData = lots.map(lot => {
+      if (!lot.productId) {
+        logger.warn('Lot without productId:', lot._id);
+        return {
+          'Lot Code': lot.lotCode || 'N/A',
+          'Code Product': 'N/A',
+          'Product Name': 'Unknown',
+          'Warehouse': lot.warehouse || 'N/A',
+          'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
+          'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
+          'Total Qty': lot.quantity || 0,
+          'Damaged': lot.damaged || 0,
+          'Available Qty': (lot.quantity || 0) - (lot.damaged || 0)
+        };
+      }
+      return {
+        'Lot Code': lot.lotCode || 'N/A',
+        'Code Product': lot.productId.productCode || 'N/A',
+        'Product Name': lot.productId.name || 'N/A',
+        'Warehouse': lot.warehouse || 'N/A',
+        'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
+        'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
+        'Total Qty': lot.quantity || 0,
+        'Damaged': lot.damaged || 0,
+        'Available Qty': (lot.quantity || 0) - (lot.damaged || 0)
+      };
+    });
+
+    // ตรวจสอบ worksheetData ก่อนสร้างไฟล์
+    if (worksheetData.length === 0) {
+      logger.warn('No data to export');
+      return res.status(400).json({ message: 'No data available for export' });
+    }
+
+    const ws = XLSX.utils.json_to_sheet(worksheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Lot Management');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    res.setHeader('Content-Disposition', 'attachment; filename=lot-management.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(excelBuffer);
+  } catch (error) {
+    logger.error('Error exporting lot management data', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error exporting lot management data', error: error.message });
+  }
+});
 
 module.exports = router;

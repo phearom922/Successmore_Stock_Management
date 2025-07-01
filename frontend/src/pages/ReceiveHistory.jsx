@@ -17,7 +17,7 @@ const ReceiveHistory = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin] = useState(localStorage.getItem('token') ? 
+  const [isAdmin] = useState(localStorage.getItem('token') ?
     JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role === 'admin' : false);
 
   useEffect(() => {
@@ -46,13 +46,13 @@ const ReceiveHistory = () => {
       const token = localStorage.getItem('token');
       const { data } = await axios.get('http://localhost:3000/api/receive-history', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { 
+        params: {
           startDate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
           endDate: endDate ? format(endDate, 'dd-MM-yyyy') : '',
-          warehouse, 
+          warehouse,
           searchQuery,
-          page, 
-          limit 
+          page,
+          limit
         }
       });
       setTransactions(data.data);
@@ -73,7 +73,7 @@ const ReceiveHistory = () => {
       const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:3000/api/receive-history/export', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { 
+        params: {
           startDate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
           endDate: endDate ? format(endDate, 'dd-MM-yyyy') : '',
           warehouse,
@@ -81,7 +81,7 @@ const ReceiveHistory = () => {
         },
         responseType: 'blob'
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -116,7 +116,7 @@ const ReceiveHistory = () => {
           <h1 className="text-2xl font-bold text-gray-800">Receive History</h1>
           <p className="text-sm text-gray-500 mt-1">Track and manage all product receiving transactions</p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           <button
             onClick={handleExport}
@@ -150,7 +150,7 @@ const ReceiveHistory = () => {
                 <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
               </div>
             </div>
-            
+
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
               <div className="relative">
@@ -169,7 +169,7 @@ const ReceiveHistory = () => {
                 <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
               </div>
             </div>
-            
+
             {isAdmin ? (
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
@@ -193,7 +193,7 @@ const ReceiveHistory = () => {
                 </div>
               </div>
             )}
-            
+
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
               <div className="relative">
@@ -208,7 +208,7 @@ const ReceiveHistory = () => {
                 <FaSearch className="absolute left-3 top-3 text-gray-400" />
               </div>
             </div>
-            
+
             <div className="flex items-end space-x-2">
               <button
                 type="submit"
@@ -241,88 +241,70 @@ const ReceiveHistory = () => {
       ) : (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Transaction #</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Date/Time</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Supplier</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Lot Code</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Qty</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Warehouse</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Production Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Expiration Date</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {transactions.length > 0 ? (
-                  transactions.map((trans) => (
-                    <tr key={trans._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {trans.transactionNumber}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {format(new Date(trans.timestamp), 'dd-MM-yyyy HH:mm')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.userId?.username || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.supplierId?.name || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.productId?.name || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.lotId?.lotCode || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.quantity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.warehouse || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          trans.status === 'completed' 
-                            ? 'bg-green-100 text-green-800' 
-                            : trans.status === 'pending'
+            <tbody className="bg-white divide-y divide-gray-200">
+              {transactions.length > 0 ? (
+                transactions.map((trans) => (
+                  <tr key={trans._id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {trans.transactionNumber}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {format(new Date(trans.timestamp), 'dd-MM-yyyy HH:mm')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.userId?.username || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.supplierId?.name || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.productId?.name || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.lotId?.lotCode || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.quantity} {/* แสดง quantity ของแต่ละการรับ */}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.warehouse || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${trans.status === 'completed'
+                          ? 'bg-green-100 text-green-800'
+                          : trans.status === 'pending'
                             ? 'bg-yellow-100 text-yellow-800'
                             : 'bg-red-100 text-red-800'
                         }`}>
-                          {trans.status || 'N/A'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A'}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="11" className="px-6 py-8 text-center">
-                      <div className="text-gray-500">No transactions found</div>
-                      {(startDate || endDate || warehouse || searchQuery) && (
-                        <button 
-                          onClick={clearFilters}
-                          className="mt-2 text-sm text-blue-600 hover:text-blue-800"
-                        >
-                          Clear filters
-                        </button>
-                      )}
+                        {trans.status || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A'}
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="11" className="px-6 py-8 text-center">
+                    <div className="text-gray-500">No transactions found</div>
+                    {(startDate || endDate || warehouse || searchQuery) && (
+                      <button
+                        onClick={clearFilters}
+                        className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        Clear filters
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </div>
-          
+
           {/* Pagination */}
           {transactions.length > 0 && (
             <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
