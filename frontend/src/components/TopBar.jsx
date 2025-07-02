@@ -62,10 +62,30 @@ const TopBar = ({ handleLogout, username, toggleSidebar }) => {
   const markAllAsRead = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:3000/api/notifications/mark-all-read', {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
+      // Fallback: ถ้า backend ไม่มี endpoint mark-all-read ให้ mark ทีละอัน
+      // ถ้ามี endpoint mark-all-read ให้ใช้ (แต่ถ้าไม่ได้ผล ให้ fallback)
+      let success = false;
+      try {
+        await axios.put('http://localhost:3000/api/notifications/mark-all-read', {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        success = true;
+      } catch (err) {
+        // fallback
+        success = false;
+      }
+      if (!success) {
+        // fallback: mark ทีละอัน
+        await Promise.all(
+          notifications.filter(n => !n.read).map(n =>
+            axios.put(`http://localhost:3000/api/notifications/${n._id}`, {}, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+          )
+        );
+      }
+      // รีเฟรช notification จาก server เพื่อความถูกต้อง
+      fetchNotifications();
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
     }

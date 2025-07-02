@@ -125,6 +125,7 @@ const ManageDamage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(response.data.message);
+      if (selectedProduct) fetchLots(selectedProduct); // Refresh lots
       setSelectedProduct('');
       setSelectedLot('');
       setQuantity('');

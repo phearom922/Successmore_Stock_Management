@@ -71,7 +71,15 @@ const ReceiveHistory = () => {
         params: queryParams
       });
       setTransactions(data.data || []);
-      setTotal(data.total || 0);
+      // Fix: use data.total from backend if present, otherwise fallback to data.data.length
+      // If backend returns only current page's count, try to use data.pages and limit
+      if (typeof data.total === 'number') {
+        setTotal(data.total);
+      } else if (typeof data.pages === 'number' && data.pages > 1) {
+        setTotal(data.pages * limit);
+      } else {
+        setTotal((data.data || []).length);
+      }
     } catch (error) {
       console.error('Error fetching transactions:', error.response || error);
       setTransactions([]); // รีเซ็ตข้อมูลถ้ามี error

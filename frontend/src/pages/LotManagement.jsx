@@ -53,16 +53,12 @@ const LotManagement = () => {
         headers: { Authorization: `Bearer ${token}` },
         params: { searchQuery, warehouse, page, limit }
       });
-      // ตรวจสอบและเพิ่ม expanded
-      const enrichedLots = data.data.map(lot => {
-        console.log('Lot data:', lot); // ดีบั๊กข้อมูล
-        return {
-          ...lot,
-          expanded: true, // ตั้งค่าเริ่มต้นเป็น true เพื่อให้ตารางแสดง
-          totalQty: (lot.qtyOnHand || 0) + (lot.damaged || 0), // แสดง qtyOnHand + damaged
-          availableQty: (lot.qtyOnHand || 0) - (lot.damaged || 0)
-        };
-      });
+      const enrichedLots = data.data.map(lot => ({
+        ...lot,
+        expanded: true,
+        totalQty: (lot.qtyOnHand || 0) + (lot.damaged || 0),
+        availableQty: (lot.qtyOnHand || 0) - (lot.damaged || 0)
+      }));
       setLots(enrichedLots);
       setTotal(data.total);
     } catch (error) {
@@ -349,9 +345,8 @@ const LotManagement = () => {
                             {lot.qtyOnHand || 0}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                              isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                            }`}>
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                              }`}>
                               {isExpired(lot.expDate) ? 'Expired' : 'Active'}
                             </span>
                           </td>
@@ -383,7 +378,7 @@ const LotManagement = () => {
               </div>
             ))}
           </div>
-          
+
           {lots.length > 0 && (
             <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-sm text-gray-500">
