@@ -59,7 +59,8 @@ const LotManagement = () => {
         return {
           ...lot,
           expanded: true, // ตั้งค่าเริ่มต้นเป็น true เพื่อให้ตารางแสดง
-          availableQty: lot.quantity - (lot.damaged || 0)
+          totalQty: (lot.qtyOnHand || 0) + (lot.damaged || 0), // แสดง qtyOnHand + damaged
+          availableQty: (lot.qtyOnHand || 0) - (lot.damaged || 0)
         };
       });
       setLots(enrichedLots);
@@ -264,7 +265,7 @@ const LotManagement = () => {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
           <div className="overflow-x-auto">
             {Object.entries(lots.reduce((acc, lot) => {
-              const productName = lot.productId?.name || 'Unknown'; // ใช้ productId.name ถ้า populate ถูกต้อง
+              const productName = lot.productId?.name || 'Unknown';
               if (!acc[productName]) acc[productName] = [];
               acc[productName].push(lot);
               return acc;
@@ -305,7 +306,7 @@ const LotManagement = () => {
                             {lot.lotCode}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.productId?.productCode || 'N/A'} {/* ใช้ productId ถ้า populate ถูกต้อง */}
+                            {lot.productId?.productCode || 'N/A'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {lot.warehouse}
@@ -319,11 +320,11 @@ const LotManagement = () => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <input
                               type="number"
-                              value={lot.quantity}
+                              value={lot.totalQty || 0} // เปลี่ยนเป็น totalQty
                               onChange={(e) => {
                                 if (isAdmin) {
                                   const newValue = Number(e.target.value);
-                                  setLots(prev => prev.map(l => l._id === lot._id ? { ...l, quantity: newValue, availableQty: newValue - (l.damaged || 0) } : l));
+                                  setLots(prev => prev.map(l => l._id === lot._id ? { ...l, totalQty: newValue, availableQty: newValue - (l.damaged || 0) } : l));
                                 }
                               }}
                               className={`w-full p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
@@ -337,7 +338,7 @@ const LotManagement = () => {
                               onChange={(e) => {
                                 if (isAdmin) {
                                   const newValue = Number(e.target.value) >= 0 ? Number(e.target.value) : 0;
-                                  setLots(prev => prev.map(l => l._id === lot._id ? { ...l, damaged: newValue, availableQty: l.quantity - newValue } : l));
+                                  setLots(prev => prev.map(l => l._id === lot._id ? { ...l, damaged: newValue, availableQty: l.totalQty - newValue } : l));
                                 }
                               }}
                               className={`w-full p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
@@ -345,7 +346,7 @@ const LotManagement = () => {
                             />
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.availableQty || (lot.quantity - (lot.damaged || 0))}
+                            {lot.qtyOnHand || 0}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
