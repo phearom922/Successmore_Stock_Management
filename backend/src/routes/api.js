@@ -1074,14 +1074,18 @@ router.post('/receive', authMiddleware, async (req, res) => {
     const userId = req.user._id;
     // Use warehouseCode for transaction counter (assume single warehouse for now)
     const warehouseCode = 'PNH-WH-01';
-    const transactionCounter = await TransactionCounter.findOneAndUpdate(
-      { warehouseCode },
-      { $inc: { sequence: 1 } },
-      { new: true, upsert: true }
-    );
-    const transactionNumber = `${warehouseCode}-${format(new Date(), 'yyyyMMdd')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
+    // Generate a unique transactionNumber for each lot (avoid duplicate key error)
+    const transactionNumbers = [];
+    const transactions = await Promise.all(lots.map(async (lot, idx) => {
+      // Increase counter for each lot
+      const transactionCounter = await TransactionCounter.findOneAndUpdate(
+        { warehouseCode },
+        { $inc: { sequence: 1 } },
+        { new: true, upsert: true }
+      );
+      const transactionNumber = `${warehouseCode}-${format(new Date(), 'yyyyMMdd')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
+      transactionNumbers.push(transactionNumber);
 
-    const transactions = await Promise.all(lots.map(async lot => {
       // First, ensure the Lot exists and get its _id
       let existingLot = await Lot.findOne({ lotCode: lot.lotCode });
       let lotId;
@@ -1127,22 +1131,25 @@ router.post('/receive', authMiddleware, async (req, res) => {
       return transaction;
     }));
 
+    // Use the first transactionNumber for summary/logging
+    const summaryTransactionNumber = transactionNumbers[0];
+
     await UserTransaction.create({
       userId,
       action: 'receive',
-      description: `Received stock with transaction number ${transactionNumber}`,
-      details: { transactionNumber },
+      description: `Received stock with transaction number(s) ${transactionNumbers.join(', ')}`,
+      details: { transactionNumbers },
       timestamp: new Date(),
     });
 
     await Notification.create({
       userId,
-      message: `Stock received successfully with transaction number ${transactionNumber}`,
+      message: `Stock received successfully with transaction number(s) ${transactionNumbers.join(', ')}`,
       type: 'success',
       timestamp: new Date(),
     });
 
-    res.json({ message: 'Stock received successfully', transactionNumber });
+    res.json({ message: 'Stock received successfully', transactionNumbers });
   } catch (error) {
     logger.error('Error receiving stock:', {
       message: error.message,
@@ -1444,6 +1451,8 @@ router.delete('/lot-management/:id', authMiddleware, async (req, res) => {
 });
 
 
+
+// Lot Management - Export to Excel
 // Lot Management - Export to Excel
 router.get('/lot-management/export', authMiddleware, async (req, res) => {
   try {
@@ -1461,6 +1470,7 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
       ];
     }
 
+    // ดึงข้อมูลล่าสุดจาก MongoDB
     const lots = await Lot.find(query)
       .populate('productId', 'productCode name')
       .lean();
@@ -1471,6 +1481,9 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
     const worksheetData = lots.map(lot => {
       if (!lot.productId) {
         logger.warn('Lot without productId:', lot._id);
+        const totalQty = (lot.qtyOnHand || 0) + (lot.damaged || 0);
+        const availableQty = (lot.qtyOnHand || 0) - (lot.damaged || 0);
+        logger.debug('Calculated values for lot without productId:', { lotId: lot._id, totalQty, availableQty, qtyOnHand: lot.qtyOnHand, damaged: lot.damaged });
         return {
           'Lot Code': lot.lotCode || 'N/A',
           'Code Product': 'N/A',
@@ -1478,11 +1491,14 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
           'Warehouse': lot.warehouse || 'N/A',
           'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
           'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
-          'Total Qty': lot.quantity || 0,
+          'Total Qty': totalQty,
           'Damaged': lot.damaged || 0,
-          'Available Qty': (lot.quantity || 0) - (lot.damaged || 0)
+          'Available Qty': availableQty
         };
       }
+      const totalQty = (lot.qtyOnHand || 0) + (lot.damaged || 0);
+      const availableQty = (lot.qtyOnHand || 0) - (lot.damaged || 0);
+      logger.debug('Calculated values for lot:', { lotId: lot._id, totalQty, availableQty, qtyOnHand: lot.qtyOnHand, damaged: lot.damaged });
       return {
         'Lot Code': lot.lotCode || 'N/A',
         'Code Product': lot.productId.productCode || 'N/A',
@@ -1490,9 +1506,9 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
         'Warehouse': lot.warehouse || 'N/A',
         'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
         'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
-        'Total Qty': lot.quantity || 0,
+        'Total Qty': totalQty,
         'Damaged': lot.damaged || 0,
-        'Available Qty': (lot.quantity || 0) - (lot.damaged || 0)
+        'Available Qty': availableQty
       };
     });
 
@@ -1515,7 +1531,6 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error exporting lot management data', error: error.message });
   }
 });
-
 
 
 
@@ -1583,8 +1598,8 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
       StockTransaction.find(query)
         .populate({
           path: 'userId',
-          select: 'username -_id', // เลือกเฉพาะ username และป้องกัน _id
-          match: { username: { $exists: true, $ne: null } } // กรอง userId ที่มี username
+          select: 'username -_id',
+          match: { username: { $exists: true, $ne: null } }
         })
         .populate('supplierId', 'name')
         .populate('productId', 'name productCode')
@@ -1602,16 +1617,12 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
       console.warn('Some transactions have invalid userId data, filtered out:', transactions.length - validTransactions.length);
     }
 
-    if (validTransactions.length === 0) {
-      console.log('No transactions found for query:', query); // ดีบั๊กเพิ่มเติม
-      return res.json({ data: [], total: 0, page, pages: 0 });
-    }
-
+    // Always return total = จำนวนทั้งหมดในฐานข้อมูล (ไม่ใช่แค่ validTransactions)
     res.json({
       data: validTransactions,
-      total: validTransactions.length, // อัปเดต total ตาม transactions ที่กรองแล้ว
+      total,
       page,
-      pages: Math.ceil(validTransactions.length / limit),
+      pages: Math.ceil(total / limit),
     });
 
   } catch (error) {
@@ -1668,6 +1679,7 @@ router.post('/manage-damage', authMiddleware, async (req, res) => {
     const lot = await Lot.findById(lotId);
     if (!lot) return res.status(404).json({ message: 'Lot not found' });
     const remainingStock = lot.qtyOnHand - lot.damaged;
+    logger.info('Checking remaining stock', { lotId, qtyOnHand: lot.qtyOnHand, damaged: lot.damaged, remainingStock });
     if (quantity > remainingStock) {
       return res.status(400).json({ message: `Insufficient stock. Remaining: ${remainingStock}` });
     }
@@ -1676,6 +1688,7 @@ router.post('/manage-damage', authMiddleware, async (req, res) => {
     lot.damaged += quantity;
     lot.qtyOnHand -= quantity;
     await lot.save();
+    logger.info('Updated lot', { lotId, newQtyOnHand: lot.qtyOnHand, newDamaged: lot.damaged });
 
     // บันทึกประวัติ
     await DamagedAuditTrail.create({ lotId, userId, quantity, reason });

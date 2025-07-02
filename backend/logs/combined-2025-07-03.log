@@ -1,0 +1,94 @@
+2025-07-03 00:00:05 [info]: Received GET request to /api/notifications
+2025-07-03 00:00:35 [info]: Received GET request to /api/notifications
+2025-07-03 00:01:53 [info]: Received GET request to /api/notifications
+2025-07-03 00:02:27 [info]: Logger initialized successfully
+2025-07-03 00:02:27 [info]: Server running on port 3000
+2025-07-03 00:02:27 [info]: Received GET request to /api/notifications
+2025-07-03 00:02:28 [info]: Connected to MongoDB
+2025-07-03 00:02:31 [info]: Received GET request to /api/notifications
+2025-07-03 00:02:31 [info]: Received GET request to /api/warehouses
+2025-07-03 00:02:31 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:02:31 [info]: Received GET request to /api/notifications
+2025-07-03 00:02:31 [info]: Received GET request to /api/warehouses
+2025-07-03 00:02:31 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:02:36 [info]: Received GET request to /api/warehouses
+2025-07-03 00:02:36 [info]: Received GET request to /api/receive-history?startDate=02-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:02:38 [info]: Received GET request to /api/warehouses
+2025-07-03 00:02:38 [info]: Received GET request to /api/receive-history?startDate=02-07-2025&endDate=02-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:03:01 [info]: Received GET request to /api/notifications
+2025-07-03 00:03:31 [info]: Received GET request to /api/notifications
+2025-07-03 00:04:01 [info]: Received GET request to /api/notifications
+2025-07-03 00:04:31 [info]: Received GET request to /api/notifications
+2025-07-03 00:05:01 [info]: Received GET request to /api/notifications
+2025-07-03 00:05:31 [info]: Received GET request to /api/notifications
+2025-07-03 00:06:53 [info]: Received GET request to /api/notifications
+2025-07-03 00:07:53 [info]: Received GET request to /api/notifications
+2025-07-03 00:08:53 [info]: Received GET request to /api/notifications
+2025-07-03 00:09:12 [info]: Logger initialized successfully
+2025-07-03 00:09:14 [info]: Server running on port 3000
+2025-07-03 00:09:15 [info]: Connected to MongoDB
+2025-07-03 00:09:16 [info]: Received GET request to /api/warehouses
+2025-07-03 00:09:16 [info]: Received GET request to /api/notifications
+2025-07-03 00:09:16 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:09:16 [info]: Received GET request to /api/warehouses
+2025-07-03 00:09:16 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:09:16 [info]: Received GET request to /api/notifications
+2025-07-03 00:09:20 [info]: Received GET request to /api/warehouses
+2025-07-03 00:09:20 [info]: Received GET request to /api/receive-history?startDate=02-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:09:22 [info]: Received GET request to /api/warehouses
+2025-07-03 00:09:22 [info]: Received GET request to /api/receive-history?startDate=02-07-2025&endDate=02-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:09:30 [info]: Received GET request to /api/warehouses
+2025-07-03 00:09:30 [info]: Received GET request to /api/receive-history?startDate=02-07-2025&endDate=02-07-2025&warehouse=&searchQuery=&userQuery=&page=2&limit=25
+2025-07-03 00:09:33 [info]: Received GET request to /api/warehouses
+2025-07-03 00:09:33 [info]: Received GET request to /api/receive-history?startDate=02-07-2025&endDate=02-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:09:44 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:09:44 [error]: Error updating notification
+2025-07-03 00:09:46 [info]: Received GET request to /api/notifications
+2025-07-03 00:09:47 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:09:47 [error]: Error updating notification
+2025-07-03 00:09:51 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:09:51 [error]: Error updating notification
+2025-07-03 00:10:16 [info]: Received GET request to /api/notifications
+2025-07-03 00:10:46 [info]: Received GET request to /api/notifications
+2025-07-03 00:10:56 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:10:56 [error]: Error updating notification
+2025-07-03 00:10:57 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:10:57 [error]: Error updating notification
+2025-07-03 00:10:57 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:10:57 [error]: Error updating notification
+2025-07-03 00:10:58 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:10:58 [error]: Error updating notification
+2025-07-03 00:11:16 [info]: Received GET request to /api/notifications
+2025-07-03 00:11:46 [info]: Received GET request to /api/notifications
+2025-07-03 00:12:16 [info]: Received GET request to /api/notifications
+2025-07-03 00:12:46 [info]: Received GET request to /api/notifications
+2025-07-03 00:13:01 [info]: Logger initialized successfully
+2025-07-03 00:13:01 [info]: Server running on port 3000
+2025-07-03 00:13:02 [info]: Connected to MongoDB
+2025-07-03 00:13:05 [info]: Received GET request to /api/notifications
+2025-07-03 00:13:05 [info]: Received GET request to /api/warehouses
+2025-07-03 00:13:05 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:13:05 [info]: Received GET request to /api/warehouses
+2025-07-03 00:13:05 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 00:13:05 [info]: Received GET request to /api/notifications
+2025-07-03 00:13:08 [info]: Received GET request to /api/warehouses
+2025-07-03 00:13:08 [info]: Received GET request to /api/products
+2025-07-03 00:13:08 [info]: Received GET request to /api/lots
+2025-07-03 00:13:08 [info]: Received GET request to /api/warehouses
+2025-07-03 00:13:08 [info]: Received GET request to /api/products
+2025-07-03 00:13:08 [info]: Received GET request to /api/lots
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/mark-all-read
+2025-07-03 00:13:13 [error]: Error updating notification
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655ca37dca2c7ac1997c76
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655cf97dca2c7ac1997ca7
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655d727dca2c7ac1997cd8
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655dad7dca2c7ac1997cfd
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655efa7dca2c7ac1997dcb
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655f367dca2c7ac1997de7
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/68655f737dca2c7ac1997e0d
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/686561dc7dca2c7ac1997e99
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/6865635456f5dae24a25709c
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/6865643356f5dae24a2570e0
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/6865651556f5dae24a25716c
+2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/6865649656f5dae24a257130
+2025-07-03 00:13:13 [info]: Received GET request to /api/notifications
