@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { FaSearch, FaChevronLeft, FaChevronRight, FaTrash, FaEdit, FaPlus } from 'react-icons/fa';
+import { 
+  FaSearch, 
+  FaChevronLeft, 
+  FaChevronRight, 
+  FaTrash, 
+  FaEdit, 
+  FaPlus,
+  FaFilter,
+  FaTimes
+} from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
@@ -13,16 +22,24 @@ const LotManagement = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit] = useState(25);
-  // input state สำหรับฟอร์ม
   const [inputSearch, setInputSearch] = useState('');
   const [inputWarehouse, setInputWarehouse] = useState('all');
-  // query state สำหรับ fetch
   const [searchQuery, setSearchQuery] = useState('');
   const [warehouse, setWarehouse] = useState('all');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin] = useState(localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role === 'admin' : false);
+  const [isAdmin] = useState(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload?.role === 'admin';
+    } catch {
+      return false;
+    }
+  });
   const [editLot, setEditLot] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchWarehouses();
@@ -96,7 +113,11 @@ const LotManagement = () => {
 
   const handleEdit = (lot) => {
     if (!isAdmin) return;
-    setEditLot({ ...lot, productionDate: lot.productionDate ? new Date(lot.productionDate) : null, expDate: lot.expDate ? new Date(lot.expDate) : null });
+    setEditLot({ 
+      ...lot, 
+      productionDate: lot.productionDate ? new Date(lot.productionDate) : null, 
+      expDate: lot.expDate ? new Date(lot.expDate) : null 
+    });
   };
 
   const handleSaveEdit = async () => {
@@ -145,7 +166,7 @@ const LotManagement = () => {
   };
 
   const isExpired = (expDate) => {
-    return new Date(expDate) < new Date();
+    return expDate && new Date(expDate) < new Date();
   };
 
   const handleSearch = (e) => {
@@ -163,251 +184,315 @@ const LotManagement = () => {
     setPage(1);
   };
 
-  return (
-    <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Lot Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and track all lots in the inventory</p>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-          <button
-            onClick={handleExport}
-            className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            disabled={isLoading}
-          >
-            <FiDownload className="mr-2" /> Export to Excel
-          </button>
-        </div>
-      </div>
+  const toggleProductGroup = (productName) => {
+    setLots(prev => prev.map(l => {
+      if (l.productId?.name === productName) return { ...l, expanded: !l.expanded };
+      return l;
+    }));
+  };
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-        <form onSubmit={handleSearch} className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">Search</label>
-            <div className="relative">
-              <input
-                type="text"
-                value={inputSearch}
-                onChange={(e) => setInputSearch(e.target.value)}
-                placeholder="Search by Lot Code, Product Name or Code Product..."
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                disabled={isLoading}
-              />
-              <FaSearch className="absolute left-3 top-3 text-gray-400" />
-            </div>
+  return (
+    <div className="p-4 md:p-6 mx-auto bg-gray-50 min-h-screen">
+      <div className="max-w-screen-2xl mx-auto">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Lot Management</h1>
+            <p className="text-sm text-gray-500 mt-1">Track and manage inventory lots</p>
           </div>
-          <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">Warehouse</label>
-            <Select.Root value={inputWarehouse} onValueChange={setInputWarehouse} disabled={isLoading}>
-              <Select.Trigger className="w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-lg">
-                <Select.Value placeholder="All Warehouses" />
-                <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <ChevronDownIcon />
-                </Select.Icon>
-              </Select.Trigger>
-              <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                  <ChevronUpIcon />
-                </Select.ScrollUpButton>
-                <Select.Viewport>
-                  <Select.Group>
-                    <Select.Item value="all" className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 focus:bg-blue-100">
-                      <Select.ItemText>All Warehouses</Select.ItemText>
-                    </Select.Item>
-                    {warehouses.map(w => (
-                      <Select.Item key={w._id} value={w.name} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 focus:bg-blue-100">
-                        <Select.ItemText>{w.name}</Select.ItemText>
-                        <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                          <CheckIcon />
-                        </Select.ItemIndicator>
-                      </Select.Item>
-                    ))}
-                  </Select.Group>
-                </Select.Viewport>
-                <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                  <ChevronDownIcon />
-                </Select.ScrollDownButton>
-              </Select.Content>
-            </Select.Root>
-          </div>
-          <div className="flex items-end space-x-2">
+          <div className="flex gap-3 w-full md:w-auto">
             <button
-              type="submit"
-              className="flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center justify-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <FaFilter className="mr-2" /> Filters
+            </button>
+            <button
+              onClick={handleExport}
+              className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               disabled={isLoading}
             >
-              <FaSearch className="mr-2" /> Search
+              <FiDownload className="mr-2" /> Export
             </button>
-            {(searchQuery || warehouse !== 'all') && (
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="flex items-center justify-center px-3 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-                disabled={isLoading}
-              >
-                Clear
-              </button>
-            )}
           </div>
-        </form>
-      </div>
-
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-          <div className="overflow-x-auto">
+
+        {/* Filters Section */}
+        {showFilters && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 animate-fade-in">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-800">Filters</h3>
+              <button 
+                onClick={() => setShowFilters(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Search</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={inputSearch}
+                    onChange={(e) => setInputSearch(e.target.value)}
+                    placeholder="Lot code, product name..."
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    disabled={isLoading}
+                  />
+                  <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Warehouse</label>
+                <Select.Root value={inputWarehouse} onValueChange={setInputWarehouse} disabled={isLoading}>
+                  <Select.Trigger className="w-full pl-3 pr-10 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg transition">
+                    <Select.Value placeholder="All Warehouses" />
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <ChevronDownIcon />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1 z-50">
+                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                      <ChevronUpIcon />
+                    </Select.ScrollUpButton>
+                    <Select.Viewport className="p-1">
+                      <Select.Group>
+                        <Select.Item value="all" className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
+                          <Select.ItemText>All Warehouses</Select.ItemText>
+                        </Select.Item>
+                        {warehouses.map(w => (
+                          <Select.Item key={w._id} value={w.name} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
+                            <Select.ItemText>{w.name}</Select.ItemText>
+                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                              <CheckIcon />
+                            </Select.ItemIndicator>
+                          </Select.Item>
+                        ))}
+                      </Select.Group>
+                    </Select.Viewport>
+                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                      <ChevronDownIcon />
+                    </Select.ScrollDownButton>
+                  </Select.Content>
+                </Select.Root>
+              </div>
+              <div className="flex items-end gap-2 mb-2">
+                <button
+                  type="submit"
+                  className="flex-1 flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  disabled={isLoading}
+                >
+                  <FaSearch className="mr-2" /> Apply
+                </button>
+                {(searchQuery || warehouse !== 'all') && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="flex items-center justify-center px-3 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition"
+                    disabled={isLoading}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+
+            </form>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+            {/* Product Groups */}
             {Object.entries(lots.reduce((acc, lot) => {
               const productName = lot.productId?.name || 'Unknown';
               if (!acc[productName]) acc[productName] = [];
               acc[productName].push(lot);
               return acc;
             }, {})).map(([productName, productLots]) => (
-              <div key={productName} className="mb-4">
+              <div key={productName} className="mb-1 last:mb-0">
+                {/* Product Header */}
                 <div
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-t-lg cursor-pointer hover:bg-gray-100"
-                  onClick={() => {
-                    setLots(prev => prev.map(l => {
-                      if (l.productId?.name === productName) return { ...l, expanded: !l.expanded };
-                      return l;
-                    }));
-                  }}
+                  className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 cursor-pointer transition"
+                  onClick={() => toggleProductGroup(productName)}
                 >
-                  <h3 className="text-lg font-medium text-gray-900">{productName} ({productLots[0].productId?.productCode || 'N/A'})</h3>
-                  <span>{productLots.length} lots</span>
+                  <div className="flex items-center">
+                    <h3 className="text-lg font-medium text-gray-900">{productName}</h3>
+                    <span className="ml-2 text-sm text-gray-500">
+                      ({productLots[0].productId?.productCode || 'N/A'})
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="px-2 py-1 bg-gray-200 rounded-full text-xs font-medium">
+                      {productLots.length} lots
+                    </span>
+                    <ChevronDownIcon className={`transform transition ${productLots[0].expanded ? 'rotate-180' : ''}`} />
+                  </div>
                 </div>
-                {productLots.length > 0 && (
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot Code</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code Product</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Production Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiration Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Qty</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Damaged</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available Qty</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expire</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {productLots.map(lot => (
-                        <tr key={lot._id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {lot.lotCode}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.productId?.productCode || 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.warehouse}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <input
-                              type="number"
-                              value={lot.totalQty || 0} // เปลี่ยนเป็น totalQty
-                              onChange={(e) => {
-                                if (isAdmin) {
-                                  const newValue = Number(e.target.value);
-                                  setLots(prev => prev.map(l => l._id === lot._id ? { ...l, totalQty: newValue, availableQty: newValue - (l.damaged || 0) } : l));
-                                }
-                              }}
-                              className={`w-full p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
-                              disabled={!isAdmin}
-                            />
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <input
-                              type="number"
-                              value={lot.damaged || 0}
-                              onChange={(e) => {
-                                if (isAdmin) {
-                                  const newValue = Number(e.target.value) >= 0 ? Number(e.target.value) : 0;
-                                  setLots(prev => prev.map(l => l._id === lot._id ? { ...l, damaged: newValue, availableQty: l.totalQty - newValue } : l));
-                                }
-                              }}
-                              className={`w-full p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
-                              disabled={!isAdmin}
-                            />
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {lot.qtyOnHand || 0}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                              }`}>
-                              {isExpired(lot.expDate) ? 'Expired' : 'Active'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            {isAdmin && (
-                              <>
-                                <button
-                                  onClick={() => handleEdit(lot)}
-                                  className="text-blue-600 hover:text-blue-900 mr-2"
-                                  disabled={isLoading}
-                                >
-                                  <FaEdit />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(lot._id)}
-                                  className="text-red-600 hover:text-red-900"
-                                  disabled={isLoading}
-                                >
-                                  <FaTrash />
-                                </button>
-                              </>
-                            )}
-                          </td>
+
+                {/* Product Lots Table */}
+                {productLots[0].expanded && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot Code</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Production</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiration</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Damaged</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                          {isAdmin && (
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                          )}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {productLots.map(lot => (
+                          <tr key={lot._id} className="hover:bg-gray-50 transition">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {lot.lotCode}
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {lot.warehouse}
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : 'N/A'}
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : 'N/A'}
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <input
+                                type="number"
+                                value={lot.totalQty || 0}
+                                onChange={(e) => {
+                                  if (isAdmin) {
+                                    const newValue = Number(e.target.value);
+                                    setLots(prev => prev.map(l => l._id === lot._id ? { 
+                                      ...l, 
+                                      totalQty: newValue, 
+                                      availableQty: newValue - (l.damaged || 0) 
+                                    } : l));
+                                  }
+                                }}
+                                className={`w-20 p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
+                                disabled={!isAdmin}
+                              />
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <input
+                                type="number"
+                                value={lot.damaged || 0}
+                                onChange={(e) => {
+                                  if (isAdmin) {
+                                    const newValue = Number(e.target.value) >= 0 ? Number(e.target.value) : 0;
+                                    setLots(prev => prev.map(l => l._id === lot._id ? { 
+                                      ...l, 
+                                      damaged: newValue, 
+                                      availableQty: l.totalQty - newValue 
+                                    } : l));
+                                  }
+                                }}
+                                className={`w-20 p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
+                                disabled={!isAdmin}
+                              />
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {lot.availableQty || 0}
+                            </td>
+                            <td className="px-4 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                              }`}>
+                                {isExpired(lot.expDate) ? 'Expired' : 'Active'}
+                              </span>
+                            </td>
+                            {isAdmin && (
+                              <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div className="flex justify-end gap-2">
+                                  <button
+                                    onClick={() => handleEdit(lot)}
+                                    className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+                                    disabled={isLoading}
+                                    title="Edit"
+                                  >
+                                    <FaEdit />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(lot._id)}
+                                    className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                                    disabled={isLoading}
+                                    title="Delete"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             ))}
-          </div>
 
-          {lots.length > 0 && (
-            <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-sm text-gray-500">
-                Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to <span className="font-medium">{Math.min(page * limit, total)}</span> of <span className="font-medium">{total}</span> results
+            {/* Pagination */}
+            {lots.length > 0 && (
+              <div className="px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-sm text-gray-500">
+                  Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to <span className="font-medium">{Math.min(page * limit, total)}</span> of <span className="font-medium">{total}</span> results
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
+                    className={`p-2 rounded-md ${page === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    <FaChevronLeft />
+                  </button>
+                  <span className="px-3 py-1 bg-gray-100 rounded-md text-sm text-gray-700">
+                    Page {page} of {Math.ceil(total / limit)}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page * limit >= total}
+                    className={`p-2 rounded-md ${page * limit >= total ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    <FaChevronRight />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className={`p-2 rounded-md ${page === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+            )}
+
+            {/* Empty State */}
+            {lots.length === 0 && !isLoading && (
+              <div className="p-8 text-center">
+                <div className="text-gray-400 mb-2">No lots found</div>
+                <button 
+                  onClick={clearFilters}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                 >
-                  <FaChevronLeft />
-                </button>
-                <span className="px-3 py-1 bg-gray-100 rounded-md text-sm text-gray-700">
-                  Page {page} of {Math.ceil(total / limit)}
-                </span>
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page * limit >= total}
-                  className={`p-2 rounded-md ${page * limit >= total ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
-                >
-                  <FaChevronRight />
+                  Clear filters
                 </button>
               </div>
-            </div>
-          )}
-        </div>
-      )}
-      <ToastContainer />
+            )}
+          </div>
+        )}
+      </div>
+      <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
 };

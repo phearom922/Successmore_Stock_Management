@@ -92,3 +92,149 @@
 2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/6865651556f5dae24a25716c
 2025-07-03 00:13:13 [info]: Received PUT request to /api/notifications/6865649656f5dae24a257130
 2025-07-03 00:13:13 [info]: Received GET request to /api/notifications
+2025-07-03 10:10:46 [info]: Logger initialized successfully
+2025-07-03 10:10:47 [info]: Server running on port 3000
+2025-07-03 10:10:47 [info]: Connected to MongoDB
+2025-07-03 10:11:14 [info]: Received GET request to /api/notifications
+2025-07-03 10:11:14 [error]: Authentication failed
+2025-07-03 10:11:14 [info]: Received GET request to /api/notifications
+2025-07-03 10:11:14 [error]: Authentication failed
+2025-07-03 10:11:16 [info]: Received POST request to /api/login
+2025-07-03 10:11:16 [info]: Login attempt:
+2025-07-03 10:11:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:11:16 [info]: Received GET request to /api/products
+2025-07-03 10:11:16 [info]: Received GET request to /api/lots
+2025-07-03 10:11:16 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:11:16 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:16 [info]: Received GET request to /api/lots
+2025-07-03 10:11:16 [info]: Received GET request to /api/products
+2025-07-03 10:11:19 [info]: Received GET request to /api/suppliers
+2025-07-03 10:11:19 [info]: Received GET request to /api/suppliers
+2025-07-03 10:11:20 [info]: Received GET request to /api/products
+2025-07-03 10:11:20 [info]: Received GET request to /api/lots
+2025-07-03 10:11:20 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:20 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:20 [info]: Received GET request to /api/products
+2025-07-03 10:11:20 [info]: Received GET request to /api/lots
+2025-07-03 10:11:20 [info]: Received GET request to /api/products
+2025-07-03 10:11:20 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:20 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:20 [info]: Received GET request to /api/products
+2025-07-03 10:11:21 [info]: Received GET request to /api/lots
+2025-07-03 10:11:21 [info]: Received GET request to /api/lots
+2025-07-03 10:11:21 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:21 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:22 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:22 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:22 [info]: Received GET request to /api/users
+2025-07-03 10:11:22 [info]: Received GET request to /api/users
+2025-07-03 10:11:24 [info]: Received GET request to /api/users
+2025-07-03 10:11:25 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:25 [info]: Received GET request to /api/users
+2025-07-03 10:11:25 [info]: Received GET request to /api/warehouses
+2025-07-03 10:11:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:12:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:12:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:13:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:13:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:14:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:14:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:15:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:15:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:16:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:16:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:17:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:17:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:18:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:18:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:19:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:19:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:20:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:20:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:21:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:21:28 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:28 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/products
+2025-07-03 10:21:29 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/products
+2025-07-03 10:21:29 [info]: Received GET request to /api/products
+2025-07-03 10:21:29 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/lots
+2025-07-03 10:21:29 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/products
+2025-07-03 10:21:29 [info]: Received GET request to /api/lots
+2025-07-03 10:21:29 [info]: Received GET request to /api/suppliers
+2025-07-03 10:21:29 [info]: Received GET request to /api/suppliers
+2025-07-03 10:21:29 [info]: Received GET request to /api/products
+2025-07-03 10:21:29 [info]: Received GET request to /api/lots
+2025-07-03 10:21:29 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:29 [info]: Received GET request to /api/products
+2025-07-03 10:21:29 [info]: Received GET request to /api/lots
+2025-07-03 10:21:31 [info]: Received GET request to /api/products
+2025-07-03 10:21:31 [info]: Received GET request to /api/categories
+2025-07-03 10:21:31 [info]: Received GET request to /api/products
+2025-07-03 10:21:31 [info]: Received GET request to /api/categories
+2025-07-03 10:21:31 [info]: Received GET request to /api/categories
+2025-07-03 10:21:31 [info]: Received GET request to /api/products
+2025-07-03 10:21:31 [info]: Received GET request to /api/categories
+2025-07-03 10:21:31 [info]: Received GET request to /api/products
+2025-07-03 10:21:32 [info]: Received GET request to /api/products
+2025-07-03 10:21:32 [info]: Received GET request to /api/categories
+2025-07-03 10:21:32 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:32 [info]: Received GET request to /api/suppliers
+2025-07-03 10:21:32 [info]: Received GET request to /api/categories
+2025-07-03 10:21:32 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:32 [info]: Received GET request to /api/suppliers
+2025-07-03 10:21:32 [info]: Received GET request to /api/products
+2025-07-03 10:21:32 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:32 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:32 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 10:21:32 [info]: Received GET request to /api/receive-history?startDate=03-07-2025&endDate=03-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-03 10:21:33 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:33 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-03 10:21:33 [info]: Fetching lot management data
+2025-07-03 10:21:33 [info]: Received GET request to /api/warehouses
+2025-07-03 10:21:33 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-03 10:21:33 [info]: Fetching lot management data
+2025-07-03 10:21:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:22:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:22:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:23:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:23:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:24:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:24:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:25:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:25:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:26:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:26:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:27:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:27:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:28:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:28:46 [info]: Received GET request to /api/notifications
+2025-07-03 10:29:16 [info]: Received GET request to /api/notifications
+2025-07-03 10:29:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:30:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:31:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:32:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:33:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:34:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:35:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:36:51 [info]: Received GET request to /api/notifications
+2025-07-03 10:37:51 [info]: Received GET request to /api/notifications
+2025-07-03 21:54:57 [info]: Logger initialized successfully
+2025-07-03 21:54:59 [info]: Server running on port 3000
+2025-07-03 21:55:23 [info]: Received GET request to /api/notifications
+2025-07-03 21:55:24 [error]: Authentication failed
+2025-07-03 21:55:24 [info]: Received GET request to /api/notifications
+2025-07-03 21:55:24 [error]: Authentication failed
+2025-07-03 21:55:28 [info]: Received POST request to /api/login
+2025-07-03 21:55:28 [info]: Login attempt:
+2025-07-03 21:55:29 [error]: Connection error:
+2025-07-03 21:56:29 [info]: Logger initialized successfully
+2025-07-03 21:56:29 [info]: Server running on port 3000
+2025-07-03 21:57:37 [info]: Logger initialized successfully
+2025-07-03 21:57:38 [info]: Server running on port 3000
+2025-07-03 21:58:08 [error]: Connection error:

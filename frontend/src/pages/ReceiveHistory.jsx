@@ -205,7 +205,7 @@ const ReceiveHistory = () => {
                   onValueChange={setWarehouse}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                  <SelectTrigger className="w-full pl-3 pr-1 py- border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                     <SelectValue placeholder="All Warehouses" />
                   </SelectTrigger>
                   <SelectContent>
