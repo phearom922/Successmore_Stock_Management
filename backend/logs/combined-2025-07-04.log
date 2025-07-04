@@ -2401,3 +2401,480 @@
 2025-07-04 12:20:44 [info]: Received GET request to /api/notifications
 2025-07-04 12:20:44 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
 2025-07-04 12:20:44 [info]: Fetching lot management data
+2025-07-04 12:21:10 [info]: Received GET request to /api/notifications
+2025-07-04 12:21:10 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:10 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:21:10 [info]: Fetching lot management data
+2025-07-04 12:21:10 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:10 [info]: Received GET request to /api/notifications
+2025-07-04 12:21:10 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:21:10 [info]: Fetching lot management data
+2025-07-04 12:21:14 [info]: Received GET request to /api/lot-management/export?searchQuery=&warehouse=all
+2025-07-04 12:21:14 [info]: Exporting lot management data
+2025-07-04 12:21:14 [info]: Fetched lots for export:
+2025-07-04 12:21:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:21:40 [info]: Received GET request to /api/notifications
+2025-07-04 12:21:47 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:47 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:51 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:51 [info]: Received GET request to /api/products
+2025-07-04 12:21:51 [info]: Received GET request to /api/categories
+2025-07-04 12:21:51 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:51 [info]: Received GET request to /api/suppliers
+2025-07-04 12:21:51 [info]: Received GET request to /api/categories
+2025-07-04 12:21:51 [info]: Received GET request to /api/suppliers
+2025-07-04 12:21:51 [info]: Received GET request to /api/products
+2025-07-04 12:21:52 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:52 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:52 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 12:21:52 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 12:21:53 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:53 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:21:53 [info]: Fetching lot management data
+2025-07-04 12:21:53 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:53 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:21:53 [info]: Fetching lot management data
+2025-07-04 12:21:56 [info]: Received GET request to /api/lots
+2025-07-04 12:21:56 [info]: Received GET request to /api/lots
+2025-07-04 12:21:57 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:57 [info]: Received GET request to /api/warehouses
+2025-07-04 12:21:59 [info]: Received GET request to /api/products?warehouse=685f821d7f06f062226d2bf5
+2025-07-04 12:22:00 [info]: Received GET request to /api/lots?productId=685f82367f06f062226d2c0a&warehouse=685f821d7f06f062226d2bf5
+2025-07-04 12:22:06 [info]: Received POST request to /api/manage-damage
+2025-07-04 12:22:06 [info]: Checking remaining stock
+2025-07-04 12:22:06 [info]: Updated lot
+2025-07-04 12:22:06 [info]: Received GET request to /api/lots?productId=685f82367f06f062226d2c0a&warehouse=685f821d7f06f062226d2bf5
+2025-07-04 12:22:08 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:08 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:22:08 [info]: Fetching lot management data
+2025-07-04 12:22:08 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:08 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:22:08 [info]: Fetching lot management data
+2025-07-04 12:22:10 [info]: Received GET request to /api/notifications
+2025-07-04 12:22:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:22:35 [info]: Received GET request to /api/products
+2025-07-04 12:22:35 [info]: Received GET request to /api/categories
+2025-07-04 12:22:35 [info]: Received GET request to /api/suppliers
+2025-07-04 12:22:35 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:35 [info]: Received GET request to /api/categories
+2025-07-04 12:22:35 [info]: Received GET request to /api/suppliers
+2025-07-04 12:22:35 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:35 [info]: Received GET request to /api/products
+2025-07-04 12:22:40 [info]: Received GET request to /api/notifications
+2025-07-04 12:22:43 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:43 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:22:43 [info]: Fetching lot management data
+2025-07-04 12:22:43 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:43 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:22:43 [info]: Fetching lot management data
+2025-07-04 12:22:50 [info]: Received GET request to /api/products
+2025-07-04 12:22:50 [info]: Received GET request to /api/categories
+2025-07-04 12:22:50 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:50 [info]: Received GET request to /api/suppliers
+2025-07-04 12:22:50 [info]: Received GET request to /api/categories
+2025-07-04 12:22:50 [info]: Received GET request to /api/warehouses
+2025-07-04 12:22:50 [info]: Received GET request to /api/suppliers
+2025-07-04 12:22:50 [info]: Received GET request to /api/products
+2025-07-04 12:23:07 [info]: Received POST request to /api/receive
+2025-07-04 12:23:09 [info]: Received GET request to /api/warehouses
+2025-07-04 12:23:09 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 12:23:09 [info]: Received GET request to /api/warehouses
+2025-07-04 12:23:09 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 12:23:10 [info]: Received GET request to /api/notifications
+2025-07-04 12:23:11 [info]: Received GET request to /api/warehouses
+2025-07-04 12:23:11 [info]: Received GET request to /api/warehouses
+2025-07-04 12:23:11 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:23:11 [info]: Fetching lot management data
+2025-07-04 12:23:11 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 12:23:11 [info]: Fetching lot management data
+2025-07-04 12:23:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:23:41 [info]: Received GET request to /api/notifications
+2025-07-04 12:24:11 [info]: Received GET request to /api/notifications
+2025-07-04 12:24:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:25:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:25:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:26:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:26:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:26:40 [info]: Received GET request to /api/notifications
+2025-07-04 12:27:11 [info]: Received GET request to /api/notifications
+2025-07-04 12:27:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:27:41 [info]: Received GET request to /api/notifications
+2025-07-04 12:28:11 [info]: Received GET request to /api/notifications
+2025-07-04 12:28:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:28:41 [info]: Received GET request to /api/notifications
+2025-07-04 12:29:11 [info]: Received GET request to /api/notifications
+2025-07-04 12:29:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:30:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:30:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:31:28 [info]: Received GET request to /api/notifications
+2025-07-04 12:31:28 [info]: Received GET request to /api/notifications
+2025-07-04 13:11:55 [info]: Logger initialized successfully
+2025-07-04 13:11:57 [info]: Server running on port 3000
+2025-07-04 13:12:53 [info]: Logger initialized successfully
+2025-07-04 13:12:53 [info]: Server running on port 3000
+2025-07-04 13:13:12 [info]: Logger initialized successfully
+2025-07-04 13:13:13 [info]: Server running on port 3000
+2025-07-04 13:13:37 [info]: Logger initialized successfully
+2025-07-04 13:13:38 [info]: Server running on port 3000
+2025-07-04 13:13:38 [info]: Connected to MongoDB
+2025-07-04 13:14:09 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:09 [error]: Authentication failed
+2025-07-04 13:14:09 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:09 [error]: Authentication failed
+2025-07-04 13:14:11 [info]: Received POST request to /api/login
+2025-07-04 13:14:11 [info]: Login attempt:
+2025-07-04 13:14:11 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:11 [info]: Received GET request to /api/lots
+2025-07-04 13:14:11 [info]: Received GET request to /api/products
+2025-07-04 13:14:11 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:11 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:11 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:11 [info]: Received GET request to /api/lots
+2025-07-04 13:14:11 [info]: Received GET request to /api/products
+2025-07-04 13:14:14 [info]: Received GET request to /api/products
+2025-07-04 13:14:14 [info]: Received GET request to /api/lots
+2025-07-04 13:14:14 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:14 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:14 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:14 [info]: Received GET request to /api/products
+2025-07-04 13:14:14 [info]: Received GET request to /api/lots
+2025-07-04 13:14:14 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:20 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:14:20 [info]: Fetching expiring lots
+2025-07-04 13:14:20 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:20 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:14:20 [info]: Fetching lot management data
+2025-07-04 13:14:20 [info]: Expiring lots found:
+2025-07-04 13:14:20 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:20 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:14:20 [info]: Fetching expiring lots
+2025-07-04 13:14:20 [info]: Expiring lots found:
+2025-07-04 13:14:20 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:14:20 [info]: Fetching lot management data
+2025-07-04 13:14:33 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:33 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:33 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:14:33 [info]: Fetching expiring lots
+2025-07-04 13:14:33 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:14:33 [info]: Fetching lot management data
+2025-07-04 13:14:33 [info]: Received GET request to /api/warehouses
+2025-07-04 13:14:33 [info]: Received GET request to /api/notifications
+2025-07-04 13:14:33 [info]: Expiring lots found:
+2025-07-04 13:14:33 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:14:33 [info]: Fetching expiring lots
+2025-07-04 13:14:33 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:14:33 [info]: Fetching lot management data
+2025-07-04 13:14:33 [info]: Expiring lots found:
+2025-07-04 13:15:03 [info]: Received GET request to /api/notifications
+2025-07-04 13:15:12 [info]: Received GET request to /api/warehouses
+2025-07-04 13:15:12 [info]: Received GET request to /api/users
+2025-07-04 13:15:12 [info]: Received GET request to /api/warehouses
+2025-07-04 13:15:12 [info]: Received GET request to /api/users
+2025-07-04 13:15:12 [info]: Received GET request to /api/warehouses
+2025-07-04 13:15:12 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:15:12 [info]: Fetching expiring lots
+2025-07-04 13:15:12 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:15:12 [info]: Fetching lot management data
+2025-07-04 13:15:12 [info]: Received GET request to /api/warehouses
+2025-07-04 13:15:13 [info]: Expiring lots found:
+2025-07-04 13:15:13 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:15:13 [info]: Fetching expiring lots
+2025-07-04 13:15:13 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:15:13 [info]: Fetching lot management data
+2025-07-04 13:15:13 [info]: Expiring lots found:
+2025-07-04 13:15:34 [info]: Received GET request to /api/notifications
+2025-07-04 13:16:04 [info]: Received GET request to /api/notifications
+2025-07-04 13:16:22 [info]: Received GET request to /api/warehouses
+2025-07-04 13:16:22 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 13:16:22 [info]: Received GET request to /api/warehouses
+2025-07-04 13:16:22 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 13:16:28 [info]: Received GET request to /api/warehouses
+2025-07-04 13:16:28 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:16:28 [info]: Fetching expiring lots
+2025-07-04 13:16:28 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:16:28 [info]: Fetching lot management data
+2025-07-04 13:16:28 [info]: Received GET request to /api/warehouses
+2025-07-04 13:16:28 [info]: Expiring lots found:
+2025-07-04 13:16:28 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:16:28 [info]: Fetching expiring lots
+2025-07-04 13:16:28 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:16:28 [info]: Fetching lot management data
+2025-07-04 13:16:28 [info]: Expiring lots found:
+2025-07-04 13:16:33 [info]: Received GET request to /api/notifications
+2025-07-04 13:16:49 [info]: Received GET request to /api/notifications
+2025-07-04 13:16:49 [info]: Received GET request to /api/warehouses
+2025-07-04 13:16:49 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:16:49 [info]: Fetching expiring lots
+2025-07-04 13:16:49 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:16:49 [info]: Fetching lot management data
+2025-07-04 13:16:49 [info]: Received GET request to /api/warehouses
+2025-07-04 13:16:49 [info]: Expiring lots found:
+2025-07-04 13:16:49 [info]: Received GET request to /api/notifications
+2025-07-04 13:16:49 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:16:49 [info]: Fetching expiring lots
+2025-07-04 13:16:49 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:16:49 [info]: Fetching lot management data
+2025-07-04 13:16:49 [info]: Expiring lots found:
+2025-07-04 13:17:09 [info]: Received GET request to /api/notifications
+2025-07-04 13:17:09 [info]: Received GET request to /api/warehouses
+2025-07-04 13:17:09 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:17:09 [info]: Fetching expiring lots
+2025-07-04 13:17:09 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:17:09 [info]: Fetching lot management data
+2025-07-04 13:17:09 [info]: Received GET request to /api/warehouses
+2025-07-04 13:17:09 [info]: Expiring lots found:
+2025-07-04 13:17:09 [info]: Received GET request to /api/notifications
+2025-07-04 13:17:09 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:17:09 [info]: Fetching expiring lots
+2025-07-04 13:17:09 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:17:09 [info]: Fetching lot management data
+2025-07-04 13:17:09 [info]: Expiring lots found:
+2025-07-04 13:17:39 [info]: Received GET request to /api/notifications
+2025-07-04 13:17:47 [info]: Received PUT request to /api/notifications/68675f5ffc0de8fd8dc7ae89
+2025-07-04 13:17:49 [info]: Received PUT request to /api/notifications/6867653be4f0d8072dc6433f
+2025-07-04 13:18:09 [info]: Received GET request to /api/notifications
+2025-07-04 13:18:16 [info]: Received GET request to /api/notifications
+2025-07-04 13:18:16 [info]: Received GET request to /api/warehouses
+2025-07-04 13:18:16 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:18:16 [info]: Fetching expiring lots
+2025-07-04 13:18:16 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:18:16 [info]: Fetching lot management data
+2025-07-04 13:18:16 [info]: Received GET request to /api/warehouses
+2025-07-04 13:18:16 [info]: Received GET request to /api/notifications
+2025-07-04 13:18:16 [info]: Expiring lots found:
+2025-07-04 13:18:16 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:18:16 [info]: Fetching expiring lots
+2025-07-04 13:18:16 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:18:16 [info]: Fetching lot management data
+2025-07-04 13:18:16 [info]: Expiring lots found:
+2025-07-04 13:18:46 [info]: Received GET request to /api/notifications
+2025-07-04 13:18:57 [info]: Received DELETE request to /api/lot-management/686557147dca2c7ac1997adf
+2025-07-04 13:18:57 [info]: Lot deleted successfully
+2025-07-04 13:18:57 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:18:57 [info]: Fetching lot management data
+2025-07-04 13:18:57 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:18:57 [info]: Fetching expiring lots
+2025-07-04 13:18:57 [info]: Expiring lots found:
+2025-07-04 13:19:04 [info]: Received DELETE request to /api/lot-management/6865651556f5dae24a257160
+2025-07-04 13:19:04 [info]: Lot deleted successfully
+2025-07-04 13:19:04 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:04 [info]: Fetching lot management data
+2025-07-04 13:19:04 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:04 [info]: Fetching expiring lots
+2025-07-04 13:19:04 [info]: Expiring lots found:
+2025-07-04 13:19:08 [info]: Received DELETE request to /api/lot-management/68655ed47dca2c7ac1997da0
+2025-07-04 13:19:08 [info]: Lot deleted successfully
+2025-07-04 13:19:08 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:08 [info]: Fetching lot management data
+2025-07-04 13:19:08 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:08 [info]: Fetching expiring lots
+2025-07-04 13:19:08 [info]: Expiring lots found:
+2025-07-04 13:19:11 [info]: Received DELETE request to /api/lot-management/6865649656f5dae24a257120
+2025-07-04 13:19:11 [info]: Lot deleted successfully
+2025-07-04 13:19:11 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:11 [info]: Fetching expiring lots
+2025-07-04 13:19:11 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:11 [info]: Fetching lot management data
+2025-07-04 13:19:11 [info]: Expiring lots found:
+2025-07-04 13:19:16 [info]: Received GET request to /api/notifications
+2025-07-04 13:19:21 [info]: Received DELETE request to /api/lot-management/68655ed47dca2c7ac1997da2
+2025-07-04 13:19:21 [info]: Lot deleted successfully
+2025-07-04 13:19:21 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:21 [info]: Fetching lot management data
+2025-07-04 13:19:21 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:21 [info]: Fetching expiring lots
+2025-07-04 13:19:21 [info]: Expiring lots found:
+2025-07-04 13:19:27 [info]: Received DELETE request to /api/lot-management/6865635356f5dae24a257094
+2025-07-04 13:19:27 [info]: Lot deleted successfully
+2025-07-04 13:19:27 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:27 [info]: Fetching lot management data
+2025-07-04 13:19:27 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:27 [info]: Fetching expiring lots
+2025-07-04 13:19:27 [info]: Expiring lots found:
+2025-07-04 13:19:32 [info]: Received GET request to /api/notifications
+2025-07-04 13:19:32 [info]: Received GET request to /api/warehouses
+2025-07-04 13:19:32 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:32 [info]: Fetching expiring lots
+2025-07-04 13:19:32 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:32 [info]: Fetching lot management data
+2025-07-04 13:19:32 [info]: Received GET request to /api/warehouses
+2025-07-04 13:19:32 [info]: Expiring lots found:
+2025-07-04 13:19:32 [info]: Received GET request to /api/notifications
+2025-07-04 13:19:32 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:19:32 [info]: Fetching expiring lots
+2025-07-04 13:19:33 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:19:33 [info]: Fetching lot management data
+2025-07-04 13:19:33 [info]: Expiring lots found:
+2025-07-04 13:20:03 [info]: Received GET request to /api/notifications
+2025-07-04 13:20:06 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:06 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 13:20:06 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:06 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 13:20:06 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:06 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:20:06 [info]: Fetching expiring lots
+2025-07-04 13:20:06 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:20:06 [info]: Fetching lot management data
+2025-07-04 13:20:06 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:06 [info]: Expiring lots found:
+2025-07-04 13:20:06 [info]: Received GET request to /api/lot-management/expiring
+2025-07-04 13:20:06 [info]: Fetching expiring lots
+2025-07-04 13:20:06 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-04 13:20:06 [info]: Fetching lot management data
+2025-07-04 13:20:06 [info]: Expiring lots found:
+2025-07-04 13:20:07 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:07 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 13:20:07 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:07 [info]: Received GET request to /api/receive-history?startDate=04-07-2025&endDate=04-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-04 13:20:08 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:08 [info]: Received GET request to /api/categories
+2025-07-04 13:20:08 [info]: Received GET request to /api/suppliers
+2025-07-04 13:20:08 [info]: Received GET request to /api/products
+2025-07-04 13:20:08 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:08 [info]: Received GET request to /api/categories
+2025-07-04 13:20:08 [info]: Received GET request to /api/suppliers
+2025-07-04 13:20:08 [info]: Received GET request to /api/products
+2025-07-04 13:20:14 [info]: Received GET request to /api/users
+2025-07-04 13:20:14 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:14 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:14 [info]: Received GET request to /api/users
+2025-07-04 13:20:14 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:14 [info]: Received GET request to /api/categories
+2025-07-04 13:20:14 [info]: Received GET request to /api/products
+2025-07-04 13:20:14 [info]: Received GET request to /api/suppliers
+2025-07-04 13:20:14 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:14 [info]: Received GET request to /api/categories
+2025-07-04 13:20:14 [info]: Received GET request to /api/suppliers
+2025-07-04 13:20:14 [info]: Received GET request to /api/products
+2025-07-04 13:20:15 [info]: Received GET request to /api/users
+2025-07-04 13:20:15 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:15 [info]: Received GET request to /api/warehouses
+2025-07-04 13:20:15 [info]: Received GET request to /api/users
+2025-07-04 13:20:33 [info]: Received GET request to /api/notifications
+2025-07-04 13:21:03 [info]: Received GET request to /api/notifications
+2025-07-04 13:21:33 [info]: Received GET request to /api/notifications
+2025-07-04 13:22:03 [info]: Received GET request to /api/notifications
+2025-07-04 13:22:33 [info]: Received GET request to /api/notifications
+2025-07-04 13:23:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:24:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:25:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:26:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:27:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:28:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:29:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:30:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:31:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:32:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:42:36 [info]: Received GET request to /api/notifications
+2025-07-04 13:42:36 [info]: Received GET request to /api/users
+2025-07-04 13:42:36 [info]: Received GET request to /api/warehouses
+2025-07-04 13:42:36 [info]: Received GET request to /api/warehouses
+2025-07-04 13:42:36 [info]: Received GET request to /api/notifications
+2025-07-04 13:42:36 [info]: Received GET request to /api/users
+2025-07-04 13:43:06 [info]: Received GET request to /api/notifications
+2025-07-04 13:43:36 [info]: Received GET request to /api/notifications
+2025-07-04 13:44:06 [info]: Received GET request to /api/notifications
+2025-07-04 13:44:36 [info]: Received GET request to /api/notifications
+2025-07-04 13:45:06 [info]: Received GET request to /api/notifications
+2025-07-04 13:45:36 [info]: Received GET request to /api/notifications
+2025-07-04 13:46:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:47:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:48:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:49:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:50:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:51:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:52:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:53:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:54:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:55:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:56:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:57:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:58:41 [info]: Received GET request to /api/notifications
+2025-07-04 13:59:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:00:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:01:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:02:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:03:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:04:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:05:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:06:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:07:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:08:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:09:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:10:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:11:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:12:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:13:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:14:41 [info]: Received GET request to /api/notifications
+2025-07-04 14:14:41 [error]: Authentication failed
+2025-07-04 14:15:26 [info]: Received GET request to /api/notifications
+2025-07-04 14:15:26 [error]: Authentication failed
+2025-07-04 14:15:33 [info]: Received GET request to /api/notifications
+2025-07-04 14:15:33 [error]: Authentication failed
+2025-07-04 14:15:33 [info]: Received GET request to /api/notifications
+2025-07-04 14:15:33 [error]: Authentication failed
+2025-07-04 14:15:34 [info]: Received POST request to /api/login
+2025-07-04 14:15:34 [info]: Login attempt:
+2025-07-04 14:15:34 [info]: Received GET request to /api/notifications
+2025-07-04 14:15:34 [info]: Received GET request to /api/products
+2025-07-04 14:15:34 [info]: Received GET request to /api/lots
+2025-07-04 14:15:34 [info]: Received GET request to /api/warehouses
+2025-07-04 14:15:34 [info]: Received GET request to /api/notifications
+2025-07-04 14:15:34 [info]: Received GET request to /api/warehouses
+2025-07-04 14:15:34 [info]: Received GET request to /api/products
+2025-07-04 14:15:34 [info]: Received GET request to /api/lots
+2025-07-04 14:16:05 [info]: Received GET request to /api/notifications
+2025-07-04 14:16:35 [info]: Received GET request to /api/notifications
+2025-07-04 14:16:44 [info]: Received GET request to /api/notifications
+2025-07-04 14:16:44 [info]: Received GET request to /api/notifications
+2025-07-04 14:17:14 [info]: Received GET request to /api/notifications
+2025-07-04 14:17:44 [info]: Received GET request to /api/notifications
+2025-07-04 14:18:14 [info]: Received GET request to /api/notifications
+2025-07-04 14:18:44 [info]: Received GET request to /api/notifications
+2025-07-04 14:19:14 [info]: Received GET request to /api/notifications
+2025-07-04 14:19:14 [info]: Received GET request to /api/notifications
+2025-07-04 14:19:15 [info]: Received GET request to /api/notifications
+2025-07-04 14:19:45 [info]: Received GET request to /api/notifications
+2025-07-04 14:20:15 [info]: Received GET request to /api/notifications
+2025-07-04 14:20:45 [info]: Received GET request to /api/notifications
+2025-07-04 14:21:15 [info]: Received GET request to /api/notifications
+2025-07-04 14:21:45 [info]: Received GET request to /api/notifications
+2025-07-04 14:22:15 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:18 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:18 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:21 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:23 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:23 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:50 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:50 [info]: Received GET request to /api/notifications
+2025-07-04 14:23:54 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:13 [info]: Logger initialized successfully
+2025-07-04 14:24:14 [info]: Server running on port 3000
+2025-07-04 14:24:14 [info]: Connected to MongoDB
+2025-07-04 14:24:20 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:24 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:30 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:30 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:33 [info]: Received GET request to /api/warehouses
+2025-07-04 14:24:33 [info]: Received GET request to /api/users
+2025-07-04 14:24:33 [info]: Received GET request to /api/warehouses
+2025-07-04 14:24:33 [info]: Received GET request to /api/users
+2025-07-04 14:24:35 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:35 [info]: Received GET request to /api/notifications
+2025-07-04 14:24:38 [info]: Received GET request to /api/users
+2025-07-04 14:24:38 [info]: Received GET request to /api/warehouses
+2025-07-04 14:24:38 [info]: Received GET request to /api/warehouses
+2025-07-04 14:24:38 [info]: Received GET request to /api/users
+2025-07-04 14:25:06 [info]: Received GET request to /api/notifications
+2025-07-04 14:25:36 [info]: Received GET request to /api/notifications
+2025-07-04 14:26:06 [info]: Received GET request to /api/notifications
+2025-07-04 14:26:27 [info]: Received GET request to /api/notifications
+2025-07-04 14:26:27 [info]: Received GET request to /api/notifications
+2025-07-04 14:26:38 [info]: Received GET request to /api/notifications
+2025-07-04 14:26:38 [info]: Received GET request to /api/notifications
+2025-07-04 14:27:08 [info]: Received GET request to /api/notifications
+2025-07-04 14:27:08 [info]: Received GET request to /api/notifications
+2025-07-04 14:27:19 [info]: Received GET request to /api/notifications
+2025-07-04 14:27:19 [info]: Received GET request to /api/notifications
+2025-07-04 14:27:26 [info]: Received GET request to /api/notifications
+2025-07-04 14:27:26 [info]: Received GET request to /api/notifications

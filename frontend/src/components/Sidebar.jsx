@@ -231,6 +231,15 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
                 {isOpen && <span className='text-sm'>Users Management</span>}
               </Link>
             </div>
+            <div className="mt-1 space-y-1">
+              <Link
+                to="/settings"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/settings') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiUsers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Settings</span>}
+              </Link>
+            </div>
           </div>
         )}
       </nav>

@@ -15,6 +15,8 @@ import Users from './pages/Users';
 import ReceiveHistory from './pages/ReceiveHistory';
 import LotManagement from './pages/LotManagement';
 import ManageDamage from './pages/ManageDamage';
+import Settings from './pages/Settings';
+
 
 const ProtectedRoute = ({ children, requiredRoles = [] }) => {
   const token = localStorage.getItem('token');
@@ -36,13 +38,6 @@ const ProtectedRoute = ({ children, requiredRoles = [] }) => {
   }
 };
 
-const Settings = () => (
-  <div className="p-6">
-    <h2 className="text-xl font-bold mb-4">Settings</h2>
-    <p>Settings page under construction</p>
-  </div>
-);
-
 const ErrorBoundary = () => (
   <div className="p-6">
     <h2 className="text-xl font-bold mb-4">Error</h2>
@@ -63,6 +58,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/products" element={<ProtectedRoute requiredRoles={['admin']}><Products /></ProtectedRoute>} />
           <Route path="/warehouses" element={<ProtectedRoute requiredRoles={['admin']}><Warehouses /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute requiredRoles={['admin']}><Users /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute requiredRoles={['admin']}><Settings /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           <Route path="/receive-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ReceiveHistory /></ProtectedRoute>} /> {/* เพิ่มบรรทัดนี้ */}
           <Route path="/lot-management" element={<ProtectedRoute requiredRoles={['admin', 'user']}><LotManagement /></ProtectedRoute>} />

@@ -17,8 +17,9 @@ const TransactionCounter = require('../models/TransactionCounter');
 const logger = require('../config/logger');
 const UserTransaction = require('../models/UserTransaction');
 const Notification = require('../models/Notification');
-const { format, parse, startOfDay, endOfDay } = require('date-fns');
+const { format, parse, startOfDay, endOfDay, differenceInDays } = require('date-fns');
 const DamagedAuditTrail = require('../models/DamagedAuditTrail');
+const Setting = require('../models/Settings');
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -84,14 +85,6 @@ const supplierSchema = z.object({
 });
 
 
-
-
-
-
-
-
-
-
 // Login Endpoint
 router.post('/login', async (req, res) => {
   try {
@@ -116,9 +109,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Error during login', error: error.message });
   }
 });
-
-
-
 
 // Create User
 router.post('/users', authMiddleware, async (req, res) => {
@@ -443,7 +433,6 @@ router.post('/issue', authMiddleware, async (req, res) => {
     });
   }
 });
-
 
 // Get all products (ปรับให้ใช้ Lot เพื่อกรองตาม Warehouse)
 router.get('/products', authMiddleware, async (req, res) => {
@@ -1061,7 +1050,6 @@ router.get('/suppliers', authMiddleware, async (req, res) => {
 });
 
 
-
 // Receive Stock
 router.post('/receive', authMiddleware, async (req, res) => {
   try {
@@ -1160,13 +1148,6 @@ router.post('/receive', authMiddleware, async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
 //Notifications
 router.get('/notifications', authMiddleware, async (req, res) => {
   try {
@@ -1194,7 +1175,6 @@ router.put('/notifications/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error updating notification' });
   }
 });
-
 
 
 // Receive History Export Excel
@@ -1295,8 +1275,6 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error exporting receive history', error: error.message });
   }
 });
-
-
 
 // Lot Management - Fetch Lots
 router.get('/lot-management', authMiddleware, async (req, res) => {
@@ -1402,8 +1380,6 @@ router.get('/lot-management', authMiddleware, async (req, res) => {
   }
 });
 
-
-
 // Lot Management - Update Lot
 router.put('/lot-management/:id', authMiddleware, async (req, res) => {
   try {
@@ -1430,7 +1406,6 @@ router.put('/lot-management/:id', authMiddleware, async (req, res) => {
   }
 });
 
-
 // Lot Management - Delete Lot
 router.delete('/lot-management/:id', authMiddleware, async (req, res) => {
   try {
@@ -1449,8 +1424,6 @@ router.delete('/lot-management/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error deleting lot', error: error.message });
   }
 });
-
-
 
 // Lot Management - Export to Excel
 router.get('/lot-management/export', authMiddleware, async (req, res) => {
@@ -1532,11 +1505,6 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error exporting lot management data', error: error.message });
   }
 });
-
-
-
-
-
 
 // Receive History
 router.get('/receive-history', authMiddleware, async (req, res) => {
@@ -1638,25 +1606,6 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Manage Damage
 router.post('/manage-damage', authMiddleware, async (req, res) => {
   try {
@@ -1703,6 +1652,82 @@ router.post('/manage-damage', authMiddleware, async (req, res) => {
   }
 });
 
+
+// Configurable expiration warning days (default to 15 days)
+
+router.get('/lot-management/expiring', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Fetching expiring lots', { user: req.user });
+
+    const user = req.user;
+    const query = user.role === 'admin' ? {} : { warehouse: user.assignedWarehouse?.toString() };
+
+    const setting = await Setting.findOne();
+    const warningDays = setting ? setting.expirationWarningDays : 15;
+
+    const today = new Date();
+    const lots = await Lot.find(query)
+      .populate('productId', 'productCode name')
+      .lean();
+
+    const expiringLots = lots.filter(lot => {
+      if (!lot.expDate) return false;
+      const expDate = new Date(lot.expDate);
+      const daysLeft = differenceInDays(expDate, today);
+      return daysLeft <= warningDays && daysLeft > 0;
+    });
+
+    logger.info('Expiring lots found:', expiringLots);
+    res.json({ expiringLots, warningDays });
+  } catch (error) {
+    logger.error('Error fetching expiring lots:', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error fetching expiring lots', error: error.message });
+  }
+});
+
+// Get or update settings
+router.get('/settings', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    if (user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
+    }
+    let setting = await Setting.findOne();
+    if (!setting) {
+      setting = await Setting.create({ expirationWarningDays: 15 });
+    }
+    logger.info('Fetched settings', { setting });
+    res.json(setting);
+  } catch (error) {
+    logger.error('Error fetching settings:', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error fetching settings', error: error.message });
+  }
+});
+
+router.put('/settings', authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    if (user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admin only.' });
+    }
+    const { expirationWarningDays } = req.body;
+    if (!expirationWarningDays || expirationWarningDays <= 0) {
+      return res.status(400).json({ message: 'Expiration warning days must be a positive number' });
+    }
+    let setting = await Setting.findOne();
+    if (!setting) {
+      setting = await Setting.create({ expirationWarningDays });
+    } else {
+      setting.expirationWarningDays = expirationWarningDays;
+      await setting.save();
+    }
+    logger.info('Updated settings', { expirationWarningDays });
+    res.json({ message: 'Settings updated successfully', setting });
+  } catch (error) {
+    logger.error('Error updating settings:', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error updating settings', error: error.message });
+  }
+});
 
 
 

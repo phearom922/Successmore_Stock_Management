@@ -1,21 +1,107 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { 
-  FaSearch, 
-  FaChevronLeft, 
-  FaChevronRight, 
-  FaTrash, 
-  FaEdit, 
+import {
+  FaSearch,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTrash,
+  FaEdit,
   FaPlus,
   FaFilter,
-  FaTimes
+  FaTimes,
+  FaExclamationTriangle
 } from 'react-icons/fa';
 import { FiDownload } from 'react-icons/fi';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+
+
+
+const ExpiringNotification = ({ lots, warningDays, onClose }) => {
+  const daysLeft = (expDate) => {
+    const diff = new Date(expDate) - new Date();
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
+  return (
+    <div className="fixed top-4 right-4 z-50 w-full max-w-md">
+      <div className="bg-white rounded-xl shadow-lg border border-yellow-200 overflow-hidden">
+        <div className="flex items-start justify-between bg-yellow-50 px-4 py-3 border-b border-yellow-100">
+          <div className="flex items-center gap-2">
+            <FaExclamationTriangle className="text-yellow-500 text-lg" />
+            <h3 className="font-bold text-gray-800">Expiration Alert</h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label="Close notification"
+          >
+            <FaTimes />
+          </button>
+        </div>
+
+        <div className="p-4">
+          <p className="text-sm text-gray-600 mb-3">
+            {lots.length} {lots.length === 1 ? 'item' : 'items'} expiring within {warningDays} days
+          </p>
+
+          {lots.map((lot) => (
+            <div key={lot._id} className="mb-3 last:mb-0 p-3 bg-gray-50 rounded-lg">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-medium text-gray-900">{lot.lotCode} - {lot.productId?.name}</p>
+                  <p className="text-sm text-gray-600">Exp: {format(new Date(lot.expDate), 'dd/MM/yyyy')}</p>
+                </div>
+                <span className={`px-2 py-1 rounded text-xs font-medium ${daysLeft(lot.expDate) <= 7 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                  {daysLeft(lot.expDate)} days
+                </span>
+              </div>
+              <div className="mt-2 flex justify-between items-center">
+                <span className="text-sm text-gray-600">Quantity:</span>
+                <span className="font-medium">{lot.qtyOnHand || 0}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const LotManagement = () => {
   const [lots, setLots] = useState([]);
@@ -40,9 +126,13 @@ const LotManagement = () => {
   });
   const [editLot, setEditLot] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [expiringLots, setExpiringLots] = useState([]);
+  const [warningDays, setWarningDays] = useState(15);
 
   useEffect(() => {
     fetchWarehouses();
+    checkExpiringLots();
+    fetchSettings();
   }, []);
 
   useEffect(() => {
@@ -61,6 +151,27 @@ const LotManagement = () => {
       toast.error('Failed to load warehouses');
     }
   };
+
+
+
+
+
+
+
+
+  const fetchSettings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const { data } = await axios.get('http://localhost:3000/api/settings', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setWarningDays(data.expirationWarningDays);
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      toast.error('Failed to load settings');
+    }
+  };
+
 
   const fetchLots = async () => {
     setIsLoading(true);
@@ -85,6 +196,26 @@ const LotManagement = () => {
       setIsLoading(false);
     }
   };
+
+  const [showExpiringAlert, setShowExpiringAlert] = useState(false);
+
+  const checkExpiringLots = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const { data } = await axios.get('http://localhost:3000/api/lot-management/expiring', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setExpiringLots(data.expiringLots);
+      setWarningDays(data.warningDays || 15);
+      if (data.expiringLots.length > 0) {
+        setShowExpiringAlert(true);
+      }
+    } catch (error) {
+      console.error('Error checking expiring lots:', error);
+      toast.error('Failed to check expiring lots');
+    }
+  };
+
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -113,10 +244,10 @@ const LotManagement = () => {
 
   const handleEdit = (lot) => {
     if (!isAdmin) return;
-    setEditLot({ 
-      ...lot, 
-      productionDate: lot.productionDate ? new Date(lot.productionDate) : null, 
-      expDate: lot.expDate ? new Date(lot.expDate) : null 
+    setEditLot({
+      ...lot,
+      productionDate: lot.productionDate ? new Date(lot.productionDate) : null,
+      expDate: lot.expDate ? new Date(lot.expDate) : null
     });
   };
 
@@ -137,6 +268,7 @@ const LotManagement = () => {
       toast.success('Lot updated successfully');
       setEditLot(null);
       fetchLots();
+      checkExpiringLots(); // อัปเดตการแจ้งเตือนหลังแก้ไข
     } catch (error) {
       console.error('Error updating lot:', error);
       toast.error('Failed to update lot');
@@ -156,6 +288,7 @@ const LotManagement = () => {
         });
         toast.success('Lot deleted successfully');
         fetchLots();
+        checkExpiringLots(); // อัปเดตการแจ้งเตือนหลังลบ
       } catch (error) {
         console.error('Error deleting lot:', error);
         toast.error('Failed to delete lot');
@@ -193,6 +326,17 @@ const LotManagement = () => {
 
   return (
     <div className="p-4 md:p-6 mx-auto bg-gray-50 min-h-screen">
+      {showExpiringAlert && (
+        <ExpiringNotification
+          lots={expiringLots}
+          warningDays={warningDays}
+          onClose={() => setShowExpiringAlert(false)}
+        />
+      )}
+
+
+
+
       <div className="max-w-screen-2xl mx-auto">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -222,7 +366,7 @@ const LotManagement = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 animate-fade-in">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-800">Filters</h3>
-              <button 
+              <button
                 onClick={() => setShowFilters(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
@@ -244,7 +388,7 @@ const LotManagement = () => {
                   <FaSearch className="absolute left-3 top-3 text-gray-400" />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">Warehouse</label>
                 <Select.Root value={inputWarehouse} onValueChange={setInputWarehouse} disabled={isLoading}>
@@ -379,10 +523,10 @@ const LotManagement = () => {
                                 onChange={(e) => {
                                   if (isAdmin) {
                                     const newValue = Number(e.target.value);
-                                    setLots(prev => prev.map(l => l._id === lot._id ? { 
-                                      ...l, 
-                                      totalQty: newValue, 
-                                      availableQty: newValue - (l.damaged || 0) 
+                                    setLots(prev => prev.map(l => l._id === lot._id ? {
+                                      ...l,
+                                      totalQty: newValue,
+                                      availableQty: newValue - (l.damaged || 0)
                                     } : l));
                                   }
                                 }}
@@ -397,10 +541,10 @@ const LotManagement = () => {
                                 onChange={(e) => {
                                   if (isAdmin) {
                                     const newValue = Number(e.target.value) >= 0 ? Number(e.target.value) : 0;
-                                    setLots(prev => prev.map(l => l._id === lot._id ? { 
-                                      ...l, 
-                                      damaged: newValue, 
-                                      availableQty: l.totalQty - newValue 
+                                    setLots(prev => prev.map(l => l._id === lot._id ? {
+                                      ...l,
+                                      damaged: newValue,
+                                      availableQty: l.totalQty - newValue
                                     } : l));
                                   }
                                 }}
@@ -412,9 +556,8 @@ const LotManagement = () => {
                               {lot.qtyOnHand || 0}
                             </td>
                             <td className="px-4 py-4 whitespace-nowrap">
-                              <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                              }`}>
+                              <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                                }`}>
                                 {isExpired(lot.expDate) ? 'Expired' : 'Active'}
                               </span>
                             </td>
@@ -481,7 +624,7 @@ const LotManagement = () => {
             {lots.length === 0 && !isLoading && (
               <div className="p-8 text-center">
                 <div className="text-gray-400 mb-2">No lots found</div>
-                <button 
+                <button
                   onClick={clearFilters}
                   className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                 >
