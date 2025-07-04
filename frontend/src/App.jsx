@@ -18,7 +18,7 @@ import ReceiveHistory from './pages/ReceiveHistory';
 import LotManagement from './pages/LotManagement';
 import ManageDamage from './pages/ManageDamage';
 import Settings from './pages/Settings';
-
+import StockReports from './pages/StockReports';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -86,6 +86,8 @@ function App() {
               <Route path="/lot-management" element={<LotManagement />} />
               <Route path="/manage-damage" element={<ManageDamage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/stock-reports" element={<StockReports />} />
             </Routes>
           </div>
         </main>

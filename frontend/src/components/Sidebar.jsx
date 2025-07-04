@@ -8,6 +8,8 @@ import {
 } from 'react-icons/fi';
 import { FaBuilding, FaCubes } from "react-icons/fa";
 import { GiBrokenPottery } from "react-icons/gi";
+import { IoSettingsOutline } from "react-icons/io5";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 
 
 const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
@@ -76,13 +78,13 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             {isOpen && <span className='text-sm'>Suppliers</span>}
           </Link>
 
-          <Link
+          {/* <Link
             to="/issue"
             className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/issue') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
           >
             <FiUpload className={`${isOpen ? 'mr-3' : ''} text-sm`} />
             {isOpen && <span className='text-sm'>Issue</span>}
-          </Link>
+          </Link> */}
 
 
 
@@ -91,7 +93,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
 
 
 
-          {userRole === 'admin' && (
+          {/* {userRole === 'admin' && (
             <Link
               to="/create-stock"
               className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/create-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
@@ -99,9 +101,9 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <FiPackage className={`${isOpen ? 'mr-3' : ''} text-sm`} />
               {isOpen && <span className='text-sm'>Create Stock</span>}
             </Link>
-          )}
+          )} */}
 
-          {(userRole === 'admin' || userRole === 'user') && (
+          {/* {(userRole === 'admin' || userRole === 'user') && (
             <Link
               to="/manage-stock-status"
               className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/manage-stock-status') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
@@ -110,7 +112,9 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               {isOpen && <span className='text-sm'>Manage Status</span>}
             </Link>
             
-          )}
+          )} */}
+
+
           {(userRole === 'admin' || userRole === 'user') && (
             <Link
               to="/manage-damage"
@@ -196,12 +200,21 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
                   <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
                   {isOpen && <span className='text-sm'>Receive History</span>}
                 </Link>
+
                 <Link
                   to="/lot-management"
                   className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/lot-management') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
                 >
                   <FaCubes className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
                   {isOpen && <span className='text-sm'>Lot Management</span>}
+                </Link>
+
+                <Link
+                  to="/stock-reports"
+                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/stock-reports') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+                >
+                  <HiOutlineDocumentReport className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
+                  {isOpen && <span className='text-sm'>Stock Reports</span>}
                 </Link>
               </>
             )}
@@ -236,7 +249,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
                 to="/settings"
                 className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/settings') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
               >
-                <FiUsers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                <IoSettingsOutline className={`${isOpen ? 'mr-3' : ''} text-sm`} />
                 {isOpen && <span className='text-sm'>Settings</span>}
               </Link>
             </div>

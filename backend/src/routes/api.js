@@ -1729,7 +1729,142 @@ router.put('/settings', authMiddleware, async (req, res) => {
   }
 });
 
+// stock-reports
+router.get('/stock-reports', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Fetching stock reports', { user: req.user, query: req.query });
 
+    const { type, warehouse, search } = req.query;
+    const user = req.user;
+    const query = user.role === 'admin' ? {} : { warehouse: user.assignedWarehouse?.toString() };
+    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
+
+    const setting = await Setting.findOne();
+    const warningDays = setting ? setting.expirationWarningDays : 15;
+    const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
+
+    if (search) {
+      query.$or = [
+        { lotCode: { $regex: search, $options: 'i' } },
+        { 'productId.productCode': { $regex: search, $options: 'i' } },
+        { 'productId.name': { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const lots = await Lot.find(query)
+      .populate('productId', 'productCode name')
+      .lean();
+
+    let reportData = [];
+    const today = new Date();
+
+    switch (type) {
+      case 'expiring-soon':
+        reportData = lots.filter(lot => {
+          if (!lot.expDate) return false;
+          const expDate = new Date(lot.expDate);
+          const daysLeft = differenceInDays(expDate, today);
+          return daysLeft <= warningDays && daysLeft > 0;
+        });
+        break;
+      case 'damaged':
+        reportData = lots.filter(lot => (lot.damaged || 0) > 0);
+        break;
+      case 'low-stock':
+        reportData = lots.filter(lot => (lot.qtyOnHand || 0) < lowStockThreshold);
+        break;
+      case 'all-stock':
+      default:
+        reportData = lots;
+        break;
+    }
+
+    logger.info('Stock report data:', reportData);
+    res.json({ data: reportData, warningDays, lowStockThreshold });
+  } catch (error) {
+    logger.error('Error fetching stock reports:', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error fetching stock reports', error: error.message });
+  }
+});
+
+// เพิ่ม endpoint สำหรับ Export Stock Reports
+router.get('/stock-reports/export', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Exporting stock reports', { user: req.user, query: req.query });
+
+    const { type, warehouse, search } = req.query;
+    const user = req.user;
+    const query = user.role === 'admin' ? {} : { warehouse: user.assignedWarehouse?.toString() };
+    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
+
+    const setting = await Setting.findOne();
+    const warningDays = setting ? setting.expirationWarningDays : 15;
+    const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
+
+    if (search) {
+      query.$or = [
+        { lotCode: { $regex: search, $options: 'i' } },
+        { 'productId.productCode': { $regex: search, $options: 'i' } },
+        { 'productId.name': { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const lots = await Lot.find(query)
+      .populate('productId', 'productCode name')
+      .lean();
+
+    let reportData = [];
+    const today = new Date();
+
+    switch (type) {
+      case 'expiring-soon':
+        reportData = lots.filter(lot => {
+          if (!lot.expDate) return false;
+          const expDate = new Date(lot.expDate);
+          const daysLeft = differenceInDays(expDate, today);
+          return daysLeft <= warningDays && daysLeft > 0;
+        });
+        break;
+      case 'damaged':
+        reportData = lots.filter(lot => (lot.damaged || 0) > 0);
+        break;
+      case 'low-stock':
+        reportData = lots.filter(lot => (lot.qtyOnHand || 0) < lowStockThreshold);
+        break;
+      case 'all-stock':
+      default:
+        reportData = lots;
+        break;
+    }
+
+    const worksheetData = reportData.map(lot => ({
+      'Lot Code': lot.lotCode || 'N/A',
+      'Product Name': lot.productId?.name || 'N/A',
+      'Warehouse': lot.warehouse || 'N/A',
+      'Product Code': lot.productId?.productCode || 'N/A',
+      'qtyOnHand': lot.qtyOnHand || 0,
+      'Damaged': lot.damaged || 0,
+      'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A'
+    }));
+
+    if (worksheetData.length === 0) {
+      logger.warn('No data to export');
+      return res.status(400).json({ message: 'No data available for export' });
+    }
+
+    const ws = XLSX.utils.json_to_sheet(worksheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, `${type || 'all-stock'}-report`);
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    res.setHeader('Content-Disposition', `attachment; filename=${type || 'all-stock'}-report-${new Date().toISOString().split('T')[0]}.xlsx`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(excelBuffer);
+  } catch (error) {
+    logger.error('Error exporting stock reports:', { error: error.message, stack: error.stack });
+    res.status(500).json({ message: 'Error exporting stock reports', error: error.message });
+  }
+});
 
 
 module.exports = router;
