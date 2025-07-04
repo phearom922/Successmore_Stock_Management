@@ -1453,7 +1453,6 @@ router.delete('/lot-management/:id', authMiddleware, async (req, res) => {
 
 
 // Lot Management - Export to Excel
-// Lot Management - Export to Excel
 router.get('/lot-management/export', authMiddleware, async (req, res) => {
   try {
     logger.info('Exporting lot management data', { user: req.user, query: req.query });
@@ -1481,9 +1480,10 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
     const worksheetData = lots.map(lot => {
       if (!lot.productId) {
         logger.warn('Lot without productId:', lot._id);
-        const totalQty = (lot.qtyOnHand || 0) + (lot.damaged || 0);
-        const availableQty = (lot.qtyOnHand || 0) - (lot.damaged || 0);
-        logger.debug('Calculated values for lot without productId:', { lotId: lot._id, totalQty, availableQty, qtyOnHand: lot.qtyOnHand, damaged: lot.damaged });
+        const qtyOnHand = lot.qtyOnHand || 0;
+        const damaged = lot.damaged || 0;
+        const total = qtyOnHand + damaged; // คำนวณ Total เป็น qtyOnHand + damaged
+        logger.debug('Calculated values for lot without productId:', { lotId: lot._id, total, damaged, qtyOnHand });
         return {
           'Lot Code': lot.lotCode || 'N/A',
           'Code Product': 'N/A',
@@ -1491,14 +1491,15 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
           'Warehouse': lot.warehouse || 'N/A',
           'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
           'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
-          'Total Qty': totalQty,
-          'Damaged': lot.damaged || 0,
-          'Available Qty': availableQty
+          'Total': total, // เปลี่ยนจาก 'Total Qty' เป็น 'Total'
+          'Damaged': damaged, // ใช้ damaged ตามที่ระบุ
+          'qtyOnHand': qtyOnHand // เปลี่ยนจาก 'Available Qty' เป็น 'qtyOnHand'
         };
       }
-      const totalQty = (lot.qtyOnHand || 0) + (lot.damaged || 0);
-      const availableQty = (lot.qtyOnHand || 0) - (lot.damaged || 0);
-      logger.debug('Calculated values for lot:', { lotId: lot._id, totalQty, availableQty, qtyOnHand: lot.qtyOnHand, damaged: lot.damaged });
+      const qtyOnHand = lot.qtyOnHand || 0;
+      const damaged = lot.damaged || 0;
+      const total = qtyOnHand + damaged; // คำนวณ Total เป็น qtyOnHand + damaged
+      logger.debug('Calculated values for lot:', { lotId: lot._id, total, damaged, qtyOnHand });
       return {
         'Lot Code': lot.lotCode || 'N/A',
         'Code Product': lot.productId.productCode || 'N/A',
@@ -1506,9 +1507,9 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
         'Warehouse': lot.warehouse || 'N/A',
         'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
         'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
-        'Total Qty': totalQty,
-        'Damaged': lot.damaged || 0,
-        'Available Qty': availableQty
+        'Total': total, // เปลี่ยนจาก 'Total Qty' เป็น 'Total'
+        'Damaged': damaged, // ใช้ damaged ตามที่ระบุ
+        'qtyOnHand': qtyOnHand // เปลี่ยนจาก 'Available Qty' เป็น 'qtyOnHand'
       };
     });
 
@@ -1531,7 +1532,6 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error exporting lot management data', error: error.message });
   }
 });
-
 
 
 

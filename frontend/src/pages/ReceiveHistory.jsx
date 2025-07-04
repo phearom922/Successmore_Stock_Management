@@ -136,6 +136,9 @@ const ReceiveHistory = () => {
     fetchTransactions(); // รีเฟรชข้อมูลหลังเคลียร์
   };
 
+console.log(transactions)
+
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
