@@ -1694,7 +1694,7 @@ router.get('/settings', authMiddleware, async (req, res) => {
     }
     let setting = await Setting.findOne();
     if (!setting) {
-      setting = await Setting.create({ expirationWarningDays: 15 });
+      setting = await Setting.create({ expirationWarningDays: 15, lowStockThreshold: 10 });
     }
     logger.info('Fetched settings', { setting });
     res.json(setting);
@@ -1710,18 +1710,19 @@ router.put('/settings', authMiddleware, async (req, res) => {
     if (user.role !== 'admin') {
       return res.status(403).json({ message: 'Access denied. Admin only.' });
     }
-    const { expirationWarningDays } = req.body;
-    if (!expirationWarningDays || expirationWarningDays <= 0) {
-      return res.status(400).json({ message: 'Expiration warning days must be a positive number' });
+    const { expirationWarningDays, lowStockThreshold } = req.body;
+    if (!expirationWarningDays || !lowStockThreshold || expirationWarningDays <= 0 || lowStockThreshold <= 0) {
+      return res.status(400).json({ message: 'Expiration warning days and low stock threshold must be positive numbers' });
     }
     let setting = await Setting.findOne();
     if (!setting) {
-      setting = await Setting.create({ expirationWarningDays });
+      setting = await Setting.create({ expirationWarningDays, lowStockThreshold });
     } else {
       setting.expirationWarningDays = expirationWarningDays;
+      setting.lowStockThreshold = lowStockThreshold;
       await setting.save();
     }
-    logger.info('Updated settings', { expirationWarningDays });
+    logger.info('Updated settings', { expirationWarningDays, lowStockThreshold });
     res.json({ message: 'Settings updated successfully', setting });
   } catch (error) {
     logger.error('Error updating settings:', { error: error.message, stack: error.stack });

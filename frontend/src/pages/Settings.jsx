@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 const Settings = () => {
   const [warningDays, setWarningDays] = useState(15);
+  const [lowStockThreshold, setLowStockThreshold] = useState(10);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const Settings = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarningDays(response.data.expirationWarningDays);
+      setLowStockThreshold(response.data.lowStockThreshold);
     } catch (error) {
       console.error('Error fetching settings:', error);
       toast.error('Failed to load settings');
@@ -26,7 +28,7 @@ const Settings = () => {
     try {
       const response = await axios.put(
         'http://localhost:3000/api/settings',
-        { expirationWarningDays: warningDays },
+        { expirationWarningDays: warningDays, lowStockThreshold },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success('Settings saved successfully');
@@ -46,6 +48,16 @@ const Settings = () => {
             type="number"
             value={warningDays}
             onChange={(e) => setWarningDays(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            min="1"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Low Stock Threshold</label>
+          <input
+            type="number"
+            value={lowStockThreshold}
+            onChange={(e) => setLowStockThreshold(Number(e.target.value))}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             min="1"
           />
