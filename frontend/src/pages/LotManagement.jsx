@@ -475,7 +475,7 @@ const LotManagement = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="px-2 py-1 bg-gray-200 rounded-full text-xs font-medium">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       {productLots.length} lots
                     </span>
                     <ChevronDownIcon className={`transform transition ${productLots[0].expanded ? 'rotate-180' : ''}`} />

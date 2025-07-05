@@ -78,41 +78,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             {isOpen && <span className='text-sm'>Suppliers</span>}
           </Link>
 
-          {/* <Link
-            to="/issue"
-            className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/issue') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-          >
-            <FiUpload className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-            {isOpen && <span className='text-sm'>Issue</span>}
-          </Link> */}
 
-
-
-
-
-
-
-
-          {/* {userRole === 'admin' && (
-            <Link
-              to="/create-stock"
-              className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/create-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-            >
-              <FiPackage className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-              {isOpen && <span className='text-sm'>Create Stock</span>}
-            </Link>
-          )} */}
-
-          {/* {(userRole === 'admin' || userRole === 'user') && (
-            <Link
-              to="/manage-stock-status"
-              className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/manage-stock-status') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-            >
-              <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-              {isOpen && <span className='text-sm'>Manage Status</span>}
-            </Link>
-            
-          )} */}
 
 
           {(userRole === 'admin' || userRole === 'user') && (
@@ -123,7 +89,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <GiBrokenPottery className={`${isOpen ? 'mr-3' : ''} text-sm`} />
               {isOpen && <span className='text-sm'>Manage Damage</span>}
             </Link>
-            
+
           )}
 
           {userRole === 'admin' && (
