@@ -10,7 +10,10 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import { FaPlus, FaEdit, FaTrash, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { FaPlus,FaRegTrashAlt, FaEdit, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+
+// Modal confirm state
+import { useRef } from 'react';
 
 const defaultFeatures = ['lotManagement', 'manageDamage', 'category', 'products'];
 const defaultPermissions = defaultFeatures.map(f => ({ feature: f, permissions: [] }));
@@ -24,6 +27,7 @@ const Users = () => {
   const [form, setForm] = useState({ username: '', lastName: '', password: '', role: 'user', assignedWarehouse: '', permissions: defaultPermissions });
   const [editingId, setEditingId] = useState(null);
   const [viewUser, setViewUser] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ open: false, user: null });
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -127,7 +131,6 @@ const Users = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure?')) return;
     try {
       await axios.delete(`http://localhost:3000/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -178,24 +181,24 @@ const Users = () => {
           <h2 className="text-3xl font-bold text-gray-900">User Management</h2>
           <p className="text-sm text-gray-600 mt-1">Efficiently manage users and their permissions</p>
         </div>
-      <div className="flex gap-3 w-full sm:w-auto">
-        <Input
-          placeholder="Search users..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full sm:w-64 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
-        />
-        <Select value={warehouseFilter} onValueChange={setWarehouseFilter}>
-          <SelectTrigger className="w-48 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
-            <SelectValue placeholder="Filter by Warehouse" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Warehouses</SelectItem>
-            {warehouses.map((w) => (
-              <SelectItem key={w._id} value={w.name}>{w.name} ({w.warehouseCode})</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex gap-3 w-full sm:w-auto">
+          <Input
+            placeholder="Search users..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-64 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
+          />
+          <Select value={warehouseFilter} onValueChange={setWarehouseFilter}>
+            <SelectTrigger className="w-48 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
+              <SelectValue placeholder="Filter by Warehouse" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Warehouses</SelectItem>
+              {warehouses.map((w) => (
+                <SelectItem key={w._id} value={w.name}>{w.name} ({w.warehouseCode})</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Dialog open={openModal} onOpenChange={setOpenModal}>
             <DialogTrigger asChild>
               <Button className="bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2">
@@ -208,7 +211,7 @@ const Users = () => {
                   {editingId ? 'Edit User' : 'Create User'}
                 </DialogTitle>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-6 py-6">
+              <div className="grid grid-cols-2 gap-4 py-3">
                 <Input
                   placeholder="Username"
                   value={form.username}
@@ -251,7 +254,7 @@ const Users = () => {
                 </Select>
               </div>
 
-              <div className="mt-6">
+              <div>
                 <h4 className="text-lg font-medium text-gray-700 mb-4">Permissions</h4>
                 <Card className="border-gray-200 shadow-sm">
                   <CardContent className="p-4">
@@ -317,7 +320,6 @@ const Users = () => {
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             {/* แถบซ้าย: User */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">Users</h3>
               <Table className="text-sm">
                 <TableHeader>
                   <TableRow className="bg-gray-50">
@@ -346,19 +348,45 @@ const Users = () => {
                           {user.isActive ? 'Active' : 'Disabled'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-2">
-                        <Button size="icon" variant="ghost" onClick={() => setViewUser(user)} className="text-blue-600 hover:text-blue-800">
-                          <FaEye />
-                        </Button>
-                        <Button size="icon" variant="ghost" onClick={() => handleEdit(user)} className="text-blue-600 hover:text-blue-800">
-                          <FaEdit />
-                        </Button>
-                        <Button size="icon" variant="ghost" onClick={() => handleDelete(user._id)} className="text-red-600 hover:text-red-800">
-                          <FaTrash />
-                        </Button>
-                        <Button size="icon" variant="ghost" onClick={() => toggleActive(user)} className="text-purple-600 hover:text-purple-800">
-                          {user.isActive ? <FaToggleOff /> : <FaToggleOn />}
-                        </Button>
+                      <TableCell className="text-right">
+                        <div className="inline-flex items-center gap-1">
+                          <Button size="icon" variant="ghost" onClick={() => setViewUser(user)} className="text-red-600 hover:text-red-900 p-1 rounded border border-red-200 hover:border-red-300" aria-label="View">
+                            <FaEye  />
+                          </Button>
+                          <Button size="icon" variant="ghost" onClick={() => handleEdit(user)} className="text-blue-600 hover:text-blue-900  p-1 rounded border border-blue-200 hover:border-blue-300" aria-label="Edit">
+                            <FaRegEdit />
+                          </Button>
+                          <Button size="icon" variant="ghost" onClick={() => setDeleteModal({ open: true, user })} className="text-red-600 hover:text-red-900 p-1 rounded border border-red-200 hover:border-red-300" aria-label="Delete">
+                            <FaRegTrashAlt />
+                          </Button>
+                          {/* Delete Confirm Modal */}
+                          <Dialog open={deleteModal.open} onOpenChange={open => setDeleteModal(d => ({ ...d, open }))}>
+                            <DialogContent className="max-w-md bg-white rounded-lg shadow-lg">
+                              <DialogHeader>
+                                <DialogTitle className="text-xl font-semibold text-gray-900">Confirm Delete</DialogTitle>
+                              </DialogHeader>
+                              <div className="py-4 text-gray-700">
+                                {deleteModal.user && (
+                                  <>
+                                    <p>Are you sure you want to delete user <span className="font-bold text-red-600">{deleteModal.user.username}</span>?</p>
+                                    <p className="mt-2 text-sm text-gray-500">This action cannot be undone.</p>
+                                    <p className="mt-4 text-xs text-gray-500">Admin: <span className="font-semibold text-indigo-600">{userRole}</span></p>
+                                  </>
+                                )}
+                              </div>
+                              <DialogFooter className="flex justify-end gap-3">
+                                <Button variant="outline" onClick={() => setDeleteModal({ open: false, user: null })} className="border-gray-300 text-gray-700 hover:bg-gray-100">Cancel</Button>
+                                <Button onClick={async () => {
+                                  await handleDelete(deleteModal.user._id);
+                                  setDeleteModal({ open: false, user: null });
+                                }} className="bg-red-600 hover:bg-red-700 text-white ">Delete</Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                          <Button size="icon" variant="ghost" onClick={() => toggleActive(user)} className={`rounded-full transition-all duration-150 ${user.isActive ? 'hover:bg-purple-50 text-purple-600 hover:text-purple-800' : 'hover:bg-green-50 text-green-600 hover:text-green-800'}`} aria-label="Toggle Active">
+                            {user.isActive ? <FaToggleOff className="w-4 h-4" /> : <FaToggleOn className="w-4 h-4" />}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -366,7 +394,7 @@ const Users = () => {
               </Table>
             </div>
 
-            
+
 
           </div>
         </CardContent>
