@@ -194,7 +194,7 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can update users' });
     }
-    const data = updateUserSchema.parse(req.body); // ใช้ schema ที่อนุญาต optional
+    const data = updateUserSchema.parse(req.body); // ใช้ schema ที่อนุญาต optional และ passthrough
     const { username, lastName, password, role, assignedWarehouse, permissions, isActive } = data;
 
     const user = await User.findById(req.params.id);
@@ -213,7 +213,7 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
 
     // อัปเดตฟิลด์อื่นๆ ถ้ามี
     if (lastName) user.lastName = lastName;
-    if (password) user.password = await bcrypt.hash(password, 10);
+    if (password) user.password = await bcrypt.hash(password, 10); // อัปเดต password เฉพาะถ้ามี
     if (role) user.role = role;
     if (assignedWarehouse && assignedWarehouse !== user.assignedWarehouse) {
       const warehouse = await Warehouse.findOne({ name: assignedWarehouse });
@@ -224,12 +224,9 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
     }
     if (permissions) user.permissions = permissions;
 
-    // อัปเดต isActive แยกต่างหาก โดยไม่บังคับ permissions
+    // อัปเดต isActive โดยไม่บังคับ permissions
     if (isActive !== undefined) {
       user.isActive = isActive;
-    } else {
-      // ถ้าไม่ส่ง isActive แต่มี payload อื่นๆ ให้ใช้ค่าเดิม
-      data.isActive = user.isActive;
     }
 
     const updated = await user.save();

@@ -2936,3 +2936,2040 @@ TypeError: updateUserSchema.parse is not a function
     at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
     at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
     at param (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:365:14)
+2025-07-06 16:52:58 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:53:28 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:54:33 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:55:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:55:03 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:55:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:55:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:55:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:55:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 16:55:04 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:57:04 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:57:04 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:57:22 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:57:22 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:58:13 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:58:13 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-06 16:58:30 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:58:31 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:58:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:58:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:58:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:58:52 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:58:53 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:05 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:06 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:06 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:06 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:34 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:35 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:35 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:35 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 16:59:35 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:03:18 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:03:25 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:03:28 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:04:17 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:04:27 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:04:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:04:39 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:04:54 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:05:21 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:05:24 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:05:29 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:05:42 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:08:06 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:08:10 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:08:18 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:08:19 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:08:25 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:08:46 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:09:09 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:09:10 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:09:11 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:09:17 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:09:20 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:01 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:04 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:10 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:14 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:18 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:30 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:31 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:53 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:53 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:53 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:10:54 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:11:44 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:12:26 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:12:30 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:12:40 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:31 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:32 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:33 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:33 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:33 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:38 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:44 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:44 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:23:45 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "too_small",
+    "minimum": 6,
+    "type": "string",
+    "inclusive": true,
+    "exact": false,
+    "message": "String must contain at least 6 character(s)",
+    "path": [
+      "password"
+    ]
+  },
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:25:06 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:25:19 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:197:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 17:26:58 [error]: Error updating user:
+ZodError: [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "_id",
+      "createdAt",
+      "updatedAt",
+      "__v"
+    ],
+    "path": [],
+    "message": "Unrecognized key(s) in object: '_id', 'createdAt', 'updatedAt', '__v'"
+  }
+]
+    at get error [as error] (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:45:31)
+    at ZodObject.parse (E:\Personal Documents\Stock-Management\backend\node_modules\zod\dist\cjs\v3\types.js:120:22)
+    at E:\Personal Documents\Stock-Management\backend\src\routes\api.js:196:35
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:22:5)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+2025-07-06 21:28:57 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-06 21:28:57 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)

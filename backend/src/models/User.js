@@ -28,7 +28,7 @@ const updateUserSchema = z.object({
     })
   ).optional().nullable(),
   isActive: z.boolean().optional(),
-}).strict();
+}).strict().passthrough(); // อนุญาตให้ผ่านฟิลด์ที่ไม่คาดหวัง (เช่น _id, createdAt)
 
 module.exports = mongoose.model('User', userSchema);
-module.exports.updateUserSchema = updateUserSchema; // Export อย่างถูกต้อง
+module.exports.updateUserSchema = updateUserSchema;
