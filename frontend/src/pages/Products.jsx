@@ -24,18 +24,14 @@ const Products = () => {
   const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-  const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
+  // ลบ userRole เพราะใช้ ProtectedRoute แทน
 
   useEffect(() => {
     if (!token) {
       navigate('/login');
       return;
     }
-    if (userRole !== 'admin') {
-      toast.error('Unauthorized access: Only admins can manage products');
-      navigate('/');
-      return;
-    }
+    
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -57,7 +53,7 @@ const Products = () => {
       }
     };
     fetchData();
-  }, [token, navigate, userRole]);
+  }, [token, navigate]);
 
   useEffect(() => {
     const results = products.filter(product =>
@@ -185,8 +181,6 @@ const Products = () => {
       toast.error('Error processing Excel file');
     }
   };
-
-  if (!token || userRole !== 'admin') return null;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

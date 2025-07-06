@@ -86,7 +86,6 @@ function App() {
               <Route path="/lot-management" element={<LotManagement />} />
               <Route path="/manage-damage" element={<ManageDamage />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/settings" element={<Settings />} />
               <Route path="/stock-reports" element={<StockReports />} />
             </Routes>
           </div>

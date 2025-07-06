@@ -19,32 +19,13 @@ const Categories = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-  const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
+  // ลบ userRole เพราะใช้ ProtectedRoute แทน
 
   useEffect(() => {
     if (!token) {
       navigate('/login');
       return;
     }
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.exp * 1000 < Date.now()) {
-        localStorage.removeItem('token');
-        toast.error('Session expired, please login again');
-        navigate('/login');
-        return;
-      }
-      if (userRole !== 'admin') {
-        toast.error('Unauthorized access: Only admins can manage categories');
-        navigate('/');
-        return;
-      }
-    } catch {
-      localStorage.removeItem('token');
-      navigate('/login');
-      return;
-    }
-
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -66,7 +47,7 @@ const Categories = () => {
       }
     };
     fetchData();
-  }, [token, navigate, userRole]);
+  }, [token, navigate]);
 
   const handleCreateOrUpdateCategory = async (e) => {
     e.preventDefault();
@@ -151,181 +132,184 @@ const Categories = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-screen mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Category Management</h1>
-            <p className="text-gray-600">Manage product categories and their status</p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto mt-4 md:mt-0">
-            <div className="relative flex-grow">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search categories..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+    <div>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-screen mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Category Management</h1>
+              <p className="text-gray-600">Manage product categories and their status</p>
             </div>
             
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors duration-200"
-            >
-              <FaPlus className="mr-2" />
-              Add Category
-            </button>
-          </div>
-        </div>
-
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-[rgb(0,0,0)]/50 flex justify-center items-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div className="bg-indigo-600 p-4 text-white">
-                <h3 className="text-lg font-bold">{editingId ? 'Edit Category' : 'Create New Category'}</h3>
+            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto mt-4 md:mt-0">
+              <div className="relative flex-grow">
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search categories..."
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
               
-              <form onSubmit={handleCreateOrUpdateCategory} className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category Name *</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Electronics"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Description (optional)"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    rows="3"
-                    disabled={isLoading}
-                  />
-                </div>
-                
-                <div className="flex justify-end gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => { setIsModalOpen(false); setEditingId(null); setName(''); setDescription(''); }}
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    disabled={isLoading}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className={`px-4 py-2 flex items-center justify-center ${isLoading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-md transition-colors duration-200`}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <FiLoader className="animate-spin mr-2" />
-                        Processing...
-                      </>
-                    ) : editingId ? 'Update Category' : 'Create Category'}
-                  </button>
-                </div>
-              </form>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors duration-200"
+              >
+                <FaPlus className="mr-2" />
+                Add Category
+              </button>
             </div>
           </div>
-        )}
 
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <FiLoader className="animate-spin text-4xl text-indigo-600" />
-          </div>
-        ) : (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Category Name
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created Date
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredCategories.length > 0 ? (
-                    filteredCategories.map((category) => (
-                      <tr key={category._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{category.name}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-500 max-w-xs truncate">
-                            {category.description || '-'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">
-                            {new Date(category.createdAt).toLocaleDateString()}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {getCategoryStatus(category._id)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            onClick={() => handleEditCategory(category)}
-                            className="text-indigo-600 hover:text-indigo-900 mr-4"
-                            title="Edit"
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteCategory(category._id)}
-                            className={`${products.some(p => p.category?._id.toString() === category._id.toString()) 
-                              ? 'text-gray-400 cursor-not-allowed' 
-                              : 'text-red-600 hover:text-red-900'}`}
-                            disabled={products.some(p => p.category?._id.toString() === category._id.toString())}
-                            title={products.some(p => p.category?._id.toString() === category._id.toString()) 
-                              ? "Cannot delete category in use" 
-                              : "Delete category"}
-                          >
-                            <FaTrash />
-                          </button>
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-[rgb(0,0,0)]/50 flex justify-center items-center z-50 p-4">
+              <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+                <div className="bg-indigo-600 p-4 text-white">
+                  <h3 className="text-lg font-bold">{editingId ? 'Edit Category' : 'Create New Category'}</h3>
+                </div>
+                
+                <form onSubmit={handleCreateOrUpdateCategory} className="p-6 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category Name *</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Electronics"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      required
+                      disabled={isLoading}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Description (optional)"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                      rows="3"
+                      disabled={isLoading}
+                    />
+                  </div>
+                  
+                  <div className="flex justify-end gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => { setIsModalOpen(false); setEditingId(null); setName(''); setDescription(''); }}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                      disabled={isLoading}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className={`px-4 py-2 flex items-center justify-center ${isLoading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-md transition-colors duration-200`}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <FiLoader className="animate-spin mr-2" />
+                          Processing...
+                        </>
+                      ) : editingId ? 'Update Category' : 'Create Category'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <FiLoader className="animate-spin text-4xl text-indigo-600" />
+            </div>
+          ) : (
+            <>
+              <div className="bg-white shadow rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Category Name
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Description
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Created Date
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {filteredCategories.length > 0 ? (
+                        filteredCategories.map((category) => (
+                          <tr key={category._id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">{category.name}</div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="text-sm text-gray-500 max-w-xs truncate">
+                                {category.description || '-'}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">
+                                {new Date(category.createdAt).toLocaleDateString()}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {getCategoryStatus(category._id)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <button
+                                onClick={() => handleEditCategory(category)}
+                                className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                title="Edit"
+                              >
+                                <FaEdit />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCategory(category._id)}
+                                className={`${products.some(p => p.category?._id.toString() === category._id.toString()) 
+                                  ? 'text-gray-400 cursor-not-allowed' 
+                                  : 'text-red-600 hover:text-red-900'}`}
+                                disabled={products.some(p => p.category?._id.toString() === category._id.toString())}
+                                title={products.some(p => p.category?._id.toString() === category._id.toString()) 
+                                  ? "Cannot delete category in use" 
+                                  : "Delete category"}
+                              >
+                                <FaTrash />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
+                          No categories found
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
-                        No categories found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
+        <ToastContainer position="top-right" autoClose={3000} />
       </div>
-      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

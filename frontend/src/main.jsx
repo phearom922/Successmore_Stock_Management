@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import Dashboard from './pages/Dashboard';
@@ -16,9 +16,24 @@ import ReceiveHistory from './pages/ReceiveHistory';
 import LotManagement from './pages/LotManagement';
 import ManageDamage from './pages/ManageDamage';
 import Settings from './pages/Settings';
+import StockReports from './pages/StockReports';
+import Suppliers from './pages/Suppliers';
 
+// Component เพื่อแสดง Toast เมื่อ Unauthorized
+const UnauthorizedToast = () => {
+  const location = useLocation();
+  const state = location.state;
 
-const ProtectedRoute = ({ children, requiredRoles = [] }) => {
+  useEffect(() => {
+    if (state && state.message === 'Unauthorized access') {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  return null;
+};
+
+const ProtectedRoute = ({ children, requiredRoles = [], requiredPermissions = [] }) => {
   const token = localStorage.getItem('token');
   if (!token) return <Navigate to="/login" />;
 
@@ -28,10 +43,34 @@ const ProtectedRoute = ({ children, requiredRoles = [] }) => {
       localStorage.removeItem('token');
       return <Navigate to="/login" />;
     }
-    if (requiredRoles.length > 0 && !requiredRoles.includes(payload.role)) {
-      return <Navigate to="/" />;
+    const userRole = payload.role;
+    const userPermissions = payload.permissions || [];
+
+    // ตรวจสอบ Permissions ก่อน Role
+    if (requiredPermissions.length > 0) {
+      const hasPermission = requiredPermissions.every(perm => {
+        const featurePerm = userPermissions.find(p => p.feature === perm.feature);
+        if (!featurePerm) return false;
+        // ถ้าไม่ระบุ permissions หรือเป็น Array ว่าง ให้ยอมรับถ้ามีฟีเจอร์นั้น
+        if (!perm.permissions || perm.permissions.length === 0) return true;
+        return perm.permissions.every(p => featurePerm.permissions.includes(p));
+      });
+      if (!hasPermission) {
+        return <Navigate to="/" replace state={{ message: 'Unauthorized access' }} />;
+      }
     }
-    return children;
+
+    // ตรวจสอบ Role เฉพาะกรณีที่ต้องการ Role เฉพาะ (เช่น admin)
+    if (requiredRoles.length > 0 && !requiredRoles.includes(userRole)) {
+      return <Navigate to="/" replace state={{ message: 'Unauthorized access' }} />;
+    }
+
+    return (
+      <>
+        <UnauthorizedToast />
+        {children}
+      </>
+    );
   } catch {
     localStorage.removeItem('token');
     return <Navigate to="/login" />;
@@ -50,19 +89,20 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/issue" element={<ProtectedRoute><IssueForm /></ProtectedRoute>} />
+          <Route index element={<ProtectedRoute requiredRoles={['admin', 'user']}><Dashboard /></ProtectedRoute>} />
+          <Route path="/issue" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueForm /></ProtectedRoute>} />
           <Route path="/create-stock" element={<ProtectedRoute requiredRoles={['admin']}><CreateStock /></ProtectedRoute>} />
-          <Route path="/manage-stock-status" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ManageStockStatus /></ProtectedRoute>} />
-          <Route path="/categories" element={<ProtectedRoute requiredRoles={['admin']}><Categories /></ProtectedRoute>} />
-          <Route path="/products" element={<ProtectedRoute requiredRoles={['admin']}><Products /></ProtectedRoute>} />
-          <Route path="/warehouses" element={<ProtectedRoute requiredRoles={['admin']}><Warehouses /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute requiredRoles={['admin']}><Users /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute requiredRoles={['admin']}><Settings /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-          <Route path="/receive-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ReceiveHistory /></ProtectedRoute>} /> {/* เพิ่มบรรทัดนี้ */}
-          <Route path="/lot-management" element={<ProtectedRoute requiredRoles={['admin', 'user']}><LotManagement /></ProtectedRoute>} />
-          <Route path="/manage-damage" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ManageDamage /></ProtectedRoute>} />
+          <Route path="/manage-stock-status" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ManageStockStatus /></ProtectedRoute>} />
+          <Route path="/categories" element={<ProtectedRoute requiredPermissions={[{ feature: 'category', permissions: ['Show'] }]}><Categories /></ProtectedRoute>} />
+          <Route path="/products" element={<ProtectedRoute requiredPermissions={[{ feature: 'products', permissions: ['Show'] }]}><Products /></ProtectedRoute>} />
+          <Route path="/warehouses" element={<ProtectedRoute requiredRoles={['admin']}><Warehouses /></ProtectedRoute>} />
+          <Route path="/receive-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ReceiveHistory /></ProtectedRoute>} />
+          <Route path="/lot-management" element={<ProtectedRoute requiredPermissions={[{ feature: 'lotManagement', permissions: ['Show'] }]}><LotManagement /></ProtectedRoute>} />
+          <Route path="/manage-damage" element={<ProtectedRoute requiredPermissions={[{ feature: 'manageDamage', permissions: ['Show'] }]}><ManageDamage /></ProtectedRoute>} />
+          <Route path="/stock-reports" element={<ProtectedRoute requiredRoles={['admin', 'user']}><StockReports /></ProtectedRoute>} />
+          <Route path="/suppliers" element={<ProtectedRoute requiredRoles={['admin', 'user']}><Suppliers /></ProtectedRoute>} />
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />

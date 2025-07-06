@@ -162,10 +162,11 @@ console.log(transactions)
       {/* Filter Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <form onSubmit={handleSearch}>
-          <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-              <div className="relative">
+              <div className="relative ">
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
@@ -232,7 +233,7 @@ console.log(transactions)
             )}
 
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1"></label>
               <div className="relative">
                 <input
                   type="text"
@@ -247,7 +248,7 @@ console.log(transactions)
             </div>
 
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1"></label>
               <div className="relative">
                 <input
                   type="text"

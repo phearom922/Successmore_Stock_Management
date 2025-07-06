@@ -11,12 +11,11 @@ import { GiBrokenPottery } from "react-icons/gi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 
-
-const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
+const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRole กลับคืนมา
   const location = useLocation();
   const token = localStorage.getItem('token');
 
-  // ตรวจสอบ token validity
+  // ตรวจสอบ token validity และดึง permissions
   const isValidToken = () => {
     if (!token) return false;
     try {
@@ -27,12 +26,28 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
     }
   };
 
+  const getPermissions = () => {
+    if (!token) return [];
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.permissions || [];
+    } catch {
+      return [];
+    }
+  };
+
+  const hasPermission = (feature, permission = 'Show') => {
+    const perms = getPermissions();
+    const featurePerm = perms.find(p => p.feature === feature);
+    return featurePerm && featurePerm.permissions.includes(permission);
+  };
+
+  const isActive = (path) => location.pathname === path;
+
   // ถ้า token ไม่ถูกต้อง จะไม่แสดง Sidebar
   if (!isValidToken()) {
     return null;
   }
-
-  const isActive = (path) => location.pathname === path;
 
   return (
     <div className={`${isOpen ? 'w-64' : 'w-20'} flex flex-col border-r-1 border-gray-200 transition-all duration-300 bg-gray-100 text-gray-700 h-screen fixed z-10`}>
@@ -65,23 +80,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             <FiHome className={`${isOpen ? 'mr-3' : ''} text-sm`} />
             {isOpen && <span className='text-sm'>Dashboard</span>}
           </Link>
-
-
-
-
-
-          <Link
-            to="/suppliers"
-            className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/suppliers') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-          >
-            <FaBuilding className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-            {isOpen && <span className='text-sm'>Suppliers</span>}
-          </Link>
-
-
-
-
-          {(userRole === 'admin' || userRole === 'user') && (
+          {hasPermission('manageDamage', 'Show') && (
             <Link
               to="/manage-damage"
               className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/manage-damage') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
@@ -89,24 +88,18 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
               <GiBrokenPottery className={`${isOpen ? 'mr-3' : ''} text-sm`} />
               {isOpen && <span className='text-sm'>Manage Damage</span>}
             </Link>
-
           )}
 
-          {userRole === 'admin' && (
-            <div>
-              <div className="mt-1">
-                <Link
-                  to="/warehouses"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/warehouses') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <FiTruck className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-                  {isOpen && <span className='text-sm'>Warehouses</span>}
-                </Link>
-              </div>
-            </div>
+          {hasPermission('lotManagement', 'Show') && (
+            <Link
+              to="/lot-management"
+              className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/lot-management') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+            >
+              <FaCubes className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+              {isOpen && <span className='text-sm'>Lot Management</span>}
+            </Link>
           )}
         </div>
-
         <div className="mt-6">
           {isOpen ? (
             <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -115,30 +108,36 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
           ) : (
             <div className="border-t border-gray-700 mx-2 my-2"></div>
           )}
-
           <div className="mt-1 space-y-1">
-            {userRole === 'admin' && (
-              <>
-                <Link
-                  to="/categories"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/categories') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <FiLayers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-                  {isOpen && <span className='text-sm'>Category</span>}
-                </Link>
-
-                <Link
-                  to="/products"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/products') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <FiDatabase className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-                  {isOpen && <span className='text-sm'>Products</span>}
-                </Link>
-              </>
+            {hasPermission('category', 'Show') && (
+              <Link
+                to="/categories"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/categories') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiLayers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Category</span>}
+              </Link>
+            )}
+            {hasPermission('products', 'Show') && (
+              <Link
+                to="/products"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/products') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiDatabase className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Products</span>}
+              </Link>
             )}
           </div>
-
         </div>
+
+
+
+
+
+
+
+
+
 
         <div className="mt-6">
           {isOpen ? (
@@ -148,49 +147,39 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
           ) : (
             <div className="border-t border-gray-700 mx-2 my-2"></div>
           )}
-
           <div className="mt-1 space-y-1">
-            {(userRole === 'admin' || userRole === 'user') && (
-              <>
-                <Link
-                  to="/receive-stock"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
-                  {isOpen && <span className='text-sm'>Receive Stock</span>}
-                </Link>
-                <Link
-                  to="/receive-history"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-history') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
-                  {isOpen && <span className='text-sm'>Receive History</span>}
-                </Link>
-
-                <Link
-                  to="/lot-management"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/lot-management') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <FaCubes className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
-                  {isOpen && <span className='text-sm'>Lot Management</span>}
-                </Link>
-
-                <Link
-                  to="/stock-reports"
-                  className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/stock-reports') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
-                >
-                  <HiOutlineDocumentReport className={`${isOpen ? 'mr-3' : ''} text-sm`} /> {/* ใช้ไอคอนที่เหมาะสม */}
-                  {isOpen && <span className='text-sm'>Stock Reports</span>}
-                </Link>
-              </>
+            {(userRole === 'admin' || userRole === 'user') && ( // ยังคงใช้ userRole สำหรับเมนูทั่วไป
+              <Link
+                to="/receive-stock"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Receive Stock</span>}
+              </Link>
             )}
+
+            {(userRole === 'admin' || userRole === 'user') && (
+              <Link
+                to="/receive-history"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/receive-history') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Receive History</span>}
+              </Link>
+            )}
+            {(userRole === 'admin' || userRole === 'user') && (
+              <Link
+                to="/stock-reports"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/stock-reports') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <HiOutlineDocumentReport className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Stock Reports</span>}
+              </Link>
+            )}
+
+
           </div>
         </div>
-
-
-
-
-
         {userRole === 'admin' && (
           <div className="mt-6">
             {isOpen ? (
@@ -200,7 +189,6 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
             ) : (
               <div className="border-t border-gray-700 mx-2 my-2"></div>
             )}
-
             <div className="mt-1 space-y-1">
               <Link
                 to="/users"
@@ -209,8 +197,23 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => {
                 <FiUsers className={`${isOpen ? 'mr-3' : ''} text-sm`} />
                 {isOpen && <span className='text-sm'>Users Management</span>}
               </Link>
-            </div>
-            <div className="mt-1 space-y-1">
+
+              <Link
+                to="/suppliers"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/suppliers') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FaBuilding className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Suppliers</span>}
+              </Link>
+
+              <Link
+                to="/warehouses"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/warehouses') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiTruck className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Warehouses</span>}
+              </Link>
+
               <Link
                 to="/settings"
                 className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/settings') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}

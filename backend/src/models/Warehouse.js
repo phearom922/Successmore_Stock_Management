@@ -5,7 +5,8 @@ const warehouseSchema = new mongoose.Schema({
   name: { type: String, required: true },
   branch: { type: String, required: true },
   status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
-  assignedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  // เปลี่ยน assignedUser เป็น Array เพื่อรองรับหลาย User (ถ้าต้องการเก็บ)
+  assignedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
   hasAssignedUserHistory: { type: Boolean, default: false }
 }, { timestamps: true });
 

@@ -1,12 +1,12 @@
 const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, printf, colorize } = format;
+const { combine, timestamp, printf, colorize, errors } = format;
 const DailyRotateFile = require('winston-daily-rotate-file');
 const path = require('path');
 
 require('dotenv').config();
 
-const logFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} [${level}]: ${message}`;
+const logFormat = printf(({ level, message, timestamp, stack }) => {
+  return `${timestamp} [${level}]: ${message}${stack ? `\n${stack}` : ''}`;
 });
 
 const logDirectory = process.env.LOG_DIR || path.join(__dirname, '../../logs');
@@ -14,6 +14,7 @@ const logDirectory = process.env.LOG_DIR || path.join(__dirname, '../../logs');
 const logger = createLogger({
   level: 'info',
   format: combine(
+    errors({ stack: true }), // เพิ่มการจัดการ Error Stack
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     logFormat
   ),
@@ -40,7 +41,6 @@ const logger = createLogger({
   ]
 });
 
-// ทดสอบการ log ทันทีที่โหลดไฟล์
 logger.info('Logger initialized successfully');
 
 module.exports = logger;

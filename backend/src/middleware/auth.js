@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const logger = require('../config/logger'); // เพิ่มการ import logger
+const logger = require('../config/logger');
 
 const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -9,11 +9,16 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = {
-      _id: decoded.id, // กำหนด _id ชัดเจน
+      _id: decoded.id,
       role: decoded.role,
       username: decoded.username,
-      warehouse: decoded.warehouse
+      warehouse: decoded.warehouse,
+      permissions: decoded.permissions || [], // เพิ่ม permissions จาก token
+      isActive: decoded.isActive || true,
     };
+    if (!req.user.isActive) {
+      return res.status(403).json({ message: 'User is disabled' });
+    }
     next();
   } catch (error) {
     logger.error('Authentication failed', { error: error.message, stack: error.stack });

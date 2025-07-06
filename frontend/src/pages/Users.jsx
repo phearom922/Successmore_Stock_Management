@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSearch, FaPlus, FaEye } from 'react-icons/fa';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -13,10 +16,12 @@ const Users = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user');
   const [assignedWarehouse, setAssignedWarehouse] = useState('');
+  const [permissions, setPermissions] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewPermissionsId, setViewPermissionsId] = useState(null);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
@@ -26,7 +31,6 @@ const Users = () => {
       navigate('/login');
       return;
     }
-    
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.exp * 1000 < Date.now()) {
@@ -80,7 +84,7 @@ const Users = () => {
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.assignedWarehouse && user.assignedWarehouse.warehouseCode.toLowerCase().includes(searchTerm.toLowerCase()))
+      (user.assignedWarehouse && user.assignedWarehouse.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     setFilteredUsers(results);
   }, [searchTerm, users]);
@@ -92,6 +96,7 @@ const Users = () => {
     setPassword('');
     setRole('user');
     setAssignedWarehouse('');
+    setPermissions([]);
     setIsModalOpen(false);
   };
 
@@ -101,7 +106,7 @@ const Users = () => {
       toast.error('Please login first');
       return;
     }
-    if (!username || !lastName || (!editingId && !password) || !role) {
+    if (!username || !lastName || (!editingId && !password) || !role || !assignedWarehouse) {
       toast.error('Please fill all required fields');
       return;
     }
@@ -116,9 +121,10 @@ const Users = () => {
         lastName,
         password: password || undefined,
         role,
-        assignedWarehouse: assignedWarehouse || undefined,
+        assignedWarehouse,
+        permissions,
       };
-      
+
       if (editingId) {
         const response = await axios.put(`http://localhost:3000/api/users/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
@@ -148,7 +154,8 @@ const Users = () => {
     setUsername(user.username);
     setLastName(user.lastName);
     setRole(user.role);
-    setAssignedWarehouse(user.assignedWarehouse?._id || '');
+    setAssignedWarehouse(user.assignedWarehouse || '');
+    setPermissions(user.permissions || []);
     setIsModalOpen(true);
   };
 
@@ -173,6 +180,43 @@ const Users = () => {
     }
   };
 
+  const handleViewPermissions = (userId) => {
+    const user = users.find(u => u._id === userId);
+    setViewPermissionsId(userId);
+    const userPermissions = user.permissions.length > 0 ? user.permissions : [
+      { feature: 'lotManagement', permissions: [] },
+      { feature: 'manageDamage', permissions: [] },
+      { feature: 'category', permissions: [] },
+      { feature: 'products', permissions: [] },
+    ];
+    setPermissions(userPermissions);
+    setIsModalOpen(true);
+  };
+
+  const handleToggleActive = async (userId) => {
+    const user = users.find(u => u._id === userId);
+    const newActive = !user.isActive;
+    try {
+      const payload = {
+        isActive: newActive,
+        username: user.username,
+        lastName: user.lastName,
+        role: user.role,
+        assignedWarehouse: user.assignedWarehouse,
+        permissions: user.permissions,
+      };
+      await axios.put(`http://localhost:3000/api/users/${userId}`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(users.map(u => u._id === userId ? { ...u, isActive: newActive } : u));
+      setFilteredUsers(filteredUsers.map(u => u._id === userId ? { ...u, isActive: newActive } : u));
+      toast.success(`User ${newActive ? 'activated' : 'disabled'} successfully`);
+    } catch (error) {
+      console.error('Error toggling user active status:', error);
+      toast.error('Failed to update user status');
+    }
+  };
+
   if (!token || userRole !== 'admin') return null;
 
   return (
@@ -182,7 +226,7 @@ const Users = () => {
           <h2 className="text-2xl font-bold text-gray-800">User Management</h2>
           <p className="text-sm text-gray-500">Manage all system users and their permissions</p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
           <div className="relative w-full md:w-64">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -196,14 +240,13 @@ const Users = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <button
             onClick={() => setIsModalOpen(true)}
-            className={`flex items-center justify-center px-4 py-2 rounded-lg text-white font-medium transition-colors ${
-              warehouses.length === 0 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+            className={`flex items-center justify-center px-4 py-2 rounded-lg text-white font-medium transition-colors ${warehouses.length === 0
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
+              }`}
             disabled={warehouses.length === 0}
           >
             <FaPlus className="mr-2" />
@@ -225,6 +268,7 @@ const Users = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -244,24 +288,33 @@ const Users = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.role === 'admin' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-blue-100 text-blue-800'
-                        }`}>
+                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-blue-100 text-blue-800'
+                          }`}>
                           {user.role}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {user.assignedWarehouse?.name || 'None'}
+                          {user.assignedWarehouse || 'None'}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {user.assignedWarehouse?.warehouseCode || '-'}
-                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                          {user.isActive ? 'Active' : 'Disabled'}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-3">
+                          <button
+                            onClick={() => handleViewPermissions(user._id)}
+                            className="text-blue-600 hover:text-blue-900 p-1 rounded-md hover:bg-blue-50 transition-colors"
+                            title="View Permissions"
+                          >
+                            <FaEye />
+                          </button>
                           <button
                             onClick={() => handleEditUser(user)}
                             className="text-blue-600 hover:text-blue-900 p-1 rounded-md hover:bg-blue-50 transition-colors"
@@ -276,16 +329,23 @@ const Users = () => {
                           >
                             <FaTrash />
                           </button>
+                          <button
+                            onClick={() => handleToggleActive(user._id)}
+                            className="text-purple-600 hover:text-purple-900 p-1 rounded-md hover:bg-purple-50 transition-colors"
+                            title={user.isActive ? 'Disable' : 'Activate'}
+                          >
+                            {user.isActive ? '🚫' : '✅'}
+                          </button>
                         </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="px-6 py-8 text-center">
+                    <td colSpan="5" className="px-6 py-8 text-center">
                       <div className="text-gray-500">No users found</div>
                       {searchTerm && (
-                        <button 
+                        <button
                           onClick={() => setSearchTerm('')}
                           className="mt-2 text-sm text-blue-600 hover:text-blue-800"
                         >
@@ -318,7 +378,7 @@ const Users = () => {
                   </svg>
                 </button>
               </div>
-              
+
               <form onSubmit={handleCreateOrUpdateUser} className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
                   <div>
@@ -332,7 +392,7 @@ const Users = () => {
                       disabled={isLoading}
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
                     <input
@@ -344,7 +404,7 @@ const Users = () => {
                       disabled={isLoading}
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Password {editingId ? '(Leave blank to keep current)' : '*'}
@@ -358,7 +418,7 @@ const Users = () => {
                       disabled={isLoading}
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
                     <select
@@ -372,25 +432,19 @@ const Users = () => {
                       <option value="admin">Admin</option>
                     </select>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Warehouse</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Warehouse *</label>
                     <select
                       value={assignedWarehouse}
                       onChange={(e) => setAssignedWarehouse(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      required
                       disabled={isLoading || warehouses.length === 0}
                     >
-                      <option value="">Not assigned</option>
                       {warehouses.map(warehouse => (
-                        <option
-                          key={warehouse._id}
-                          value={warehouse._id}
-                          disabled={warehouse.assignedUser && warehouse.assignedUser._id !== editingId}
-                          className={warehouse.assignedUser && warehouse.assignedUser._id !== editingId ? 'text-gray-400' : ''}
-                        >
+                        <option key={warehouse._id} value={warehouse.name}>
                           {warehouse.name} ({warehouse.warehouseCode})
-                          {warehouse.assignedUser && warehouse.assignedUser._id !== editingId && ' (Assigned)'}
                         </option>
                       ))}
                     </select>
@@ -398,8 +452,52 @@ const Users = () => {
                       <p className="mt-1 text-sm text-red-600">No warehouses available. Please create a warehouse first.</p>
                     )}
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
+                    {['lotManagement', 'manageDamage', 'category', 'products'].map(feature => (
+                      <div key={feature} className="mb-2">
+                        <label className="flex items-center space-x-2">
+                          <span>{feature.charAt(0).toUpperCase() + feature.slice(1)}</span>
+                          <input
+                            type="checkbox"
+                            checked={permissions.some(p => p.feature === feature)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setPermissions([...permissions, { feature, permissions: ['Show', 'Edit', 'Cancel'] }]);
+                              } else {
+                                setPermissions(permissions.filter(p => p.feature !== feature));
+                              }
+                            }}
+                          />
+                        </label>
+                        {permissions.find(p => p.feature === feature)?.permissions.map(perm => (
+                          <label key={perm} className="ml-4 flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={permissions.find(p => p.feature === feature)?.permissions.includes(perm)}
+                              onChange={(e) => {
+                                const updatedPerms = permissions.map(p =>
+                                  p.feature === feature
+                                    ? {
+                                      ...p,
+                                      permissions: e.target.checked
+                                        ? [...(p.permissions || []), perm]
+                                        : p.permissions.filter(p => p !== perm)
+                                    }
+                                    : p
+                                );
+                                setPermissions(updatedPerms);
+                              }}
+                            />
+                            <span>{perm}</span>
+                          </label>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                
+
                 <div className="flex justify-end space-x-3 pt-4">
                   <button
                     type="button"
@@ -411,9 +509,8 @@ const Users = () => {
                   </button>
                   <button
                     type="submit"
-                    className={`px-4 py-2 rounded-lg text-white transition-colors ${
-                      isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-                    }`}
+                    className={`px-4 py-2 rounded-lg text-white transition-colors ${isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                      }`}
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -431,6 +528,52 @@ const Users = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {viewPermissionsId && (
+        <Modal
+          isOpen={isModalOpen && viewPermissionsId}
+          onRequestClose={() => setViewPermissionsId(null)}
+          style={{
+            content: {
+              top: '50%',
+              left: '50%',
+              right: 'auto',
+              bottom: 'auto',
+              marginRight: '-50%',
+              transform: 'translate(-50%, -50%)',
+              width: '300px',
+              padding: '20px',
+            },
+          }}
+        >
+          <h2 className="text-lg font-bold mb-4">User Permissions</h2>
+          <p>User: {users.find(u => u._id === viewPermissionsId)?.username}</p>
+          {['lotManagement', 'manageDamage', 'category', 'products'].map(feature => {
+            const userPerms = users.find(u => u._id === viewPermissionsId)?.permissions.find(p => p.feature === feature)?.permissions || [];
+            return (
+              <div key={feature} className="mb-2">
+                <label className="flex items-center space-x-2">
+                  <span>{feature.charAt(0).toUpperCase() + feature.slice(1)}</span>
+                </label>
+                <div className="ml-4">
+                  {['Show', 'Edit', 'Cancel'].map(perm => (
+                    <label key={perm} className="flex items-center space-x-2">
+                      <input type="checkbox" checked={userPerms.includes(perm)} disabled />
+                      <span>{perm}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+          <button
+            onClick={() => setViewPermissionsId(null)}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Close
+          </button>
+        </Modal>
       )}
     </div>
   );
