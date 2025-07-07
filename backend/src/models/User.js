@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['admin', 'user'], required: true },
-  assignedWarehouse: { type: String, ref: 'Warehouse', required: true },
+  assignedWarehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
   permissions: [{
     feature: { type: String, enum: ['lotManagement', 'manageDamage', 'category', 'products'] },
     permissions: { type: [String], enum: ['Show', 'Edit', 'Cancel'], default: [] }
@@ -20,7 +20,7 @@ const updateUserSchema = z.object({
   lastName: z.string().min(1).optional(),
   password: z.string().min(6).optional(),
   role: z.enum(['admin', 'user']).optional(),
-  assignedWarehouse: z.string().min(1).optional(),
+  assignedWarehouse: z.string().min(1).optional(), // รับ String แต่จะแปลงเป็น ObjectId ใน Backend
   permissions: z.array(
     z.object({
       feature: z.enum(['lotManagement', 'manageDamage', 'category', 'products']),
@@ -28,7 +28,7 @@ const updateUserSchema = z.object({
     })
   ).optional().nullable(),
   isActive: z.boolean().optional(),
-}).strict().passthrough(); // อนุญาตให้ผ่านฟิลด์ที่ไม่คาดหวัง (เช่น _id, createdAt)
+}).strict().passthrough();
 
 module.exports = mongoose.model('User', userSchema);
 module.exports.updateUserSchema = updateUserSchema;

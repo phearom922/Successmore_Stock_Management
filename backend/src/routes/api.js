@@ -116,8 +116,8 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'User must be assigned to a warehouse' });
     }
 
-    // ดึงข้อมูล warehouse (ใช้ _id)
-    const warehouseDoc = await Warehouse.findOne({ name: user.assignedWarehouse });
+    // ดึงข้อมูล warehouse ด้วย ObjectId
+    const warehouseDoc = await Warehouse.findById(user.assignedWarehouse);
     if (!warehouseDoc) {
       logger.warn('Warehouse not found:', { warehouseId: user.assignedWarehouse });
       return res.status(400).json({ message: 'Warehouse not found' });
@@ -132,14 +132,13 @@ router.post('/login', async (req, res) => {
       warehouseCode: warehouseDoc.warehouseCode || '',
       warehouseName: warehouseDoc.name || '',
       branch: warehouseDoc.branch || '',
-      warehouse: user.assignedWarehouse,
+      assignedWarehouse: warehouseDoc._id.toString(), // ใช้ ObjectId จาก Warehouse
       permissions: user.permissions || [],
       isActive: user.isActive,
     }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    logger.info('Login successful:', { username, userId: user._id });
+    logger.info('Login successful:', { username, userId: user._id, token });
     res.json({ token });
-
   } catch (error) {
     logger.error('Error during login:', { error: error.message, stack: error.stack, details: req.body });
     res.status(500).json({ message: 'Error during login', error: error.message });
@@ -150,10 +149,7 @@ router.post('/login', async (req, res) => {
 
 
 
-
-
-
-// Create User
+// Create User (ปรับให้ใช้ ObjectId)
 router.post('/users', authMiddleware, async (req, res) => {
   try {
     logger.info('Creating user, payload:', req.body, 'user:', req.user);
@@ -172,11 +168,10 @@ router.post('/users', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Username already exists' });
     }
 
-    const warehouse = await Warehouse.findOne({ name: assignedWarehouse });
+    const warehouse = await Warehouse.findById(assignedWarehouse); // ใช้ ObjectId
     if (!warehouse) {
       return res.status(400).json({ message: 'Warehouse not found' });
     }
-    // ไม่จำกัด 1:1 ต่อ Warehouse เดียวกัน
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
@@ -184,7 +179,7 @@ router.post('/users', authMiddleware, async (req, res) => {
       lastName,
       password: hashedPassword,
       role,
-      assignedWarehouse,
+      assignedWarehouse: warehouse._id, // ใช้ ObjectId
       permissions: permissions || [],
       isActive: isActive !== undefined ? isActive : true,
     });
@@ -198,6 +193,9 @@ router.post('/users', authMiddleware, async (req, res) => {
     });
   }
 });
+
+
+
 
 // Update User
 router.put('/users/:id', authMiddleware, async (req, res) => {
@@ -227,12 +225,12 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
     if (lastName) user.lastName = lastName;
     if (password) user.password = await bcrypt.hash(password, 10); // อัปเดต password เฉพาะถ้ามี
     if (role) user.role = role;
-    if (assignedWarehouse && assignedWarehouse !== user.assignedWarehouse) {
-      const warehouse = await Warehouse.findOne({ name: assignedWarehouse });
+    if (assignedWarehouse && assignedWarehouse !== user.assignedWarehouse.toString()) {
+      const warehouse = await Warehouse.findOne({ name: assignedWarehouse.split('(')[0].trim() }); // ดึงจากชื่อ
       if (!warehouse) {
         return res.status(400).json({ message: 'Warehouse not found' });
       }
-      user.assignedWarehouse = assignedWarehouse;
+      user.assignedWarehouse = warehouse._id; // ตั้งค่าเป็น ObjectId
     }
     if (permissions) user.permissions = permissions;
 
@@ -1749,10 +1747,6 @@ router.put('/settings', authMiddleware, async (req, res) => {
   }
 });
 
-// ... (โค้ดเดิมด้านล่าง)
-
-
-
 
 // stock-reports
 router.get('/stock-reports', authMiddleware, async (req, res) => {
@@ -1761,12 +1755,20 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
 
     const { type, warehouse, search } = req.query;
     const user = req.user;
-    const query = user.role === 'admin' ? {} : { warehouse: user.assignedWarehouse?.toString() };
-    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
+    const query = {};
 
-    const setting = await Setting.findOne();
-    const warningDays = setting ? setting.expirationWarningDays : 15;
-    const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
+    if (user.role !== 'admin') {
+      query.warehouse = user.warehouseName; // ใช้ warehouseName จาก Token
+      if (!query.warehouse) {
+        return res.status(400).json({ message: 'Warehouse not assigned for user' });
+      }
+    } else if (warehouse && warehouse !== 'all') {
+      const warehouseDoc = await Warehouse.findById(warehouse);
+      if (!warehouseDoc) {
+        return res.status(400).json({ message: 'Warehouse not found' });
+      }
+      query.warehouse = warehouseDoc.name;
+    }
 
     if (search) {
       query.$or = [
@@ -1775,6 +1777,10 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         { 'productId.name': { $regex: search, $options: 'i' } }
       ];
     }
+
+    const setting = await Setting.findOne();
+    const warningDays = setting ? setting.expirationWarningDays : 15;
+    const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
 
     const lots = await Lot.find(query)
       .populate('productId', 'productCode name')

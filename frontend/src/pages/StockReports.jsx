@@ -9,13 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StockTable from '../components/StockTable';
-import { FaSearch, FaTimes, FaDownload} from 'react-icons/fa';
-
-
-
-
-
-
+import { FaSearch, FaTimes, FaDownload } from 'react-icons/fa';
 
 const StockReports = () => {
   const [data, setData] = useState([]);
@@ -29,20 +23,36 @@ const StockReports = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25;
 
+  // ดึงข้อมูล user จาก token
+  const userData = token ? JSON.parse(atob(token.split('.')[1])) : {};
+  const isAdmin = userData.role === 'admin';
+  const userWarehouseId = userData.assignedWarehouse || ''; // ใช้ assignedWarehouse จาก Token
+  const userWarehouseName = userData.warehouseName || ''; // ใช้ warehouseName จาก Token
+
   useEffect(() => {
     fetchWarehouses();
-    fetchData('all-stock');
-  }, []);
+    if (!isAdmin && userWarehouseId) {
+      setSelectedWarehouse(userWarehouseId); // ใช้ ObjectId สำหรับ Admin, Name สำหรับ User
+    }
+    fetchData('all-stock', null, isAdmin ? 'all' : userWarehouseName); // ใช้ warehouseName สำหรับ User
+  }, [userWarehouseId, userWarehouseName]);
 
   const fetchWarehouses = async () => {
     try {
       const { data } = await axios.get('http://localhost:3000/api/warehouses', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setWarehouses(data);
+      if (!isAdmin && userWarehouseName) {
+        const filtered = data.filter(w => w.name === userWarehouseName);
+        setWarehouses(filtered.length > 0 ? filtered : data); // ใช้ข้อมูลทั้งหมดถ้าไม่พบ
+        setSelectedWarehouse(filtered.length > 0 ? userWarehouseName : 'all');
+      } else {
+        setWarehouses(data);
+      }
     } catch (error) {
       console.error('Error fetching warehouses:', error);
       toast.error('Failed to load warehouses');
+      setWarehouses([]); // ตั้งค่าเป็น array ว่างถ้า error
     }
   };
 
@@ -52,9 +62,10 @@ const StockReports = () => {
       const tabType = type || currentTab || 'all-stock';
       const search = customSearch !== null ? customSearch : searchQuery;
       const warehouseVal = customWarehouse !== null ? customWarehouse : selectedWarehouse;
+      const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseName : warehouseVal;
       const { data } = await axios.get('http://localhost:3000/api/stock-reports', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { type: tabType, warehouse: warehouseVal, search }
+        params: { type: tabType, warehouse: effectiveWarehouse, search }
       });
       let sortedData = [...data.data];
       if (sortConfig.key) {
@@ -70,7 +81,8 @@ const StockReports = () => {
       setData(sortedData);
     } catch (error) {
       console.error('Error fetching stock reports:', error);
-      toast.error('Failed to load stock reports');
+      toast.error(`Failed to load ${currentTab.replace('-', ' ')} reports`);
+      setData([]); // ตั้งค่าเป็น array ว่างถ้า error
     } finally {
       setIsLoading(false);
     }
@@ -119,7 +131,6 @@ const StockReports = () => {
     }
   };
 
-  // Always derive sortedData from data and sortConfig
   let sortedData = [...data];
   if (sortConfig.key) {
     sortedData.sort((a, b) => {
@@ -140,18 +151,14 @@ const StockReports = () => {
     }
   };
 
-
-
-
-
   return (
-   <div className="p-6 max-w-screen mx-auto">
+    <div className="p-6 max-w-screen mx-auto">
       <Card className="shadow-sm">
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle className="text-2xl font-bold">Stock Reports</CardTitle>
             <div className="flex space-x-2">
-              <Button 
+              <Button
                 onClick={() => handleExport(currentTab)}
                 variant="success"
                 className="gap-2 px-4 py-2 bg-green-600 text-white rounded cursor-pointer hover:bg-green-700 transition-colors"
@@ -162,23 +169,29 @@ const StockReports = () => {
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent>
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Select onValueChange={handleWarehouseChange} value={selectedWarehouse}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Warehouse" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Warehouses</SelectItem>
-                  {warehouses.map(w => (
-                    <SelectItem key={w._id} value={w.name}>{w.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {isAdmin ? (
+                <Select onValueChange={handleWarehouseChange} value={selectedWarehouse}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Warehouse" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Warehouses</SelectItem>
+                    {warehouses.map(w => (
+                      <SelectItem key={w._id} value={w._id}>{w.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="py-2 px-3 rounded bg-gray-100 text-gray-700 font-medium">
+                  {warehouses[0]?.name || userWarehouseName || 'No warehouse assigned'}
+                </div>
+              )}
             </div>
-            
+
             <div className="flex gap-2">
               <Input
                 value={searchQuery}
@@ -195,12 +208,12 @@ const StockReports = () => {
             </div>
           </div>
 
-          <Tabs 
-            defaultValue="all-stock" 
-            onValueChange={val => { 
-              setCurrentTab(val); 
-              setCurrentPage(1); 
-              fetchData(val, searchQuery); 
+          <Tabs
+            defaultValue="all-stock"
+            onValueChange={val => {
+              setCurrentTab(val);
+              setCurrentPage(1);
+              fetchData(val, searchQuery);
             }}
             className="w-full"
           >
@@ -210,7 +223,7 @@ const StockReports = () => {
               <TabsTrigger value="expiring-soon">Expiring Soon</TabsTrigger>
               <TabsTrigger value="damaged">Damaged</TabsTrigger>
             </TabsList>
-            
+
             {/* All Stock Tab */}
             <TabsContent value="all-stock">
               {isLoading ? (
@@ -218,7 +231,7 @@ const StockReports = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <StockTable 
+                <StockTable
                   data={paginatedData}
                   sortConfig={sortConfig}
                   requestSort={requestSort}
@@ -237,7 +250,7 @@ const StockReports = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <StockTable 
+                <StockTable
                   data={paginatedData}
                   sortConfig={sortConfig}
                   requestSort={requestSort}
@@ -256,7 +269,7 @@ const StockReports = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <StockTable 
+                <StockTable
                   data={paginatedData}
                   sortConfig={sortConfig}
                   requestSort={requestSort}
@@ -275,7 +288,7 @@ const StockReports = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <StockTable 
+                <StockTable
                   data={paginatedData}
                   sortConfig={sortConfig}
                   requestSort={requestSort}
@@ -293,4 +306,5 @@ const StockReports = () => {
     </div>
   );
 };
+
 export default StockReports;

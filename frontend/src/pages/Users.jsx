@@ -10,10 +10,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import { FaPlus,FaRegTrashAlt, FaEdit, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
-
-// Modal confirm state
-import { useRef } from 'react';
+import { FaPlus, FaRegTrashAlt, FaEdit, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
 
 const defaultFeatures = ['lotManagement', 'manageDamage', 'category', 'products'];
 const defaultPermissions = defaultFeatures.map(f => ({ feature: f, permissions: [] }));
@@ -56,7 +53,8 @@ const Users = () => {
       ]);
       setUsers(userRes.data);
       setWarehouses(whRes.data);
-    } catch {
+    } catch (error) {
+      console.error('Error fetching data:', error);
       toast.error('Failed to load users or warehouses');
     }
   };
@@ -64,7 +62,10 @@ const Users = () => {
   const filteredUsers = users.filter(u => {
     const matchSearch = u.username.toLowerCase().includes(search.toLowerCase()) ||
       u.lastName.toLowerCase().includes(search.toLowerCase());
-    const matchWarehouse = warehouseFilter === 'all' || (u.assignedWarehouse && u.assignedWarehouse.toString().toLowerCase().includes(warehouseFilter.toLowerCase()));
+    const warehouse = u.assignedWarehouse ? warehouses.find(w => w._id.toString() === u.assignedWarehouse.toString().replace(' ()', '')) : null;
+    const warehouseName = warehouse ? warehouse.name : '';
+    const matchWarehouse = warehouseFilter === 'all' || 
+      (warehouseName && warehouseName.toLowerCase().includes(warehouseFilter.toLowerCase()));
     return matchSearch && matchWarehouse;
   });
 
@@ -81,19 +82,11 @@ const Users = () => {
 
     try {
       if (editingId) {
-        // ตรวจสอบว่า assignedWarehouse เปลี่ยนจริงหรือไม่
         const originalUser = users.find(u => u._id === editingId);
         let assignedWarehouse = form.assignedWarehouse;
-        if (typeof assignedWarehouse === 'string' && assignedWarehouse.includes('(')) {
-          assignedWarehouse = assignedWarehouse.split('(')[0].trim();
-        }
         let updatePayload = { ...form, assignedWarehouse };
-        // ถ้า assignedWarehouse ไม่เปลี่ยน ให้ไม่ส่ง field นี้ (ป้องกัน backend เช็คซ้ำ)
-        let originalAssigned = originalUser?.assignedWarehouse;
-        if (typeof originalAssigned === 'string' && originalAssigned.includes('(')) {
-          originalAssigned = originalAssigned.split('(')[0].trim();
-        }
-        if (assignedWarehouse === originalAssigned) {
+        let originalAssigned = originalUser.assignedWarehouse;
+        if (assignedWarehouse.toString() === originalAssigned?.toString()) {
           delete updatePayload.assignedWarehouse;
         }
         await axios.put(`http://localhost:3000/api/users/${editingId}`, updatePayload, {
@@ -101,25 +94,27 @@ const Users = () => {
         });
         toast.success('User updated');
       } else {
-        await axios.post(`http://localhost:3000/api/users`, form, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        toast.success('User created');
+        const warehouse = warehouses.find(w => w._id.toString() === form.assignedWarehouse);
+        if (warehouse) {
+          await axios.post(`http://localhost:3000/api/users`, { ...form, assignedWarehouse: warehouse._id }, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          toast.success('User created');
+        } else {
+          toast.error('Warehouse not found');
+        }
       }
       fetchData();
       setOpenModal(false);
       resetForm();
-    } catch {
-      toast.error('Error saving user');
+    } catch (error) {
+      console.error('Error saving user:', error.response?.data || error);
+      toast.error('Error saving user: ' + (error.response?.data?.message || error.message));
     }
   };
 
   const handleEdit = (user) => {
-    // ดึงชื่อ warehouse จริง (ถ้ามีโค้ดหรือชื่อประกอบกัน เช่น "ชื่อ (รหัส)")
-    let assignedWarehouse = user.assignedWarehouse;
-    if (typeof assignedWarehouse === 'string' && assignedWarehouse.includes('(')) {
-      assignedWarehouse = assignedWarehouse.split('(')[0].trim();
-    }
+    let assignedWarehouse = user.assignedWarehouse?.toString().replace(' ()', '') || '';
     setForm({
       ...user,
       password: '', // รีเซ็ต password เฉพาะ
@@ -246,9 +241,7 @@ const Users = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {warehouses.map((w) => (
-                      <SelectItem key={w._id} value={w.name}>
-                        {w.name} ({w.warehouseCode})
-                      </SelectItem>
+                      <SelectItem key={w._id} value={w._id}>{w.name} ({w.warehouseCode})</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -341,7 +334,9 @@ const Users = () => {
                         <Badge className="bg-blue-100 text-blue-800">{user.role}</Badge>
                       </TableCell>
                       <TableCell>
-                        {user.assignedWarehouse || <span className="text-gray-400">-</span>}
+                        {user.assignedWarehouse ? 
+                          (warehouses.find(w => w._id.toString() === user.assignedWarehouse.toString().replace(' ()', ''))?.name || user.assignedWarehouse.toString().replace(' ()', '')) 
+                          : <span className="text-gray-400">-</span>}
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.isActive ? 'default' : 'outline'} className={user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
@@ -351,15 +346,14 @@ const Users = () => {
                       <TableCell className="text-right">
                         <div className="inline-flex items-center gap-1">
                           <Button size="icon" variant="ghost" onClick={() => setViewUser(user)} className="text-red-600 hover:text-red-900 p-1 rounded border border-red-200 hover:border-red-300" aria-label="View">
-                            <FaEye  />
+                            <FaEye />
                           </Button>
-                          <Button size="icon" variant="ghost" onClick={() => handleEdit(user)} className="text-blue-600 hover:text-blue-900  p-1 rounded border border-blue-200 hover:border-blue-300" aria-label="Edit">
+                          <Button size="icon" variant="ghost" onClick={() => handleEdit(user)} className="text-blue-600 hover:text-blue-900 p-1 rounded border border-blue-200 hover:border-blue-300" aria-label="Edit">
                             <FaRegEdit />
                           </Button>
-                          <Button size="icon" variant="ghost" onClick={() => setDeleteModal({ open: true, user })} className="text-red-600 hover:text-red-900 p-1 rounded border border-red-200 hover:border-red-300" aria-label="Delete">
+                          <Button size="icon" variant="ghost" onClick={() => setDeleteModal({ open: true, user })} className="text-red-600 hover:text-red-900 p-1 rounded border border-red-200 hover:border-blue-300" aria-label="Delete">
                             <FaRegTrashAlt />
                           </Button>
-                          {/* Delete Confirm Modal */}
                           <Dialog open={deleteModal.open} onOpenChange={open => setDeleteModal(d => ({ ...d, open }))}>
                             <DialogContent className="max-w-md bg-white rounded-lg shadow-lg">
                               <DialogHeader>
@@ -379,7 +373,7 @@ const Users = () => {
                                 <Button onClick={async () => {
                                   await handleDelete(deleteModal.user._id);
                                   setDeleteModal({ open: false, user: null });
-                                }} className="bg-red-600 hover:bg-red-700 text-white ">Delete</Button>
+                                }} className="bg-red-600 hover:bg-red-700 text-white">Delete</Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
@@ -393,9 +387,6 @@ const Users = () => {
                 </TableBody>
               </Table>
             </div>
-
-
-
           </div>
         </CardContent>
       </Card>
@@ -411,7 +402,7 @@ const Users = () => {
                 <div><strong className="text-gray-700">Name:</strong> {viewUser.username} {viewUser.lastName}</div>
                 <div><strong className="text-gray-700">Role:</strong> {viewUser.role}</div>
                 <div><strong className="text-gray-700">Status:</strong> {viewUser.isActive ? 'Active' : 'Disabled'}</div>
-                <div><strong className="text-gray-700">Warehouse:</strong> {viewUser.assignedWarehouse}</div>
+                <div><strong className="text-gray-700">Warehouse:</strong> {warehouses.find(w => w._id.toString() === viewUser.assignedWarehouse.toString().replace(' ()', ''))?.name || viewUser.assignedWarehouse?.toString().replace(' ()', '') || '-'}</div>
               </div>
               <Table className="text-sm">
                 <TableHeader>
