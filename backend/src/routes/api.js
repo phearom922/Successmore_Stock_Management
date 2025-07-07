@@ -1660,8 +1660,6 @@ router.post('/manage-damage', authMiddleware, async (req, res) => {
 
 // Configurable expiration warning days (default to 15 days)
 
-// ... (โค้ดเดิมด้านบน)
-
 router.get('/lot-management/expiring', authMiddleware, async (req, res) => {
   try {
     logger.info('Fetching expiring lots', { user: req.user });
