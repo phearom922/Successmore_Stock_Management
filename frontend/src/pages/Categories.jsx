@@ -19,7 +19,14 @@ const Categories = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-  // ลบ userRole เพราะใช้ ProtectedRoute แทน
+
+  // ดึง userRole จาก token (decode JWT)
+  let userRole = '';
+  try {
+    if (token) {
+      userRole = JSON.parse(atob(token.split('.')[1])).role || '';
+    }
+  } catch {}
 
   useEffect(() => {
     if (!token) {
@@ -273,9 +280,10 @@ const Categories = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <button
-                                onClick={() => handleEditCategory(category)}
-                                className="text-indigo-600 hover:text-indigo-900 mr-4"
-                                title="Edit"
+                                onClick={() => userRole === 'admin' && handleEditCategory(category)}
+                                className={`mr-4 ${userRole === 'admin' ? 'text-indigo-600 hover:text-indigo-900' : 'text-gray-400 cursor-not-allowed'}`}
+                                title={userRole === 'admin' ? 'Edit' : 'Only admin can edit'}
+                                disabled={userRole !== 'admin'}
                               >
                                 <FaEdit />
                               </button>

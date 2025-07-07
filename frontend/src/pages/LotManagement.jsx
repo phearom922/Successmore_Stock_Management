@@ -15,11 +15,6 @@ import {
 import { FiDownload } from 'react-icons/fi';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
-
 
 const ExpiringNotification = ({ lots, warningDays, onClose }) => {
   const daysLeft = (expDate) => {
@@ -52,16 +47,15 @@ const ExpiringNotification = ({ lots, warningDays, onClose }) => {
             <div key={lot._id} className="mb-3 last:mb-0 p-3 bg-gray-50 rounded-lg">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="font-medium text-gray-900">{lot.lotCode} - {lot.productId?.name}</p>
+                  <p className="font-medium text-gray-900">{lot.lotCode} - {lot.productId?.name || 'Unknown Product'}</p>
                   <p className="text-sm text-gray-600">Exp: {format(new Date(lot.expDate), 'dd/MM/yyyy')}</p>
                 </div>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${daysLeft(lot.expDate) <= 7 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}>
+                <span className={`px-2 py-1 rounded text-xs font-medium ${daysLeft(lot.expDate) <= 7 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>
                   {daysLeft(lot.expDate)} days
                 </span>
               </div>
               <div className="mt-2 flex justify-between items-center">
-                <span className="text-sm text-gray-600">Quantity:</span>
+                <span className="text-sm text-gray-600">Stock:</span>
                 <span className="font-medium">{lot.qtyOnHand || 0}</span>
               </div>
             </div>
@@ -81,27 +75,28 @@ const ExpiringNotification = ({ lots, warningDays, onClose }) => {
   );
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const ErrorNotification = ({ message, onClose }) => (
+  <div className="fixed top-4 right-4 z-50 w-full max-w-md">
+    <div className="bg-white rounded-xl shadow-lg border border-red-200 overflow-hidden">
+      <div className="flex items-start justify-between bg-red-50 px-4 py-3 border-b border-red-100">
+        <div className="flex items-center gap-2">
+          <FaExclamationTriangle className="text-red-500 text-lg" />
+          <h3 className="font-bold text-gray-800">Error</h3>
+        </div>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Close notification"
+        >
+          <FaTimes />
+        </button>
+      </div>
+      <div className="p-4">
+        <p className="text-sm text-gray-600">{message}</p>
+      </div>
+    </div>
+  </div>
+);
 
 const LotManagement = () => {
   const [lots, setLots] = useState([]);
@@ -127,7 +122,8 @@ const LotManagement = () => {
   const [editLot, setEditLot] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [expiringLots, setExpiringLots] = useState([]);
-  const [warningDays, setWarningDays] = useState(15);
+  const [warningDays, setWarningDays] = useState(15); // Default value
+  const [settingsError, setSettingsError] = useState(null);
 
   useEffect(() => {
     fetchWarehouses();
@@ -148,16 +144,9 @@ const LotManagement = () => {
       setWarehouses(data);
     } catch (error) {
       console.error('Error fetching warehouses:', error);
-      toast.error('Failed to load warehouses');
+      setSettingsError('Failed to load warehouses');
     }
   };
-
-
-
-
-
-
-
 
   const fetchSettings = async () => {
     try {
@@ -165,13 +154,16 @@ const LotManagement = () => {
       const { data } = await axios.get('http://localhost:3000/api/settings', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setWarningDays(data.expirationWarningDays);
+      setWarningDays(data.expirationWarningDays || 15); // Use default if not present
     } catch (error) {
       console.error('Error fetching settings:', error);
-      toast.error('Failed to load settings');
+      setWarningDays(15); // Default value on any error
+      // Do not set settingsError unless it's a critical error
+      if (error.response?.status >= 500) {
+        setSettingsError('Failed to load settings due to server error');
+      }
     }
   };
-
 
   const fetchLots = async () => {
     setIsLoading(true);
@@ -191,7 +183,7 @@ const LotManagement = () => {
       setTotal(data.total);
     } catch (error) {
       console.error('Error fetching lots:', error);
-      toast.error('Failed to load lots');
+      setSettingsError('Failed to load lots');
     } finally {
       setIsLoading(false);
     }
@@ -206,16 +198,20 @@ const LotManagement = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setExpiringLots(data.expiringLots);
-      setWarningDays(data.warningDays || 15);
+      setWarningDays(data.warningDays || 15); // Sync with settings from expiring endpoint
       if (data.expiringLots.length > 0) {
-        setShowExpiringAlert(true);
+        setShowExpiringAlert(true); // Show alert for both User and Admin
+      } else {
+        setShowExpiringAlert(false);
       }
     } catch (error) {
       console.error('Error checking expiring lots:', error);
-      toast.error('Failed to check expiring lots');
+      setWarningDays(15); // Default value if expiring lots check fails
+      if (error.response?.status >= 500) {
+        setSettingsError('Failed to check expiring lots due to server error');
+      }
     }
   };
-
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -238,7 +234,7 @@ const LotManagement = () => {
       link.remove();
     } catch (error) {
       console.error('Error exporting data:', error);
-      toast.error('Failed to export data');
+      setSettingsError('Failed to export data');
     }
   };
 
@@ -268,10 +264,10 @@ const LotManagement = () => {
       toast.success('Lot updated successfully');
       setEditLot(null);
       fetchLots();
-      checkExpiringLots(); // อัปเดตการแจ้งเตือนหลังแก้ไข
+      checkExpiringLots();
     } catch (error) {
       console.error('Error updating lot:', error);
-      toast.error('Failed to update lot');
+      setSettingsError('Failed to update lot');
     } finally {
       setIsLoading(false);
     }
@@ -288,10 +284,10 @@ const LotManagement = () => {
         });
         toast.success('Lot deleted successfully');
         fetchLots();
-        checkExpiringLots(); // อัปเดตการแจ้งเตือนหลังลบ
+        checkExpiringLots();
       } catch (error) {
         console.error('Error deleting lot:', error);
-        toast.error('Failed to delete lot');
+        setSettingsError('Failed to delete lot');
       } finally {
         setIsLoading(false);
       }
@@ -333,9 +329,9 @@ const LotManagement = () => {
           onClose={() => setShowExpiringAlert(false)}
         />
       )}
-
-
-
+      {settingsError && (
+        <ErrorNotification message={settingsError} onClose={() => setSettingsError(null)} />
+      )}
 
       <div className="max-w-screen-2xl mx-auto">
         {/* Header Section */}
@@ -442,8 +438,6 @@ const LotManagement = () => {
                   </button>
                 )}
               </div>
-
-
             </form>
           </div>
         )}
@@ -635,7 +629,6 @@ const LotManagement = () => {
           </div>
         )}
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
   );
 };

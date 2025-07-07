@@ -136,10 +136,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
-
-
-
 // Create User
 router.post('/users', authMiddleware, async (req, res) => {
   try {
@@ -186,7 +182,6 @@ router.post('/users', authMiddleware, async (req, res) => {
   }
 });
 
-// Update User
 // Update User
 router.put('/users/:id', authMiddleware, async (req, res) => {
   try {
@@ -1665,12 +1660,15 @@ router.post('/manage-damage', authMiddleware, async (req, res) => {
 
 // Configurable expiration warning days (default to 15 days)
 
+// ... (โค้ดเดิมด้านบน)
+
 router.get('/lot-management/expiring', authMiddleware, async (req, res) => {
   try {
     logger.info('Fetching expiring lots', { user: req.user });
 
     const user = req.user;
-    const query = user.role === 'admin' ? {} : { warehouse: user.assignedWarehouse?.toString() };
+    // อนุญาตให้ User เห็นทุกคลัง (เหมือน Admin) หากต้องการ
+    const query = {}; // หรือใช้ { warehouse: user.assignedWarehouse?.toString() } ถ้าต้องการจำกัด
 
     const setting = await Setting.findOne();
     const warningDays = setting ? setting.expirationWarningDays : 15;
@@ -1698,10 +1696,6 @@ router.get('/lot-management/expiring', authMiddleware, async (req, res) => {
 // Get or update settings
 router.get('/settings', authMiddleware, async (req, res) => {
   try {
-    const user = req.user;
-    if (user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied. Admin only.' });
-    }
     let setting = await Setting.findOne();
     if (!setting) {
       setting = await Setting.create({ expirationWarningDays: 15, lowStockThreshold: 10 });
@@ -1739,6 +1733,11 @@ router.put('/settings', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error updating settings', error: error.message });
   }
 });
+
+// ... (โค้ดเดิมด้านล่าง)
+
+
+
 
 // stock-reports
 router.get('/stock-reports', authMiddleware, async (req, res) => {

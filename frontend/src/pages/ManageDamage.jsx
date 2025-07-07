@@ -22,6 +22,21 @@ const ManageDamage = () => {
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const [isAdmin] = useState(user.role === 'admin');
 
+  
+  // ฟิลเตอร์ warehouse เฉพาะ assignedWarehouse ถ้าไม่ใช่ admin (รองรับ assignedWarehouse เป็น object หรือ string)
+  // ฟิลเตอร์ warehouse เฉพาะ assignedWarehouse ถ้าไม่ใช่ admin (รองรับ assignedWarehouse เป็น object, string, หรือ null)
+  let assignedWarehouseId = '';
+  if (user.assignedWarehouse) {
+    if (typeof user.assignedWarehouse === 'object' && user.assignedWarehouse._id) {
+      assignedWarehouseId = user.assignedWarehouse._id.toString();
+    } else {
+      assignedWarehouseId = user.assignedWarehouse.toString();
+    }
+  }
+  const visibleWarehouses = isAdmin
+    ? warehouses
+    : warehouses.filter(w => w._id && w._id.toString() === assignedWarehouseId);
+
   useEffect(() => {
     if (!token) {
       navigate('/login');
@@ -188,12 +203,11 @@ const ManageDamage = () => {
                     <Select.Viewport>
                       <Select.Group>
                         <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Warehouses</Select.Label>
-                        {warehouses.map(w => (
+                        {visibleWarehouses.map(w => (
                           <Select.Item
                             key={w._id}
                             value={w._id.toString()}
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
-                            disabled={!isAdmin && w._id.toString() !== user.assignedWarehouse}
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
                             <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
