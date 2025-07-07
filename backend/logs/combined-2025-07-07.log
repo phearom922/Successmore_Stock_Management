@@ -8981,3 +8981,1860 @@ JsonWebTokenError: jwt malformed
 2025-07-07 13:54:29 [info]: Received GET request to /api/notifications
 2025-07-07 13:54:35 [info]: Received GET request to /api/notifications
 2025-07-07 13:55:05 [info]: Received GET request to /api/notifications
+2025-07-07 13:55:32 [info]: Logger initialized successfully
+2025-07-07 13:55:33 [info]: Server running on port 3000
+2025-07-07 13:55:33 [info]: Received GET request to /api/warehouses
+2025-07-07 13:55:33 [info]: Connected to MongoDB
+2025-07-07 13:55:33 [info]: Received GET request to /api/warehouses
+2025-07-07 13:55:34 [info]: Received GET request to /api/warehouses
+2025-07-07 13:55:34 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 13:55:34 [info]: Fetching expiring lots
+2025-07-07 13:55:34 [info]: Received GET request to /api/settings
+2025-07-07 13:55:34 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 13:55:34 [info]: Fetching lot management data
+2025-07-07 13:55:34 [info]: Received GET request to /api/warehouses
+2025-07-07 13:55:34 [info]: Fetched settings
+2025-07-07 13:55:34 [info]: Received GET request to /api/settings
+2025-07-07 13:55:34 [info]: Expiring lots found:
+2025-07-07 13:55:34 [info]: Fetched settings
+2025-07-07 13:55:34 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 13:55:34 [info]: Fetching expiring lots
+2025-07-07 13:55:34 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 13:55:34 [info]: Fetching lot management data
+2025-07-07 13:55:34 [info]: Expiring lots found:
+2025-07-07 13:55:35 [info]: Received GET request to /api/notifications
+2025-07-07 13:55:37 [info]: Received GET request to /api/notifications
+2025-07-07 13:55:37 [info]: Received GET request to /api/warehouses
+2025-07-07 13:55:37 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 13:55:37 [info]: Fetching expiring lots
+2025-07-07 13:55:37 [info]: Received GET request to /api/settings
+2025-07-07 13:55:37 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 13:55:37 [info]: Fetching lot management data
+2025-07-07 13:55:37 [info]: Fetched settings
+2025-07-07 13:55:37 [info]: Received GET request to /api/notifications
+2025-07-07 13:55:37 [info]: Received GET request to /api/warehouses
+2025-07-07 13:55:37 [info]: Received GET request to /api/settings
+2025-07-07 13:55:37 [info]: Expiring lots found:
+2025-07-07 13:55:37 [info]: Fetched settings
+2025-07-07 13:55:37 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 13:55:37 [info]: Fetching expiring lots
+2025-07-07 13:55:37 [info]: Expiring lots found:
+2025-07-07 13:55:37 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 13:55:37 [info]: Fetching lot management data
+2025-07-07 14:16:29 [info]: Logger initialized successfully
+2025-07-07 14:16:29 [info]: Server running on port 3000
+2025-07-07 14:16:29 [info]: Connected to MongoDB
+2025-07-07 14:17:32 [info]: Received GET request to /api/notifications
+2025-07-07 14:17:32 [info]: Received GET request to /api/warehouses
+2025-07-07 14:17:32 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:17:32 [info]: Fetching expiring lots
+2025-07-07 14:17:32 [info]: Received GET request to /api/settings
+2025-07-07 14:17:32 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:17:32 [info]: Fetching lot management data
+2025-07-07 14:17:32 [info]: Fetched settings
+2025-07-07 14:17:32 [info]: Received GET request to /api/notifications
+2025-07-07 14:17:32 [info]: Received GET request to /api/warehouses
+2025-07-07 14:17:32 [info]: Received GET request to /api/settings
+2025-07-07 14:17:32 [info]: Expiring lots found:
+2025-07-07 14:17:32 [info]: Fetched settings
+2025-07-07 14:17:32 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:17:32 [info]: Fetching expiring lots
+2025-07-07 14:17:32 [info]: Expiring lots found:
+2025-07-07 14:17:33 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:17:33 [info]: Fetching lot management data
+2025-07-07 14:17:49 [info]: Received GET request to /api/notifications
+2025-07-07 14:17:49 [info]: Received GET request to /api/warehouses
+2025-07-07 14:17:49 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:17:49 [info]: Fetching expiring lots
+2025-07-07 14:17:49 [info]: Received GET request to /api/settings
+2025-07-07 14:17:49 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:17:49 [info]: Fetching lot management data
+2025-07-07 14:17:49 [info]: Fetched settings
+2025-07-07 14:17:49 [info]: Received GET request to /api/notifications
+2025-07-07 14:17:49 [info]: Received GET request to /api/warehouses
+2025-07-07 14:17:49 [info]: Received GET request to /api/settings
+2025-07-07 14:17:49 [info]: Expiring lots found:
+2025-07-07 14:17:49 [info]: Fetched settings
+2025-07-07 14:17:49 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:17:49 [info]: Fetching expiring lots
+2025-07-07 14:17:49 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:17:49 [info]: Fetching lot management data
+2025-07-07 14:17:49 [info]: Expiring lots found:
+2025-07-07 14:18:03 [info]: Received GET request to /api/notifications
+2025-07-07 14:18:19 [info]: Received GET request to /api/notifications
+2025-07-07 14:18:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:18:49 [info]: Received GET request to /api/notifications
+2025-07-07 14:19:03 [info]: Received GET request to /api/notifications
+2025-07-07 14:19:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:19:19 [info]: Received GET request to /api/notifications
+2025-07-07 14:19:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:19:33 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:19:49 [info]: Received GET request to /api/notifications
+2025-07-07 14:20:03 [info]: Received GET request to /api/notifications
+2025-07-07 14:20:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:20:19 [info]: Received GET request to /api/notifications
+2025-07-07 14:20:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:20:33 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:20:49 [info]: Received GET request to /api/notifications
+2025-07-07 14:21:02 [info]: Received GET request to /api/notifications
+2025-07-07 14:21:02 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:21:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:21:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:21:33 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:03 [info]: Received GET request to /api/notifications
+2025-07-07 14:22:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:05 [info]: Received GET request to /api/notifications
+2025-07-07 14:22:05 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:05 [info]: Received GET request to /api/notifications
+2025-07-07 14:22:05 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-07 14:22:05 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:05 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:05 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:22:05 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:05 [info]: Received GET request to /api/settings
+2025-07-07 14:22:05 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:05 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:22:05 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:22:05 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:05 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-07 14:22:05 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:22:05 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-07 14:22:05 [info]: Received GET request to /api/settings
+2025-07-07 14:22:05 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-07 14:22:05 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:22:05 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-07 14:22:06 [info]: Received POST request to /api/login
+2025-07-07 14:22:06 [info]: Login attempt:
+2025-07-07 14:22:06 [info]: Login successful:
+2025-07-07 14:22:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:22:07 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:22:07 [info]: Received GET request to /api/products
+2025-07-07 14:22:07 [info]: Received GET request to /api/lots
+2025-07-07 14:22:07 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:07 [info]: Received GET request to /api/products
+2025-07-07 14:22:07 [info]: Received GET request to /api/lots
+2025-07-07 14:22:09 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:09 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:09 [info]: Received GET request to /api/products
+2025-07-07 14:22:09 [info]: Received GET request to /api/lots
+2025-07-07 14:22:09 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:09 [info]: Received GET request to /api/warehouses
+2025-07-07 14:22:09 [info]: Received GET request to /api/products
+2025-07-07 14:22:09 [info]: Received GET request to /api/lots
+2025-07-07 14:22:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:22:37 [info]: Received GET request to /api/notifications
+2025-07-07 14:23:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:23:26 [info]: Received GET request to /api/warehouses
+2025-07-07 14:23:26 [info]: Received GET request to /api/users
+2025-07-07 14:23:26 [info]: Fetching users for:
+2025-07-07 14:23:26 [info]: Received GET request to /api/warehouses
+2025-07-07 14:23:26 [info]: Received GET request to /api/users
+2025-07-07 14:23:26 [info]: Fetching users for:
+2025-07-07 14:23:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:23:37 [info]: Received GET request to /api/notifications
+2025-07-07 14:24:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:24:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:24:37 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:16 [info]: Received POST request to /api/users
+2025-07-07 14:25:16 [info]: Creating user, payload:
+2025-07-07 14:25:16 [info]: Received GET request to /api/users
+2025-07-07 14:25:16 [info]: Fetching users for:
+2025-07-07 14:25:16 [info]: Received GET request to /api/warehouses
+2025-07-07 14:25:22 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:22 [info]: Received GET request to /api/users
+2025-07-07 14:25:22 [info]: Fetching users for:
+2025-07-07 14:25:22 [info]: Received GET request to /api/warehouses
+2025-07-07 14:25:22 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:22 [info]: Received GET request to /api/warehouses
+2025-07-07 14:25:22 [info]: Received GET request to /api/users
+2025-07-07 14:25:22 [info]: Fetching users for:
+2025-07-07 14:25:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:25:56 [info]: Received POST request to /api/login
+2025-07-07 14:25:56 [info]: Login attempt:
+2025-07-07 14:25:56 [info]: Login successful:
+2025-07-07 14:25:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:56 [info]: Received GET request to /api/products
+2025-07-07 14:25:56 [info]: Received GET request to /api/lots
+2025-07-07 14:25:56 [info]: Received GET request to /api/warehouses
+2025-07-07 14:25:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:25:56 [info]: Received GET request to /api/warehouses
+2025-07-07 14:25:56 [info]: Received GET request to /api/products
+2025-07-07 14:25:56 [info]: Received GET request to /api/lots
+2025-07-07 14:26:01 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:01 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:26:01 [info]: Fetching expiring lots
+2025-07-07 14:26:01 [info]: Received GET request to /api/settings
+2025-07-07 14:26:01 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:26:01 [info]: Fetching lot management data
+2025-07-07 14:26:01 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:01 [info]: Fetched settings
+2025-07-07 14:26:01 [info]: Received GET request to /api/settings
+2025-07-07 14:26:01 [info]: Expiring lots found:
+2025-07-07 14:26:01 [info]: Fetched settings
+2025-07-07 14:26:01 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:26:01 [info]: Fetching expiring lots
+2025-07-07 14:26:01 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:26:01 [info]: Fetching lot management data
+2025-07-07 14:26:01 [info]: Expiring lots found:
+2025-07-07 14:26:01 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:01 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:02 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:02 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:26:02 [info]: Fetching expiring lots
+2025-07-07 14:26:02 [info]: Received GET request to /api/settings
+2025-07-07 14:26:02 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:26:02 [info]: Fetching lot management data
+2025-07-07 14:26:02 [info]: Fetched settings
+2025-07-07 14:26:02 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:02 [info]: Received GET request to /api/settings
+2025-07-07 14:26:02 [info]: Expiring lots found:
+2025-07-07 14:26:02 [info]: Fetched settings
+2025-07-07 14:26:02 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:26:02 [info]: Fetching expiring lots
+2025-07-07 14:26:02 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:26:02 [info]: Fetching lot management data
+2025-07-07 14:26:02 [info]: Expiring lots found:
+2025-07-07 14:26:05 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:05 [info]: Received GET request to /api/users
+2025-07-07 14:26:05 [info]: Fetching users for:
+2025-07-07 14:26:05 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:05 [info]: Received GET request to /api/users
+2025-07-07 14:26:05 [info]: Fetching users for:
+2025-07-07 14:26:08 [info]: Received GET request to /api/products
+2025-07-07 14:26:08 [info]: Received GET request to /api/categories
+2025-07-07 14:26:08 [info]: Received GET request to /api/categories
+2025-07-07 14:26:08 [info]: Received GET request to /api/products
+2025-07-07 14:26:09 [info]: Received GET request to /api/products
+2025-07-07 14:26:09 [info]: Received GET request to /api/categories
+2025-07-07 14:26:09 [info]: Received GET request to /api/categories
+2025-07-07 14:26:09 [info]: Received GET request to /api/products
+2025-07-07 14:26:09 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:09 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:26:09 [info]: Fetching expiring lots
+2025-07-07 14:26:09 [info]: Received GET request to /api/settings
+2025-07-07 14:26:09 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:26:09 [info]: Fetching lot management data
+2025-07-07 14:26:09 [info]: Fetched settings
+2025-07-07 14:26:09 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:09 [info]: Received GET request to /api/settings
+2025-07-07 14:26:09 [info]: Expiring lots found:
+2025-07-07 14:26:09 [info]: Fetched settings
+2025-07-07 14:26:09 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:26:09 [info]: Fetching expiring lots
+2025-07-07 14:26:09 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:26:09 [info]: Fetching lot management data
+2025-07-07 14:26:09 [info]: Expiring lots found:
+2025-07-07 14:26:10 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:10 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:11 [info]: Received GET request to /api/products
+2025-07-07 14:26:11 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:11 [info]: Received GET request to /api/lots
+2025-07-07 14:26:11 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:11 [info]: Received GET request to /api/products
+2025-07-07 14:26:11 [info]: Received GET request to /api/lots
+2025-07-07 14:26:13 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:13 [info]: Received GET request to /api/users
+2025-07-07 14:26:13 [info]: Fetching users for:
+2025-07-07 14:26:13 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:13 [info]: Received GET request to /api/users
+2025-07-07 14:26:13 [info]: Fetching users for:
+2025-07-07 14:26:14 [info]: Received GET request to /api/users
+2025-07-07 14:26:14 [info]: Fetching users for:
+2025-07-07 14:26:14 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:14 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:14 [info]: Received GET request to /api/users
+2025-07-07 14:26:14 [info]: Fetching users for:
+2025-07-07 14:26:15 [info]: Received GET request to /api/settings
+2025-07-07 14:26:15 [info]: Fetched settings
+2025-07-07 14:26:15 [info]: Received GET request to /api/settings
+2025-07-07 14:26:15 [info]: Fetched settings
+2025-07-07 14:26:17 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:17 [info]: Received GET request to /api/warehouses
+2025-07-07 14:26:17 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:26:17 [info]: Fetching stock reports
+2025-07-07 14:26:17 [info]: Stock report data:
+2025-07-07 14:26:17 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:26:17 [info]: Fetching stock reports
+2025-07-07 14:26:17 [info]: Stock report data:
+2025-07-07 14:26:19 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-07 14:26:19 [info]: Fetching stock reports
+2025-07-07 14:26:19 [info]: Stock report data:
+2025-07-07 14:26:19 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:26:19 [info]: Fetching stock reports
+2025-07-07 14:26:19 [info]: Stock report data:
+2025-07-07 14:26:21 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-07 14:26:21 [info]: Fetching stock reports
+2025-07-07 14:26:21 [info]: Stock report data:
+2025-07-07 14:26:21 [info]: Received GET request to /api/stock-reports?type=expiring-soon&warehouse=all&search=
+2025-07-07 14:26:21 [info]: Fetching stock reports
+2025-07-07 14:26:21 [info]: Stock report data:
+2025-07-07 14:26:22 [info]: Received GET request to /api/stock-reports?type=damaged&warehouse=all&search=
+2025-07-07 14:26:22 [info]: Fetching stock reports
+2025-07-07 14:26:22 [info]: Stock report data:
+2025-07-07 14:26:22 [info]: Received GET request to /api/stock-reports?type=expiring-soon&warehouse=all&search=
+2025-07-07 14:26:22 [info]: Fetching stock reports
+2025-07-07 14:26:22 [info]: Stock report data:
+2025-07-07 14:26:22 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-07 14:26:22 [info]: Fetching stock reports
+2025-07-07 14:26:22 [info]: Stock report data:
+2025-07-07 14:26:23 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:26:23 [info]: Fetching stock reports
+2025-07-07 14:26:23 [info]: Stock report data:
+2025-07-07 14:26:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:26:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:26:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:26:35 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=Kampong+Cham+Warehouse&search=
+2025-07-07 14:26:35 [info]: Fetching stock reports
+2025-07-07 14:26:35 [info]: Stock report data:
+2025-07-07 14:26:37 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=Phnom+Penh+Warehouse&search=
+2025-07-07 14:26:37 [info]: Fetching stock reports
+2025-07-07 14:26:37 [info]: Stock report data:
+2025-07-07 14:26:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:27:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:27:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:27:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:27:57 [info]: Received GET request to /api/notifications
+2025-07-07 14:28:27 [info]: Received GET request to /api/notifications
+2025-07-07 14:28:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:28:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:28:57 [info]: Received GET request to /api/notifications
+2025-07-07 14:29:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:29:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:29:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:30:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:30:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:30:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:31:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:31:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:31:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:32:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:32:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:32:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:33:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:33:29 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-07 14:33:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:47 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:47 [info]: Received GET request to /api/warehouses
+2025-07-07 14:34:47 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:47 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:34:47 [info]: Fetching stock reports
+2025-07-07 14:34:47 [info]: Received GET request to /api/warehouses
+2025-07-07 14:34:47 [info]: Stock report data:
+2025-07-07 14:34:47 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:34:47 [info]: Fetching stock reports
+2025-07-07 14:34:47 [info]: Stock report data:
+2025-07-07 14:34:53 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:53 [info]: Received GET request to /api/warehouses
+2025-07-07 14:34:53 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:34:53 [info]: Fetching stock reports
+2025-07-07 14:34:53 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:53 [info]: Received GET request to /api/warehouses
+2025-07-07 14:34:53 [info]: Stock report data:
+2025-07-07 14:34:53 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:34:53 [info]: Fetching stock reports
+2025-07-07 14:34:53 [info]: Stock report data:
+2025-07-07 14:34:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:56 [info]: Received GET request to /api/warehouses
+2025-07-07 14:34:56 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:34:56 [info]: Fetching stock reports
+2025-07-07 14:34:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:34:56 [info]: Received GET request to /api/warehouses
+2025-07-07 14:34:56 [info]: Stock report data:
+2025-07-07 14:34:56 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:34:56 [info]: Fetching stock reports
+2025-07-07 14:34:56 [info]: Stock report data:
+2025-07-07 14:35:06 [info]: Received POST request to /api/login
+2025-07-07 14:35:06 [info]: Login attempt:
+2025-07-07 14:35:07 [warn]: Invalid password for user:
+2025-07-07 14:35:10 [info]: Received POST request to /api/login
+2025-07-07 14:35:10 [info]: Login attempt:
+2025-07-07 14:35:10 [info]: Login successful:
+2025-07-07 14:35:10 [info]: Received GET request to /api/notifications
+2025-07-07 14:35:10 [info]: Received GET request to /api/lots
+2025-07-07 14:35:10 [info]: Received GET request to /api/products
+2025-07-07 14:35:10 [info]: Received GET request to /api/warehouses
+2025-07-07 14:35:10 [info]: Received GET request to /api/notifications
+2025-07-07 14:35:10 [info]: Received GET request to /api/warehouses
+2025-07-07 14:35:10 [info]: Received GET request to /api/lots
+2025-07-07 14:35:10 [info]: Received GET request to /api/products
+2025-07-07 14:35:12 [info]: Received GET request to /api/warehouses
+2025-07-07 14:35:12 [info]: Received GET request to /api/warehouses
+2025-07-07 14:35:12 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:35:12 [info]: Fetching expiring lots
+2025-07-07 14:35:12 [info]: Received GET request to /api/settings
+2025-07-07 14:35:12 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:35:12 [info]: Fetching lot management data
+2025-07-07 14:35:12 [info]: Fetched settings
+2025-07-07 14:35:12 [info]: Received GET request to /api/settings
+2025-07-07 14:35:12 [info]: Expiring lots found:
+2025-07-07 14:35:12 [info]: Fetched settings
+2025-07-07 14:35:12 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:35:12 [info]: Fetching expiring lots
+2025-07-07 14:35:12 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:35:12 [info]: Fetching lot management data
+2025-07-07 14:35:12 [info]: Expiring lots found:
+2025-07-07 14:35:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:35:41 [info]: Received GET request to /api/notifications
+2025-07-07 14:35:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:36:11 [info]: Received GET request to /api/notifications
+2025-07-07 14:36:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:36:41 [info]: Received GET request to /api/notifications
+2025-07-07 14:36:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:37:11 [info]: Received GET request to /api/notifications
+2025-07-07 14:37:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:37:41 [info]: Received GET request to /api/notifications
+2025-07-07 14:37:56 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:06 [info]: Received POST request to /api/login
+2025-07-07 14:38:06 [info]: Login attempt:
+2025-07-07 14:38:06 [info]: Login successful:
+2025-07-07 14:38:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:07 [info]: Received GET request to /api/products
+2025-07-07 14:38:07 [info]: Received GET request to /api/lots
+2025-07-07 14:38:07 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:07 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:07 [info]: Received GET request to /api/products
+2025-07-07 14:38:07 [info]: Received GET request to /api/lots
+2025-07-07 14:38:10 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:10 [info]: Received GET request to /api/lots
+2025-07-07 14:38:10 [info]: Received GET request to /api/products
+2025-07-07 14:38:10 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:10 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:10 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:10 [info]: Received GET request to /api/lots
+2025-07-07 14:38:10 [info]: Received GET request to /api/products
+2025-07-07 14:38:11 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:13 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:13 [info]: Received GET request to /api/products
+2025-07-07 14:38:13 [info]: Received GET request to /api/lots
+2025-07-07 14:38:13 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:13 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:13 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:13 [info]: Received GET request to /api/products
+2025-07-07 14:38:13 [info]: Received GET request to /api/lots
+2025-07-07 14:38:20 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:20 [info]: Received GET request to /api/lots
+2025-07-07 14:38:20 [info]: Received GET request to /api/products
+2025-07-07 14:38:20 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:20 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:20 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:20 [info]: Received GET request to /api/lots
+2025-07-07 14:38:20 [info]: Received GET request to /api/products
+2025-07-07 14:38:27 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:27 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:27 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:38:27 [info]: Fetching expiring lots
+2025-07-07 14:38:27 [info]: Received GET request to /api/settings
+2025-07-07 14:38:27 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:38:27 [info]: Fetching lot management data
+2025-07-07 14:38:27 [info]: Fetched settings
+2025-07-07 14:38:27 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:27 [info]: Received GET request to /api/warehouses
+2025-07-07 14:38:27 [info]: Received GET request to /api/settings
+2025-07-07 14:38:27 [info]: Expiring lots found:
+2025-07-07 14:38:27 [info]: Fetched settings
+2025-07-07 14:38:27 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:38:27 [info]: Fetching expiring lots
+2025-07-07 14:38:27 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:38:27 [info]: Fetching lot management data
+2025-07-07 14:38:27 [info]: Expiring lots found:
+2025-07-07 14:38:50 [info]: Received GET request to /api/notifications
+2025-07-07 14:38:58 [info]: Received GET request to /api/notifications
+2025-07-07 14:39:20 [info]: Received GET request to /api/notifications
+2025-07-07 14:39:28 [info]: Received GET request to /api/notifications
+2025-07-07 14:39:50 [info]: Received GET request to /api/notifications
+2025-07-07 14:39:58 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:15 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:15 [info]: Received GET request to /api/products
+2025-07-07 14:40:15 [info]: Received GET request to /api/lots
+2025-07-07 14:40:15 [info]: Received GET request to /api/warehouses
+2025-07-07 14:40:15 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:15 [info]: Received GET request to /api/warehouses
+2025-07-07 14:40:15 [info]: Received GET request to /api/products
+2025-07-07 14:40:15 [info]: Received GET request to /api/lots
+2025-07-07 14:40:26 [info]: Received POST request to /api/login
+2025-07-07 14:40:26 [info]: Login attempt:
+2025-07-07 14:40:26 [info]: Login successful:
+2025-07-07 14:40:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:26 [info]: Received GET request to /api/products
+2025-07-07 14:40:26 [info]: Received GET request to /api/lots
+2025-07-07 14:40:26 [info]: Received GET request to /api/warehouses
+2025-07-07 14:40:26 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:26 [info]: Received GET request to /api/warehouses
+2025-07-07 14:40:26 [info]: Received GET request to /api/products
+2025-07-07 14:40:26 [info]: Received GET request to /api/lots
+2025-07-07 14:40:28 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:33 [info]: Received GET request to /api/products
+2025-07-07 14:40:33 [info]: Received GET request to /api/lots
+2025-07-07 14:40:33 [info]: Received GET request to /api/warehouses
+2025-07-07 14:40:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:40:33 [info]: Received GET request to /api/warehouses
+2025-07-07 14:40:33 [info]: Received GET request to /api/products
+2025-07-07 14:40:33 [info]: Received GET request to /api/lots
+2025-07-07 14:40:58 [info]: Received GET request to /api/notifications
+2025-07-07 14:41:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:41:28 [info]: Received GET request to /api/notifications
+2025-07-07 14:41:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:42:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:42:28 [info]: Received GET request to /api/notifications
+2025-07-07 14:42:33 [info]: Received GET request to /api/notifications
+2025-07-07 14:43:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:43:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:43:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:44:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:44:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:45:08 [info]: Received GET request to /api/notifications
+2025-07-07 14:45:08 [info]: Received GET request to /api/warehouses
+2025-07-07 14:45:08 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:45:08 [info]: Fetching expiring lots
+2025-07-07 14:45:08 [info]: Received GET request to /api/settings
+2025-07-07 14:45:08 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:45:08 [info]: Fetching lot management data
+2025-07-07 14:45:08 [info]: Received GET request to /api/notifications
+2025-07-07 14:45:08 [info]: Fetched settings
+2025-07-07 14:45:08 [info]: Received GET request to /api/warehouses
+2025-07-07 14:45:08 [info]: Received GET request to /api/settings
+2025-07-07 14:45:08 [info]: Expiring lots found:
+2025-07-07 14:45:08 [info]: Received GET request to /api/notifications
+2025-07-07 14:45:08 [info]: Received GET request to /api/products
+2025-07-07 14:45:08 [info]: Fetched settings
+2025-07-07 14:45:08 [info]: Received GET request to /api/lots
+2025-07-07 14:45:08 [info]: Received GET request to /api/warehouses
+2025-07-07 14:45:08 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:45:08 [info]: Fetching expiring lots
+2025-07-07 14:45:08 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:45:08 [info]: Fetching lot management data
+2025-07-07 14:45:08 [info]: Received GET request to /api/notifications
+2025-07-07 14:45:08 [info]: Received GET request to /api/warehouses
+2025-07-07 14:45:08 [info]: Received GET request to /api/products
+2025-07-07 14:45:08 [info]: Expiring lots found:
+2025-07-07 14:45:08 [info]: Received GET request to /api/lots
+2025-07-07 14:45:39 [info]: Received GET request to /api/notifications
+2025-07-07 14:45:39 [info]: Received GET request to /api/notifications
+2025-07-07 14:46:09 [info]: Received GET request to /api/notifications
+2025-07-07 14:46:09 [info]: Received GET request to /api/notifications
+2025-07-07 14:46:39 [info]: Received GET request to /api/notifications
+2025-07-07 14:46:39 [info]: Received GET request to /api/notifications
+2025-07-07 14:47:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:47:07 [info]: Received GET request to /api/products
+2025-07-07 14:47:07 [info]: Received GET request to /api/lots
+2025-07-07 14:47:07 [info]: Received GET request to /api/warehouses
+2025-07-07 14:47:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:47:07 [info]: Received GET request to /api/warehouses
+2025-07-07 14:47:07 [info]: Received GET request to /api/products
+2025-07-07 14:47:07 [info]: Received GET request to /api/lots
+2025-07-07 14:47:09 [info]: Received GET request to /api/notifications
+2025-07-07 14:47:38 [info]: Received GET request to /api/notifications
+2025-07-07 14:47:39 [info]: Received GET request to /api/notifications
+2025-07-07 14:48:08 [info]: Received GET request to /api/notifications
+2025-07-07 14:48:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:48:30 [info]: Received POST request to /api/login
+2025-07-07 14:48:30 [info]: Login attempt:
+2025-07-07 14:48:30 [info]: Login successful:
+2025-07-07 14:48:30 [info]: Received GET request to /api/notifications
+2025-07-07 14:48:30 [info]: Received GET request to /api/products
+2025-07-07 14:48:30 [info]: Received GET request to /api/lots
+2025-07-07 14:48:30 [info]: Received GET request to /api/warehouses
+2025-07-07 14:48:31 [info]: Received GET request to /api/notifications
+2025-07-07 14:48:31 [info]: Received GET request to /api/warehouses
+2025-07-07 14:48:31 [info]: Received GET request to /api/products
+2025-07-07 14:48:31 [info]: Received GET request to /api/lots
+2025-07-07 14:49:04 [info]: Logger initialized successfully
+2025-07-07 14:49:04 [info]: Server running on port 3000
+2025-07-07 14:49:05 [info]: Connected to MongoDB
+2025-07-07 14:49:05 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:05 [info]: Received GET request to /api/products
+2025-07-07 14:49:05 [info]: Received GET request to /api/lots
+2025-07-07 14:49:05 [info]: Received GET request to /api/warehouses
+2025-07-07 14:49:05 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:05 [info]: Received GET request to /api/warehouses
+2025-07-07 14:49:05 [info]: Received GET request to /api/products
+2025-07-07 14:49:05 [info]: Received GET request to /api/lots
+2025-07-07 14:49:14 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:14 [info]: Received GET request to /api/products
+2025-07-07 14:49:14 [info]: Received GET request to /api/lots
+2025-07-07 14:49:14 [info]: Received GET request to /api/warehouses
+2025-07-07 14:49:14 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:14 [info]: Received GET request to /api/warehouses
+2025-07-07 14:49:14 [info]: Received GET request to /api/products
+2025-07-07 14:49:14 [info]: Received GET request to /api/lots
+2025-07-07 14:49:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:34 [info]: Received GET request to /api/products
+2025-07-07 14:49:34 [info]: Received GET request to /api/lots
+2025-07-07 14:49:34 [info]: Received GET request to /api/warehouses
+2025-07-07 14:49:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:49:34 [info]: Received GET request to /api/warehouses
+2025-07-07 14:49:34 [info]: Received GET request to /api/products
+2025-07-07 14:49:34 [info]: Received GET request to /api/lots
+2025-07-07 14:50:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:50:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:50:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:51:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:51:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:51:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:52:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:52:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:52:34 [info]: Received GET request to /api/notifications
+2025-07-07 14:53:04 [info]: Received GET request to /api/notifications
+2025-07-07 14:53:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:54:05 [info]: Received GET request to /api/notifications
+2025-07-07 14:54:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:55:06 [info]: Received GET request to /api/notifications
+2025-07-07 14:55:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:56:07 [info]: Received GET request to /api/notifications
+2025-07-07 14:56:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:57:08 [info]: Received GET request to /api/notifications
+2025-07-07 14:57:24 [info]: Logger initialized successfully
+2025-07-07 14:57:24 [info]: Server running on port 3000
+2025-07-07 14:57:25 [info]: Connected to MongoDB
+2025-07-07 14:57:29 [info]: Received GET request to /api/notifications
+2025-07-07 14:57:31 [info]: Received POST request to /api/login
+2025-07-07 14:57:31 [info]: Login attempt:
+2025-07-07 14:57:31 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:57:34 [info]: Received POST request to /api/login
+2025-07-07 14:57:34 [info]: Login attempt:
+2025-07-07 14:57:34 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:57:40 [info]: Received POST request to /api/login
+2025-07-07 14:57:40 [info]: Login attempt:
+2025-07-07 14:57:40 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:57:52 [info]: Received POST request to /api/login
+2025-07-07 14:57:52 [info]: Login attempt:
+2025-07-07 14:57:52 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:57:55 [info]: Received POST request to /api/login
+2025-07-07 14:57:55 [info]: Login attempt:
+2025-07-07 14:57:55 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:57:57 [info]: Received POST request to /api/login
+2025-07-07 14:57:57 [info]: Login attempt:
+2025-07-07 14:57:57 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:57:57 [info]: Received POST request to /api/login
+2025-07-07 14:57:57 [info]: Login attempt:
+2025-07-07 14:57:57 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:58:05 [info]: Received POST request to /api/login
+2025-07-07 14:58:05 [info]: Login attempt:
+2025-07-07 14:58:05 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:58:21 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:22 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:22 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:22 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:22 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:58:22 [info]: Fetching expiring lots
+2025-07-07 14:58:22 [info]: Received GET request to /api/settings
+2025-07-07 14:58:22 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:58:22 [info]: Fetching lot management data
+2025-07-07 14:58:22 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:22 [info]: Fetched settings
+2025-07-07 14:58:22 [info]: Received GET request to /api/settings
+2025-07-07 14:58:22 [info]: Expiring lots found:
+2025-07-07 14:58:22 [info]: Fetched settings
+2025-07-07 14:58:22 [info]: Received GET request to /api/lot-management/expiring
+2025-07-07 14:58:22 [info]: Fetching expiring lots
+2025-07-07 14:58:22 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-07 14:58:22 [info]: Fetching lot management data
+2025-07-07 14:58:22 [info]: Expiring lots found:
+2025-07-07 14:58:24 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:24 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:24 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:24 [info]: Received GET request to /api/products
+2025-07-07 14:58:24 [info]: Received GET request to /api/lots
+2025-07-07 14:58:24 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:24 [info]: Received GET request to /api/products
+2025-07-07 14:58:24 [info]: Received GET request to /api/lots
+2025-07-07 14:58:27 [info]: Received GET request to /api/products
+2025-07-07 14:58:28 [info]: Received GET request to /api/lots
+2025-07-07 14:58:28 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:28 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:28 [info]: Received GET request to /api/products
+2025-07-07 14:58:28 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:28 [info]: Received GET request to /api/lots
+2025-07-07 14:58:28 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:37 [info]: Received POST request to /api/login
+2025-07-07 14:58:37 [info]: Login attempt:
+2025-07-07 14:58:37 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:58:44 [info]: Received POST request to /api/login
+2025-07-07 14:58:44 [info]: Login attempt:
+2025-07-07 14:58:44 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 14:58:46 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:46 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:58:46 [info]: Fetching stock reports
+2025-07-07 14:58:46 [info]: Stock report data:
+2025-07-07 14:58:46 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:46 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-07 14:58:46 [info]: Fetching stock reports
+2025-07-07 14:58:46 [info]: Stock report data:
+2025-07-07 14:58:46 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:46 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:46 [info]: Received GET request to /api/receive-history?startDate=07-07-2025&endDate=07-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-07 14:58:46 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:46 [info]: Received GET request to /api/receive-history?startDate=07-07-2025&endDate=07-07-2025&warehouse=Phnom+Penh+Warehouse&searchQuery=&userQuery=&page=1&limit=25
+2025-07-07 14:58:46 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:47 [info]: Received GET request to /api/products
+2025-07-07 14:58:47 [info]: Received GET request to /api/categories
+2025-07-07 14:58:47 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:47 [info]: Received GET request to /api/suppliers
+2025-07-07 14:58:47 [info]: Received GET request to /api/categories
+2025-07-07 14:58:47 [info]: Received GET request to /api/suppliers
+2025-07-07 14:58:47 [info]: Received GET request to /api/products
+2025-07-07 14:58:47 [info]: Received GET request to /api/receive-history?startDate=07-07-2025&endDate=07-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-07 14:58:47 [info]: Received GET request to /api/products
+2025-07-07 14:58:47 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:47 [info]: Received GET request to /api/lots
+2025-07-07 14:58:47 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:47 [info]: Received GET request to /api/products
+2025-07-07 14:58:47 [info]: Received GET request to /api/lots
+2025-07-07 14:58:50 [info]: Received GET request to /api/products
+2025-07-07 14:58:50 [info]: Received GET request to /api/lots
+2025-07-07 14:58:50 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:50 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:50 [info]: Received GET request to /api/warehouses
+2025-07-07 14:58:50 [info]: Received GET request to /api/products
+2025-07-07 14:58:50 [info]: Received GET request to /api/notifications
+2025-07-07 14:58:50 [info]: Received GET request to /api/lots
+2025-07-07 14:58:55 [info]: Received POST request to /api/login
+2025-07-07 14:58:55 [info]: Login attempt:
+2025-07-07 14:58:55 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:00:42 [info]: Logger initialized successfully
+2025-07-07 15:00:43 [info]: Server running on port 3000
+2025-07-07 15:00:43 [info]: Connected to MongoDB
+2025-07-07 15:00:45 [info]: Received POST request to /api/login
+2025-07-07 15:00:45 [info]: Login attempt:
+2025-07-07 15:00:45 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:00:51 [info]: Received POST request to /api/login
+2025-07-07 15:00:51 [info]: Login attempt:
+2025-07-07 15:00:51 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:01:46 [info]: Logger initialized successfully
+2025-07-07 15:01:46 [info]: Server running on port 3000
+2025-07-07 15:01:47 [info]: Connected to MongoDB
+2025-07-07 15:01:50 [info]: Received POST request to /api/login
+2025-07-07 15:01:50 [info]: Login attempt:
+2025-07-07 15:01:50 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:01:51 [info]: Received POST request to /api/login
+2025-07-07 15:01:51 [info]: Login attempt:
+2025-07-07 15:01:51 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:02:20 [info]: Received POST request to /api/login
+2025-07-07 15:02:20 [info]: Login attempt:
+2025-07-07 15:02:20 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:02:26 [info]: Received POST request to /api/login
+2025-07-07 15:02:26 [info]: Login attempt:
+2025-07-07 15:02:26 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:02:27 [info]: Received POST request to /api/login
+2025-07-07 15:02:27 [info]: Login attempt:
+2025-07-07 15:02:28 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:02:28 [info]: Received POST request to /api/login
+2025-07-07 15:02:28 [info]: Login attempt:
+2025-07-07 15:02:28 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:02:28 [info]: Received POST request to /api/login
+2025-07-07 15:02:28 [info]: Login attempt:
+2025-07-07 15:02:28 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Phnom Penh Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:123:26
+2025-07-07 15:03:01 [info]: Logger initialized successfully
+2025-07-07 15:03:01 [info]: Server running on port 3000
+2025-07-07 15:03:01 [info]: Connected to MongoDB
+2025-07-07 15:03:08 [info]: Received POST request to /api/login
+2025-07-07 15:03:08 [info]: Login attempt:
+2025-07-07 15:03:08 [info]: Login successful:
+2025-07-07 15:03:08 [info]: Received GET request to /api/notifications
+2025-07-07 15:03:08 [info]: Received GET request to /api/products
+2025-07-07 15:03:08 [info]: Received GET request to /api/lots
+2025-07-07 15:03:08 [info]: Received GET request to /api/warehouses
+2025-07-07 15:03:08 [info]: Received GET request to /api/notifications
+2025-07-07 15:03:08 [info]: Received GET request to /api/warehouses
+2025-07-07 15:03:08 [info]: Received GET request to /api/products
+2025-07-07 15:03:08 [info]: Received GET request to /api/lots
+2025-07-07 15:03:28 [info]: Received GET request to /api/notifications
+2025-07-07 15:03:28 [info]: Received GET request to /api/products
+2025-07-07 15:03:28 [info]: Received GET request to /api/lots
+2025-07-07 15:03:28 [info]: Received GET request to /api/warehouses
+2025-07-07 15:03:29 [info]: Received GET request to /api/notifications
+2025-07-07 15:03:29 [info]: Received GET request to /api/warehouses
+2025-07-07 15:03:29 [info]: Received GET request to /api/products
+2025-07-07 15:03:29 [info]: Received GET request to /api/lots
+2025-07-07 15:03:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:03:34 [info]: Received GET request to /api/products
+2025-07-07 15:03:34 [info]: Received GET request to /api/lots
+2025-07-07 15:03:34 [info]: Received GET request to /api/warehouses
+2025-07-07 15:03:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:03:34 [info]: Received GET request to /api/warehouses
+2025-07-07 15:03:34 [info]: Received GET request to /api/products
+2025-07-07 15:03:34 [info]: Received GET request to /api/lots
+2025-07-07 15:04:04 [info]: Received GET request to /api/notifications
+2025-07-07 15:04:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:05:04 [info]: Received GET request to /api/notifications
+2025-07-07 15:05:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:06:04 [info]: Received GET request to /api/notifications
+2025-07-07 15:06:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:07:00 [info]: Received GET request to /api/notifications
+2025-07-07 15:07:00 [info]: Received GET request to /api/products
+2025-07-07 15:07:00 [info]: Received GET request to /api/lots
+2025-07-07 15:07:00 [info]: Received GET request to /api/warehouses
+2025-07-07 15:07:00 [info]: Received GET request to /api/notifications
+2025-07-07 15:07:00 [info]: Received GET request to /api/warehouses
+2025-07-07 15:07:00 [info]: Received GET request to /api/products
+2025-07-07 15:07:00 [info]: Received GET request to /api/lots
+2025-07-07 15:07:03 [info]: Received POST request to /api/login
+2025-07-07 15:07:03 [info]: Login attempt:
+2025-07-07 15:07:03 [info]: Login successful:
+2025-07-07 15:07:03 [info]: Received GET request to /api/notifications
+2025-07-07 15:07:03 [info]: Received GET request to /api/products
+2025-07-07 15:07:03 [info]: Received GET request to /api/lots
+2025-07-07 15:07:03 [info]: Received GET request to /api/warehouses
+2025-07-07 15:07:03 [info]: Received GET request to /api/notifications
+2025-07-07 15:07:04 [info]: Received GET request to /api/warehouses
+2025-07-07 15:07:04 [info]: Received GET request to /api/products
+2025-07-07 15:07:04 [info]: Received GET request to /api/lots
+2025-07-07 15:07:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:08:04 [info]: Received GET request to /api/notifications
+2025-07-07 15:08:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:09:04 [info]: Received GET request to /api/notifications
+2025-07-07 15:09:34 [info]: Received GET request to /api/notifications
+2025-07-07 15:10:04 [info]: Received GET request to /api/notifications
+2025-07-07 15:10:52 [info]: Received GET request to /api/notifications
+2025-07-07 15:10:57 [info]: Received POST request to /api/login
+2025-07-07 15:10:57 [info]: Login attempt:
+2025-07-07 15:10:57 [info]: Login successful:
+2025-07-07 15:10:57 [info]: Received GET request to /api/notifications
+2025-07-07 15:10:57 [info]: Received GET request to /api/products
+2025-07-07 15:10:57 [info]: Received GET request to /api/lots
+2025-07-07 15:10:57 [info]: Received GET request to /api/warehouses
+2025-07-07 15:10:57 [info]: Received GET request to /api/notifications
+2025-07-07 15:10:57 [info]: Received GET request to /api/products
+2025-07-07 15:10:57 [info]: Received GET request to /api/warehouses
+2025-07-07 15:10:57 [info]: Received GET request to /api/lots
+2025-07-07 15:11:14 [info]: Received POST request to /api/login
+2025-07-07 15:11:14 [info]: Login attempt:
+2025-07-07 15:11:14 [info]: Login successful:
+2025-07-07 15:11:14 [info]: Received GET request to /api/notifications
+2025-07-07 15:11:14 [info]: Received GET request to /api/products
+2025-07-07 15:11:14 [info]: Received GET request to /api/lots
+2025-07-07 15:11:14 [info]: Received GET request to /api/warehouses
+2025-07-07 15:11:14 [info]: Received GET request to /api/notifications
+2025-07-07 15:11:14 [info]: Received GET request to /api/warehouses
+2025-07-07 15:11:14 [info]: Received GET request to /api/products
+2025-07-07 15:11:14 [info]: Received GET request to /api/lots
+2025-07-07 15:12:05 [info]: Logger initialized successfully
+2025-07-07 15:12:06 [info]: Server running on port 3000
+2025-07-07 15:12:06 [info]: Connected to MongoDB
+2025-07-07 15:12:18 [info]: Received POST request to /api/login
+2025-07-07 15:12:18 [info]: Login attempt:
+2025-07-07 15:12:18 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:12:20 [info]: Received POST request to /api/login
+2025-07-07 15:12:20 [info]: Login attempt:
+2025-07-07 15:12:20 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:12:26 [info]: Received POST request to /api/login
+2025-07-07 15:12:26 [info]: Login attempt:
+2025-07-07 15:12:26 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:12:27 [info]: Received POST request to /api/login
+2025-07-07 15:12:27 [info]: Login attempt:
+2025-07-07 15:12:27 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:12:28 [info]: Received POST request to /api/login
+2025-07-07 15:12:28 [info]: Login attempt:
+2025-07-07 15:12:28 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:12:32 [info]: Received POST request to /api/login
+2025-07-07 15:12:32 [info]: Login attempt:
+2025-07-07 15:12:32 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:13:21 [info]: Received POST request to /api/login
+2025-07-07 15:13:21 [info]: Login attempt:
+2025-07-07 15:13:21 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:47 [info]: Received POST request to /api/login
+2025-07-07 15:16:47 [info]: Login attempt:
+2025-07-07 15:16:47 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:51 [info]: Received POST request to /api/login
+2025-07-07 15:16:51 [info]: Login attempt:
+2025-07-07 15:16:51 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:51 [info]: Received POST request to /api/login
+2025-07-07 15:16:51 [info]: Login attempt:
+2025-07-07 15:16:52 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:52 [info]: Received POST request to /api/login
+2025-07-07 15:16:52 [info]: Login attempt:
+2025-07-07 15:16:52 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:52 [info]: Received POST request to /api/login
+2025-07-07 15:16:52 [info]: Login attempt:
+2025-07-07 15:16:52 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:52 [info]: Received POST request to /api/login
+2025-07-07 15:16:52 [info]: Login attempt:
+2025-07-07 15:16:52 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:52 [info]: Received POST request to /api/login
+2025-07-07 15:16:52 [info]: Login attempt:
+2025-07-07 15:16:52 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:52 [info]: Received POST request to /api/login
+2025-07-07 15:16:52 [info]: Login attempt:
+2025-07-07 15:16:53 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:53 [info]: Received POST request to /api/login
+2025-07-07 15:16:53 [info]: Login attempt:
+2025-07-07 15:16:53 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:16:53 [info]: Received POST request to /api/login
+2025-07-07 15:16:53 [info]: Login attempt:
+2025-07-07 15:16:53 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:119:26
+2025-07-07 15:17:35 [info]: Logger initialized successfully
+2025-07-07 15:17:35 [info]: Server running on port 3000
+2025-07-07 15:17:36 [info]: Connected to MongoDB
+2025-07-07 15:17:39 [info]: Received POST request to /api/login
+2025-07-07 15:17:39 [info]: Login attempt:
+2025-07-07 15:17:39 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:17:40 [info]: Received POST request to /api/login
+2025-07-07 15:17:40 [info]: Login attempt:
+2025-07-07 15:17:40 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:17:40 [info]: Received POST request to /api/login
+2025-07-07 15:17:40 [info]: Login attempt:
+2025-07-07 15:17:40 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:17:43 [info]: Received POST request to /api/login
+2025-07-07 15:17:43 [info]: Login attempt:
+2025-07-07 15:17:43 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:17:44 [info]: Received POST request to /api/login
+2025-07-07 15:17:44 [info]: Login attempt:
+2025-07-07 15:17:44 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:18:11 [info]: Received POST request to /api/login
+2025-07-07 15:18:11 [info]: Login attempt:
+2025-07-07 15:18:11 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:18:11 [info]: Received POST request to /api/login
+2025-07-07 15:18:11 [info]: Login attempt:
+2025-07-07 15:18:11 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:18:12 [info]: Received POST request to /api/login
+2025-07-07 15:18:12 [info]: Login attempt:
+2025-07-07 15:18:12 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:18:12 [info]: Received POST request to /api/login
+2025-07-07 15:18:12 [info]: Login attempt:
+2025-07-07 15:18:12 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:18:14 [info]: Received POST request to /api/login
+2025-07-07 15:18:14 [info]: Login attempt:
+2025-07-07 15:18:14 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:19:29 [info]: Received POST request to /api/login
+2025-07-07 15:19:29 [info]: Login attempt:
+2025-07-07 15:19:29 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:19:30 [info]: Received POST request to /api/login
+2025-07-07 15:19:30 [info]: Login attempt:
+2025-07-07 15:19:30 [error]: Error during login:
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:120:26
+2025-07-07 15:24:55 [info]: Logger initialized successfully
+2025-07-07 15:24:55 [info]: Server running on port 3000
+2025-07-07 15:24:55 [info]: Connected to MongoDB
+2025-07-07 15:24:57 [info]: Received POST request to /api/login
+2025-07-07 15:24:57 [info]: Login attempt:
+2025-07-07 15:24:58 [info]: Login successful:
+2025-07-07 15:24:58 [info]: Received GET request to /api/notifications
+2025-07-07 15:24:58 [info]: Received GET request to /api/products
+2025-07-07 15:24:58 [info]: Received GET request to /api/lots
+2025-07-07 15:24:58 [info]: Received GET request to /api/warehouses
+2025-07-07 15:24:58 [info]: Received GET request to /api/notifications
+2025-07-07 15:24:58 [info]: Received GET request to /api/warehouses
+2025-07-07 15:24:58 [info]: Received GET request to /api/products
+2025-07-07 15:24:58 [info]: Received GET request to /api/lots
+2025-07-07 15:25:09 [info]: Received GET request to /api/notifications
+2025-07-07 15:25:09 [info]: Received GET request to /api/products
+2025-07-07 15:25:09 [info]: Received GET request to /api/lots
+2025-07-07 15:25:09 [info]: Received GET request to /api/warehouses
+2025-07-07 15:25:09 [info]: Received GET request to /api/notifications
+2025-07-07 15:25:09 [info]: Received GET request to /api/warehouses
+2025-07-07 15:25:09 [info]: Received GET request to /api/products
+2025-07-07 15:25:09 [info]: Received GET request to /api/lots
+2025-07-07 15:25:39 [info]: Received GET request to /api/notifications
+2025-07-07 15:26:09 [info]: Received GET request to /api/notifications
+2025-07-07 15:26:39 [info]: Received GET request to /api/notifications
+2025-07-07 15:26:58 [info]: Logger initialized successfully
+2025-07-07 15:26:59 [info]: Server running on port 3000
+2025-07-07 15:26:59 [info]: Connected to MongoDB
+2025-07-07 15:27:02 [info]: Received GET request to /api/notifications
+2025-07-07 15:27:02 [info]: Received GET request to /api/products
+2025-07-07 15:27:02 [info]: Received GET request to /api/lots
+2025-07-07 15:27:02 [info]: Received GET request to /api/warehouses
+2025-07-07 15:27:02 [info]: Received GET request to /api/notifications
+2025-07-07 15:27:02 [info]: Received GET request to /api/warehouses
+2025-07-07 15:27:02 [info]: Received GET request to /api/products
+2025-07-07 15:27:02 [info]: Received GET request to /api/lots
+2025-07-07 15:27:06 [info]: Received POST request to /api/login
+2025-07-07 15:27:06 [info]: Login attempt:
+2025-07-07 15:27:06 [warn]: User not assigned to a warehouse:
+2025-07-07 15:27:21 [info]: Received POST request to /api/login
+2025-07-07 15:27:21 [info]: Login attempt:
+2025-07-07 15:27:21 [warn]: User not assigned to a warehouse:
+2025-07-07 15:27:26 [info]: Received POST request to /api/login
+2025-07-07 15:27:26 [info]: Login attempt:
+2025-07-07 15:27:26 [warn]: User not assigned to a warehouse:
+2025-07-07 15:27:26 [info]: Received POST request to /api/login
+2025-07-07 15:27:26 [info]: Login attempt:
+2025-07-07 15:27:27 [warn]: User not assigned to a warehouse:
+2025-07-07 15:27:56 [info]: Received POST request to /api/login
+2025-07-07 15:27:56 [info]: Login attempt:
+2025-07-07 15:27:56 [warn]: User not assigned to a warehouse:
+2025-07-07 15:27:57 [info]: Received POST request to /api/login
+2025-07-07 15:27:57 [info]: Login attempt:
+2025-07-07 15:27:57 [warn]: User not assigned to a warehouse:
+2025-07-07 15:28:22 [info]: Received POST request to /api/login
+2025-07-07 15:28:22 [info]: Login attempt:
+2025-07-07 15:28:22 [warn]: User not assigned to a warehouse:
+2025-07-07 15:28:26 [info]: Received POST request to /api/login
+2025-07-07 15:28:26 [info]: Login attempt:
+2025-07-07 15:28:26 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:26 [info]: Received POST request to /api/login
+2025-07-07 15:32:26 [info]: Login attempt:
+2025-07-07 15:32:26 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:31 [info]: Received POST request to /api/login
+2025-07-07 15:32:31 [info]: Login attempt:
+2025-07-07 15:32:31 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:35 [info]: Received POST request to /api/login
+2025-07-07 15:32:35 [info]: Login attempt:
+2025-07-07 15:32:35 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:47 [info]: Received POST request to /api/login
+2025-07-07 15:32:47 [info]: Login attempt:
+2025-07-07 15:32:47 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:48 [info]: Received POST request to /api/login
+2025-07-07 15:32:48 [info]: Login attempt:
+2025-07-07 15:32:48 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:50 [info]: Received POST request to /api/login
+2025-07-07 15:32:50 [info]: Login attempt:
+2025-07-07 15:32:50 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:51 [info]: Received POST request to /api/login
+2025-07-07 15:32:51 [info]: Login attempt:
+2025-07-07 15:32:51 [warn]: User not assigned to a warehouse:
+2025-07-07 15:32:54 [info]: Received POST request to /api/login
+2025-07-07 15:32:54 [info]: Login attempt:
+2025-07-07 15:32:54 [warn]: User not assigned to a warehouse:
+2025-07-07 15:35:42 [info]: Received POST request to /api/login
+2025-07-07 15:35:42 [info]: Login attempt:
+2025-07-07 15:35:42 [warn]: User not assigned to a warehouse:
+2025-07-07 15:35:45 [info]: Received POST request to /api/login
+2025-07-07 15:35:45 [info]: Login attempt:
+2025-07-07 15:35:45 [warn]: User not assigned to a warehouse:
+2025-07-07 15:35:46 [info]: Received POST request to /api/login
+2025-07-07 15:35:46 [info]: Login attempt:
+2025-07-07 15:35:46 [warn]: User not assigned to a warehouse:
+2025-07-07 15:35:54 [info]: Received POST request to /api/login
+2025-07-07 15:35:54 [info]: Login attempt:
+2025-07-07 15:35:54 [warn]: User not assigned to a warehouse:
+2025-07-07 15:36:01 [info]: Received POST request to /api/login
+2025-07-07 15:36:01 [info]: Login attempt:
+2025-07-07 15:36:01 [warn]: User not assigned to a warehouse:
+2025-07-07 15:36:02 [info]: Received POST request to /api/login
+2025-07-07 15:36:02 [info]: Login attempt:
+2025-07-07 15:36:02 [warn]: User not assigned to a warehouse:
+2025-07-07 15:36:02 [info]: Received POST request to /api/login
+2025-07-07 15:36:02 [info]: Login attempt:
+2025-07-07 15:36:02 [warn]: User not assigned to a warehouse:

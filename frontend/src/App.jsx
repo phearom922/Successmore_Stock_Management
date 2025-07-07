@@ -25,6 +25,15 @@ function App() {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
+  const userData = token ? JSON.parse(atob(token.split('.')[1])) : {};
+  const username = userData.username || '';
+  const lastName = userData.lastName || '';
+  const warehouseCode = userData.warehouseCode || '';
+  const warehouseName = userData.warehouseName || '';
+  const branch = userData.branch || '';
+  const role = userData.role || '';
+
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
@@ -50,21 +59,24 @@ function App() {
     }
   }, [token, navigate]);
 
-  const userData = token ? JSON.parse(atob(token.split('.')[1])) : null;
-  const username = userData?.username || 'Admin';
-  const role = userData?.role || 'guest';
+
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        setIsOpen={setIsSidebarOpen} 
+      <Sidebar
+        isOpen={isSidebarOpen}
+        setIsOpen={setIsSidebarOpen}
         userRole={role}
       />
       <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
-        <TopBar 
-          handleLogout={handleLogout} 
+        <TopBar
+          handleLogout={handleLogout}
           username={username}
+          lastName={lastName}
+          warehouseCode={warehouseCode}
+          warehouseName={warehouseName}
+          branch={branch}
+          role={role}
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
         <main className="flex-1 p-6 overflow-auto">

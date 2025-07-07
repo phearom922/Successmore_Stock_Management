@@ -115,26 +115,43 @@ router.post('/login', async (req, res) => {
       logger.warn('User not assigned to a warehouse:', { username, userId: user._id });
       return res.status(400).json({ message: 'User must be assigned to a warehouse' });
     }
-    // ไม่ต้อง populate เพราะใช้ String
-    const warehouse = user.assignedWarehouse;
-    if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET is not configured in .env');
+
+    // ดึงข้อมูล warehouse (ใช้ _id)
+    const warehouseDoc = await Warehouse.findOne({ name: user.assignedWarehouse });
+    if (!warehouseDoc) {
+      logger.warn('Warehouse not found:', { warehouseId: user.assignedWarehouse });
+      return res.status(400).json({ message: 'Warehouse not found' });
     }
+
+    // สร้าง token พร้อมข้อมูลครบถ้วน
     const token = jwt.sign({
       id: user._id,
       role: user.role,
       username: user.username,
-      warehouse,
+      lastName: user.lastName || '',
+      warehouseCode: warehouseDoc.warehouseCode || '',
+      warehouseName: warehouseDoc.name || '',
+      branch: warehouseDoc.branch || '',
+      warehouse: user.assignedWarehouse,
       permissions: user.permissions || [],
       isActive: user.isActive,
     }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
     logger.info('Login successful:', { username, userId: user._id });
     res.json({ token });
+
   } catch (error) {
     logger.error('Error during login:', { error: error.message, stack: error.stack, details: req.body });
     res.status(500).json({ message: 'Error during login', error: error.message });
   }
 });
+
+
+
+
+
+
+
 
 // Create User
 router.post('/users', authMiddleware, async (req, res) => {
