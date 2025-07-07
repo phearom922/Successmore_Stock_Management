@@ -94,6 +94,7 @@ const supplierSchema = z.object({
 });
 
 // Login Endpoint
+// Login Endpoint
 router.post('/login', async (req, res) => {
   try {
     logger.info('Login attempt:', req.body.username);
@@ -132,7 +133,7 @@ router.post('/login', async (req, res) => {
       warehouseCode: warehouseDoc.warehouseCode || '',
       warehouseName: warehouseDoc.name || '',
       branch: warehouseDoc.branch || '',
-      assignedWarehouse: warehouseDoc._id.toString(), // ใช้ ObjectId จาก Warehouse
+      assignedWarehouse: user.assignedWarehouse.toString(), // ใช้ ObjectId
       permissions: user.permissions || [],
       isActive: user.isActive,
     }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -1757,11 +1758,16 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
     const user = req.user;
     const query = {};
 
+    // Admin: ดูได้ทุกคลัง, User: ดูได้เฉพาะคลังตัวเองเท่านั้น
     if (user.role !== 'admin') {
-      query.warehouse = user.warehouseName; // ใช้ warehouseName จาก Token
-      if (!query.warehouse) {
-        return res.status(400).json({ message: 'Warehouse not assigned for user' });
+      if (!user.assignedWarehouse) {
+        return res.status(400).json({ message: 'User must be assigned to a warehouse' });
       }
+      const warehouseDoc = await Warehouse.findById(user.assignedWarehouse);
+      if (!warehouseDoc) {
+        return res.status(400).json({ message: 'Warehouse not found for user' });
+      }
+      query.warehouse = warehouseDoc.name; // ใช้ชื่อ Warehouse จาก ObjectId
     } else if (warehouse && warehouse !== 'all') {
       const warehouseDoc = await Warehouse.findById(warehouse);
       if (!warehouseDoc) {
@@ -1794,7 +1800,7 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         reportData = lots.filter(lot => {
           if (!lot.expDate) return false;
           const expDate = new Date(lot.expDate);
-          const daysLeft = differenceInDays(expDate, today);
+          const daysLeft = Math.floor((expDate - today) / (1000 * 60 * 60 * 24)); // คำนวณวัน
           return daysLeft <= warningDays && daysLeft > 0;
         });
         break;

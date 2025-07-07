@@ -26,16 +26,16 @@ const StockReports = () => {
   // ดึงข้อมูล user จาก token
   const userData = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const isAdmin = userData.role === 'admin';
-  const userWarehouseId = userData.assignedWarehouse || ''; // ใช้ assignedWarehouse จาก Token
-  const userWarehouseName = userData.warehouseName || ''; // ใช้ warehouseName จาก Token
+  const userWarehouseId = userData.assignedWarehouse || ''; // ใช้ assignedWarehouse (ObjectId) จาก Token
+  const userWarehouseName = userData.warehouseName || ''; // ใช้ warehouseName เป็นข้อมูลสำรอง
 
   useEffect(() => {
     fetchWarehouses();
-    if (!isAdmin && userWarehouseId) {
-      setSelectedWarehouse(userWarehouseId); // ใช้ ObjectId สำหรับ Admin, Name สำหรับ User
+    if (!isAdmin && userWarehouseName) { // ใช้ userWarehouseName แทน userWarehouseId
+      setSelectedWarehouse(userWarehouseName);
     }
-    fetchData('all-stock', null, isAdmin ? 'all' : userWarehouseName); // ใช้ warehouseName สำหรับ User
-  }, [userWarehouseId, userWarehouseName]);
+    fetchData('all-stock', null, isAdmin ? 'all' : userWarehouseName); // ใช้ userWarehouseName
+  }, [userWarehouseName]);
 
   const fetchWarehouses = async () => {
     try {
@@ -62,7 +62,8 @@ const StockReports = () => {
       const tabType = type || currentTab || 'all-stock';
       const search = customSearch !== null ? customSearch : searchQuery;
       const warehouseVal = customWarehouse !== null ? customWarehouse : selectedWarehouse;
-      const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseName : warehouseVal;
+      const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseName : warehouseVal; // ใช้ userWarehouseName
+      console.log('Fetching data with warehouse:', effectiveWarehouse); // Debug
       const { data } = await axios.get('http://localhost:3000/api/stock-reports', {
         headers: { Authorization: `Bearer ${token}` },
         params: { type: tabType, warehouse: effectiveWarehouse, search }
@@ -187,7 +188,7 @@ const StockReports = () => {
                 </Select>
               ) : (
                 <div className="py-2 px-3 rounded bg-gray-100 text-gray-700 font-medium">
-                  {warehouses[0]?.name || userWarehouseName || 'No warehouse assigned'}
+                  {warehouses.find(w => w._id.toString() === userWarehouseId)?.name || userWarehouseName || 'No warehouse assigned'}
                 </div>
               )}
             </div>
