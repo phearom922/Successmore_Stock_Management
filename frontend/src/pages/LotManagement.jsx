@@ -109,16 +109,9 @@ const LotManagement = () => {
   const [warehouse, setWarehouse] = useState('all');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin] = useState(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return false;
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload?.role === 'admin';
-    } catch {
-      return false;
-    }
-  });
+  const token = localStorage.getItem('token');
+  const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
+  const isAdmin = user.role === 'admin';
   const [editLot, setEditLot] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [expiringLots, setExpiringLots] = useState([]);
@@ -137,11 +130,14 @@ const LotManagement = () => {
 
   const fetchWarehouses = async () => {
     try {
-      const token = localStorage.getItem('token');
       const { data } = await axios.get('http://localhost:3000/api/warehouses', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
+      if (!isAdmin && user.assignedWarehouse) {
+        setWarehouse(user.assignedWarehouse); // ใช้ assignedWarehouse สำหรับ User Role
+        setInputWarehouse(user.assignedWarehouse); // ตั้งค่า Input ตาม assignedWarehouse
+      }
     } catch (error) {
       console.error('Error fetching warehouses:', error);
       setSettingsError('Failed to load warehouses');
@@ -150,7 +146,6 @@ const LotManagement = () => {
 
   const fetchSettings = async () => {
     try {
-      const token = localStorage.getItem('token');
       const { data } = await axios.get('http://localhost:3000/api/settings', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -158,7 +153,6 @@ const LotManagement = () => {
     } catch (error) {
       console.error('Error fetching settings:', error);
       setWarningDays(15); // Default value on any error
-      // Do not set settingsError unless it's a critical error
       if (error.response?.status >= 500) {
         setSettingsError('Failed to load settings due to server error');
       }
@@ -168,10 +162,16 @@ const LotManagement = () => {
   const fetchLots = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const queryParams = {
+        searchQuery,
+        warehouse: isAdmin ? warehouse : user.assignedWarehouse || '', // จำกัด User Role
+        page,
+        limit
+      };
+      console.log('Fetching lots with params:', queryParams); // ดีบั๊กพารามิเตอร์
       const { data } = await axios.get('http://localhost:3000/api/lot-management', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { searchQuery, warehouse, page, limit }
+        params: queryParams
       });
       const enrichedLots = data.data.map(lot => ({
         ...lot,
@@ -193,9 +193,12 @@ const LotManagement = () => {
 
   const checkExpiringLots = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const queryParams = {
+        warehouse: isAdmin ? '' : user.assignedWarehouse || '' // จำกัด User Role
+      };
       const { data } = await axios.get('http://localhost:3000/api/lot-management/expiring', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        params: queryParams
       });
       setExpiringLots(data.expiringLots);
       setWarningDays(data.warningDays || 15); // Sync with settings from expiring endpoint
@@ -217,26 +220,30 @@ const LotManagement = () => {
     setPage(newPage);
   };
 
-  const handleExport = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/lot-management/export', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { searchQuery, warehouse },
-        responseType: 'blob'
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `lot-management-${new Date().toISOString().split('T')[0]}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error exporting data:', error);
-      setSettingsError('Failed to export data');
-    }
-  };
+
+
+const handleExport = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/api/lot-management/export', {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { searchQuery, warehouse: isAdmin ? warehouse : user.assignedWarehouse || '' },
+      responseType: 'blob'
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `lot-management-${new Date().toISOString().split('T')[0]}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error('Error exporting data:', error);
+    setSettingsError('Failed to export data');
+  }
+};
+
+
 
   const handleEdit = (lot) => {
     if (!isAdmin) return;
@@ -251,7 +258,6 @@ const LotManagement = () => {
     if (!isAdmin || !editLot) return;
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
       await axios.put(`http://localhost:3000/api/lot-management/${editLot._id}`, {
         ...editLot,
         productionDate: editLot.productionDate?.toISOString(),
@@ -278,7 +284,6 @@ const LotManagement = () => {
     if (window.confirm('Are you sure you want to delete this lot?')) {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem('token');
         await axios.delete(`http://localhost:3000/api/lot-management/${lotId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -307,9 +312,9 @@ const LotManagement = () => {
 
   const clearFilters = () => {
     setInputSearch('');
-    setInputWarehouse('all');
+    setInputWarehouse(isAdmin ? 'all' : user.assignedWarehouse || 'all'); // รีเซ็ตตาม Role
     setSearchQuery('');
-    setWarehouse('all');
+    setWarehouse(isAdmin ? 'all' : user.assignedWarehouse || 'all');
     setPage(1);
   };
 
@@ -387,8 +392,14 @@ const LotManagement = () => {
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">Warehouse</label>
-                <Select.Root value={inputWarehouse} onValueChange={setInputWarehouse} disabled={isLoading}>
-                  <Select.Trigger className="w-full pl-3 pr-10 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg transition">
+                <Select.Root
+                  value={inputWarehouse}
+                  onValueChange={setInputWarehouse}
+                  disabled={isLoading || !isAdmin} // จำกัด User Role
+                >
+                  <Select.Trigger
+                    className="w-full pl-3 pr-10 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg transition"
+                  >
                     <Select.Value placeholder="All Warehouses" />
                     <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
@@ -400,12 +411,19 @@ const LotManagement = () => {
                     </Select.ScrollUpButton>
                     <Select.Viewport className="p-1">
                       <Select.Group>
-                        <Select.Item value="all" className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
-                          <Select.ItemText>All Warehouses</Select.ItemText>
-                        </Select.Item>
+                        {isAdmin && (
+                          <Select.Item value="all" className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
+                            <Select.ItemText>All Warehouses</Select.ItemText>
+                          </Select.Item>
+                        )}
                         {warehouses.map(w => (
-                          <Select.Item key={w._id} value={w.name} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
-                            <Select.ItemText>{w.name}</Select.ItemText>
+                          <Select.Item
+                            key={w._id}
+                            value={w._id}
+                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
+                            disabled={!isAdmin && w._id !== user.assignedWarehouse} // จำกัด User Role
+                          >
+                            <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
                             <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
                               <CheckIcon />
                             </Select.ItemIndicator>
@@ -502,7 +520,7 @@ const LotManagement = () => {
                               {lot.lotCode}
                             </td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {lot.warehouse}
+                              {warehouses.find(w => w._id === lot.warehouse)?.name || 'N/A'}
                             </td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                               {lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : 'N/A'}

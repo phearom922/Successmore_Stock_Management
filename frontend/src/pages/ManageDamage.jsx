@@ -20,18 +20,14 @@ const ManageDamage = () => {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
-  const [isAdmin] = useState(user.role === 'admin');
+  const isAdmin = user.role === 'admin';
 
-  
-  // ฟิลเตอร์ warehouse เฉพาะ assignedWarehouse ถ้าไม่ใช่ admin (รองรับ assignedWarehouse เป็น object หรือ string)
-  // ฟิลเตอร์ warehouse เฉพาะ assignedWarehouse ถ้าไม่ใช่ admin (รองรับ assignedWarehouse เป็น object, string, หรือ null)
+  // ฟิลเตอร์ warehouse เฉพาะ assignedWarehouse ถ้าไม่ใช่ admin
   let assignedWarehouseId = '';
   if (user.assignedWarehouse) {
-    if (typeof user.assignedWarehouse === 'object' && user.assignedWarehouse._id) {
-      assignedWarehouseId = user.assignedWarehouse._id.toString();
-    } else {
-      assignedWarehouseId = user.assignedWarehouse.toString();
-    }
+    assignedWarehouseId = typeof user.assignedWarehouse === 'object' && user.assignedWarehouse._id
+      ? user.assignedWarehouse._id.toString()
+      : user.assignedWarehouse.toString();
   }
   const visibleWarehouses = isAdmin
     ? warehouses
@@ -68,8 +64,9 @@ const ManageDamage = () => {
       });
       setWarehouses(data);
       if (!isAdmin && user.assignedWarehouse) {
-        setSelectedWarehouse(user.assignedWarehouse.toString());
-        fetchProducts(user.assignedWarehouse.toString());
+        const defaultWarehouseId = assignedWarehouseId;
+        setSelectedWarehouse(defaultWarehouseId);
+        fetchProducts(defaultWarehouseId);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load warehouses');
@@ -79,13 +76,23 @@ const ManageDamage = () => {
     }
   };
 
-  const fetchProducts = async (warehouse) => {
+  const fetchProducts = async (warehouseId) => {
     setIsLoading(true);
     try {
-      const { data } = await axios.get(`http://localhost:3000/api/products?warehouse=${warehouse}`, {
+      if (!warehouseId) {
+        setProducts([]);
+        setSelectedProduct('');
+        setLots([]);
+        setSelectedLot('');
+        setQuantity('');
+        setReason('');
+        setError('');
+        return;
+      }
+      const { data } = await axios.get(`http://localhost:3000/api/products?warehouse=${warehouseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setProducts(data);
+      setProducts(data || []);
       setSelectedProduct('');
       setLots([]);
       setSelectedLot('');
@@ -93,7 +100,9 @@ const ManageDamage = () => {
       setReason('');
       setError('');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to load products');
+      console.error('Error fetching products:', error.response || error);
+      toast.error(error.response?.data?.message || 'Failed to load products. Please ensure the warehouse has associated products.');
+      setProducts([]);
     } finally {
       setIsLoading(false);
     }
@@ -102,16 +111,26 @@ const ManageDamage = () => {
   const fetchLots = async (productId) => {
     setIsLoading(true);
     try {
+      if (!productId || !selectedWarehouse) {
+        setLots([]);
+        setSelectedLot('');
+        setQuantity('');
+        setReason('');
+        setError('');
+        return;
+      }
       const { data } = await axios.get(`http://localhost:3000/api/lots?productId=${productId}&warehouse=${selectedWarehouse}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setLots(data);
+      setLots(data || []);
       setSelectedLot('');
       setQuantity('');
       setReason('');
       setError('');
     } catch (error) {
+      console.error('Error fetching lots:', error.response || error);
       toast.error(error.response?.data?.message || 'Failed to load lots');
+      setLots([]);
     } finally {
       setIsLoading(false);
     }

@@ -398,24 +398,12 @@ router.get('/lots', authMiddleware, async (req, res) => {
     const user = req.user;
     const query = {};
     if (productId) {
-      // แปลง productId เป็น ObjectId
       query.productId = mongoose.Types.ObjectId.isValid(productId) ? new mongoose.Types.ObjectId(productId) : productId;
     }
     if (warehouse) {
-      let warehouseName = warehouse;
-      if (warehouse.length === 24) {
-        const warehouseDoc = await Warehouse.findById(warehouse);
-        if (!warehouseDoc) {
-          return res.status(400).json({ message: 'Invalid warehouse' });
-        }
-        warehouseName = warehouseDoc.name;
-      }
-      query.warehouse = warehouseName;
+      query.warehouse = new mongoose.Types.ObjectId(warehouse); // ใช้ _id แทน name
     } else if (user.role !== 'admin' && user.assignedWarehouse) {
-      const warehouseDoc = await Warehouse.findById(user.assignedWarehouse);
-      if (warehouseDoc) {
-        query.warehouse = warehouseDoc.name;
-      }
+      query.warehouse = new mongoose.Types.ObjectId(user.assignedWarehouse); // ใช้ _id ของ assignedWarehouse
     }
     console.log('Lot query:', query);
     const lots = await Lot.find(query).populate('productId');
@@ -426,7 +414,6 @@ router.get('/lots', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching lots', error: error.message });
   }
 });
-
 // Issue stock
 router.post('/issue', authMiddleware, async (req, res) => {
   try {
@@ -510,16 +497,16 @@ router.get('/products', authMiddleware, async (req, res) => {
     const { warehouse } = req.query;
     let products;
     if (warehouse && warehouse !== 'all') {
-      // แปลง warehouse id เป็น name ก่อน
-      const warehouseDoc = await Warehouse.findById(warehouse);
-      if (!warehouseDoc) {
-        return res.status(400).json({ message: 'Invalid warehouse' });
-      }
-      const lots = await Lot.find({ warehouse: warehouseDoc.name }).select('productId');
+      // ใช้ new mongoose.Types.ObjectId เพื่อแปลง warehouse เป็น ObjectId
+      const warehouseId = new mongoose.Types.ObjectId(warehouse);
+      const lots = await Lot.find({ warehouse: warehouseId }).select('productId').lean();
       const productIds = [...new Set(lots.map(l => l.productId?.toString()).filter(Boolean))];
-      products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description');
+      if (productIds.length === 0) {
+        return res.status(200).json([]); // ไม่มี Product ใน Warehouse นี้
+      }
+      products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
     } else {
-      products = await Product.find().populate('category', 'name description');
+      products = await Product.find().populate('category', 'name description').lean();
     }
     res.json(products);
   } catch (error) {
@@ -1542,7 +1529,7 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
     const { searchQuery, warehouse } = req.query;
 
     const query = {};
-    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
+    if (warehouse && warehouse !== 'all') query.warehouse = new mongoose.Types.ObjectId(warehouse); // ใช้ _id
     if (searchQuery) {
       query.$or = [
         { lotCode: { $regex: searchQuery, $options: 'i' } },
@@ -1551,9 +1538,10 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
       ];
     }
 
-    // ดึงข้อมูลล่าสุดจาก MongoDB
+    // ดึงข้อมูลล่าสุดจาก MongoDB พร้อม populate warehouse
     const lots = await Lot.find(query)
       .populate('productId', 'productCode name')
+      .populate('warehouse', 'name') // เพิ่ม populate สำหรับ warehouse
       .lean();
 
     // ดีบั๊กข้อมูลที่ดึงมา
@@ -1564,34 +1552,34 @@ router.get('/lot-management/export', authMiddleware, async (req, res) => {
         logger.warn('Lot without productId:', lot._id);
         const qtyOnHand = lot.qtyOnHand || 0;
         const damaged = lot.damaged || 0;
-        const total = qtyOnHand + damaged; // คำนวณ Total เป็น qtyOnHand + damaged
+        const total = qtyOnHand + damaged;
         logger.debug('Calculated values for lot without productId:', { lotId: lot._id, total, damaged, qtyOnHand });
         return {
           'Lot Code': lot.lotCode || 'N/A',
           'Code Product': 'N/A',
           'Product Name': 'Unknown',
-          'Warehouse': lot.warehouse || 'N/A',
+          'Warehouse': lot.warehouse?.name || 'N/A', // ใช้ lot.warehouse.name
           'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
           'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
-          'Total': total, // เปลี่ยนจาก 'Total Qty' เป็น 'Total'
-          'Damaged': damaged, // ใช้ damaged ตามที่ระบุ
-          'qtyOnHand': qtyOnHand // เปลี่ยนจาก 'Available Qty' เป็น 'qtyOnHand'
+          'Total': total,
+          'Damaged': damaged,
+          'qtyOnHand': qtyOnHand
         };
       }
       const qtyOnHand = lot.qtyOnHand || 0;
       const damaged = lot.damaged || 0;
-      const total = qtyOnHand + damaged; // คำนวณ Total เป็น qtyOnHand + damaged
+      const total = qtyOnHand + damaged;
       logger.debug('Calculated values for lot:', { lotId: lot._id, total, damaged, qtyOnHand });
       return {
         'Lot Code': lot.lotCode || 'N/A',
         'Code Product': lot.productId.productCode || 'N/A',
         'Product Name': lot.productId.name || 'N/A',
-        'Warehouse': lot.warehouse || 'N/A',
+        'Warehouse': lot.warehouse?.name || 'N/A', // ใช้ lot.warehouse.name
         'Production Date': lot.productionDate ? format(new Date(lot.productionDate), 'dd-MM-yyyy') : 'N/A',
         'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A',
-        'Total': total, // เปลี่ยนจาก 'Total Qty' เป็น 'Total'
-        'Damaged': damaged, // ใช้ damaged ตามที่ระบุ
-        'qtyOnHand': qtyOnHand // เปลี่ยนจาก 'Available Qty' เป็น 'qtyOnHand'
+        'Total': total,
+        'Damaged': damaged,
+        'qtyOnHand': qtyOnHand
       };
     });
 
