@@ -20,30 +20,28 @@ const ReceiveHistory = () => {
   const [limit] = useState(25);
   const [startDate, setStartDate] = useState(startOfDay(new Date())); // เริ่มต้นวันนี้ 00:00 (UTC)
   const [endDate, setEndDate] = useState(endOfDay(new Date())); // สิ้นสุดวันนี้ 23:59 (UTC)
-  const [warehouse, setWarehouse] = useState('');
+  const [warehouseId, setWarehouseId] = useState(''); // ใช้ _id
   const [searchQuery, setSearchQuery] = useState('');
   const [userQuery, setUserQuery] = useState('');
   const [warehouses, setWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin] = useState(localStorage.getItem('token')
-    ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).role === 'admin'
-    : false);
+  const token = localStorage.getItem('token');
+  const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
+  const isAdmin = user.role === 'admin';
 
   useEffect(() => {
     fetchWarehouses();
-    // เรียก fetchTransactions เฉพาะเมื่อโหลดหน้าใหม่หรือเปลี่ยนหน้า/วันที่/warehouse
     fetchTransactions();
-  }, [page, startDate, endDate, warehouse]); // ลบ searchQuery และ userQuery ออกจาก dependency
+  }, [page, startDate, endDate, warehouseId]);
 
   const fetchWarehouses = async () => {
     try {
-      const token = localStorage.getItem('token');
       const { data } = await axios.get('http://localhost:3000/api/warehouses', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
-      if (!isAdmin && data.length > 0) {
-        setWarehouse(data[0].name);
+      if (!isAdmin && user.assignedWarehouse) {
+        setWarehouseId(user.assignedWarehouse); // ใช้ assignedWarehouse สำหรับ User Role
       }
     } catch (error) {
       console.error('Error fetching warehouses:', error);
@@ -53,13 +51,12 @@ const ReceiveHistory = () => {
   const fetchTransactions = async (params = {}) => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
       const start = startDate ? format(toDate(startOfDay(startDate)), 'dd-MM-yyyy') : '';
       const end = endDate ? format(toDate(endOfDay(endDate)), 'dd-MM-yyyy') : '';
       const queryParams = {
         startDate: start,
         endDate: end,
-        warehouse,
+        warehouse: isAdmin ? (params.warehouse || warehouseId) : user.assignedWarehouse || '', // จำกัด User Role
         searchQuery: params.searchQuery || searchQuery,
         userQuery: params.userQuery || userQuery,
         page,
@@ -71,15 +68,7 @@ const ReceiveHistory = () => {
         params: queryParams
       });
       setTransactions(data.data || []);
-      // Fix: use data.total from backend if present, otherwise fallback to data.data.length
-      // If backend returns only current page's count, try to use data.pages and limit
-      if (typeof data.total === 'number') {
-        setTotal(data.total);
-      } else if (typeof data.pages === 'number' && data.pages > 1) {
-        setTotal(data.pages * limit);
-      } else {
-        setTotal((data.data || []).length);
-      }
+      setTotal(data.total || (data.pages ? data.pages * limit : (data.data || []).length));
     } catch (error) {
       console.error('Error fetching transactions:', error.response || error);
       setTransactions([]); // รีเซ็ตข้อมูลถ้ามี error
@@ -94,13 +83,12 @@ const ReceiveHistory = () => {
 
   const handleExport = async () => {
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.get('http://localhost:3000/api/receive-history/export', {
         headers: { Authorization: `Bearer ${token}` },
         params: {
           startDate: startDate ? format(startOfDay(startDate), 'dd-MM-yyyy') : '',
           endDate: endDate ? format(endOfDay(endDate), 'dd-MM-yyyy') : '',
-          warehouse,
+          warehouse: isAdmin ? (warehouseId || '') : user.assignedWarehouse || '', // จำกัด User Role
           searchQuery,
           userQuery
         },
@@ -123,21 +111,18 @@ const ReceiveHistory = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     setPage(1);
-    fetchTransactions({ searchQuery, userQuery }); // เรียก fetchTransactions ด้วยพารามิเตอร์จาก input
+    fetchTransactions({ warehouseId, searchQuery, userQuery });
   };
 
   const clearFilters = () => {
     setStartDate(startOfDay(new Date()));
     setEndDate(endOfDay(new Date()));
-    setWarehouse('');
+    setWarehouseId(isAdmin ? '' : user.assignedWarehouse || ''); // รีเซ็ตตาม Role
     setSearchQuery('');
     setUserQuery('');
     setPage(1);
-    fetchTransactions(); // รีเฟรชข้อมูลหลังเคลียร์
+    fetchTransactions();
   };
-
-console.log(transactions)
-
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -163,10 +148,9 @@ console.log(transactions)
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <form onSubmit={handleSearch}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-              <div className="relative ">
+              <div className="relative">
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
@@ -205,35 +189,37 @@ console.log(transactions)
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
                 <Select
-                  value={warehouse}
-                  onValueChange={setWarehouse}
+                  value={warehouseId || "all"}
+                  onValueChange={(val) => setWarehouseId(val === "all" ? "" : val)}
                   disabled={isLoading}
                 >
-                  <SelectTrigger className="w-full pl-3 pr-1 py- border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                  <SelectTrigger className="w-full pl-3 pr-1 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                     <SelectValue placeholder="All Warehouses" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Warehouses</SelectItem>
-                    {warehouses.map((w) => (
-                      <SelectItem key={w._id} value={w.name}>
-                        {w.name}
-                      </SelectItem>
-                    ))}
+                    {warehouses
+                      .filter((w) => !!w._id)
+                      .map((w) => (
+                        <SelectItem key={w._id} value={w._id}>
+                          {w.name} ({w.warehouseCode})
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
             )}
-            {!isAdmin && warehouse && (
+            {!isAdmin && warehouseId && (
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
                 <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-200">
-                  {warehouse}
+                  {warehouses.find(w => w._id === warehouseId)?.name || 'N/A'}
                 </div>
               </div>
             )}
 
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1"></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
               <div className="relative">
                 <input
                   type="text"
@@ -248,7 +234,7 @@ console.log(transactions)
             </div>
 
             <div className="space-y-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1"></label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
               <div className="relative">
                 <input
                   type="text"
@@ -271,7 +257,7 @@ console.log(transactions)
                 <FaSearch className="mr-2" />
                 Search
               </button>
-              {(startDate || endDate || warehouse || searchQuery || userQuery) && (
+              {(startDate || endDate || warehouseId || searchQuery || userQuery) && (
                 <button
                   type="button"
                   onClick={clearFilters}
@@ -364,7 +350,7 @@ console.log(transactions)
                   <tr>
                     <td colSpan="12" className="px-6 py-8 text-center">
                       <div className="text-gray-500">No transactions found</div>
-                      {(startDate || endDate || warehouse || searchQuery || userQuery) && (
+                      {(startDate || endDate || warehouseId || searchQuery || userQuery) && (
                         <button
                           onClick={clearFilters}
                           className="mt-2 text-sm text-blue-600 hover:text-blue-800"

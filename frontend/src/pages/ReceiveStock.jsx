@@ -12,7 +12,7 @@ import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 
 const ReceiveStock = () => {
-  const [selectedWarehouse, setSelectedWarehouse] = useState('');
+  const [selectedWarehouseId, setSelectedWarehouseId] = useState(''); // ใช้ _id
   const [selectedSupplier, setSelectedSupplier] = useState('');
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -26,7 +26,7 @@ const ReceiveStock = () => {
     qtyPerBox: '',
     productionDate: null,
     expDate: null,
-    warehouse: '',
+    warehouse: '', // ใช้ _id
     supplierId: ''
   });
   const [addedLots, setAddedLots] = useState([]);
@@ -70,16 +70,16 @@ const ReceiveStock = () => {
         setWarehouses(warehousesRes.data || []);
         setSuppliers(suppliersRes.data || []);
 
-        const defaultWarehouse = user.role !== 'admin' && user.warehouse && warehousesRes.data.some(w => w.name === user.warehouse)
-          ? user.warehouse
-          : warehousesRes.data[0]?.name || '';
+        // ตั้งค่า Warehouse ตาม assignedWarehouse ของ User
+        const assignedWarehouseId = user.role === 'admin' ? '' : user.assignedWarehouse || '';
+        const defaultWarehouseId = assignedWarehouseId || (warehousesRes.data[0]?._id || '');
         const defaultSupplier = suppliersRes.data[0]?._id || '';
 
-        setSelectedWarehouse(defaultWarehouse);
+        setSelectedWarehouseId(defaultWarehouseId);
         setSelectedSupplier(defaultSupplier);
         setCurrentLot(prev => ({
           ...prev,
-          warehouse: defaultWarehouse,
+          warehouse: defaultWarehouseId,
           supplierId: defaultSupplier
         }));
       } catch (error) {
@@ -95,7 +95,7 @@ const ReceiveStock = () => {
       }
     };
     fetchData();
-  }, [token, navigate, user.role, user.warehouse]);
+  }, [token, navigate, user.role, user.assignedWarehouse]); // เพิ่ม user.assignedWarehouse ใน dependency
 
   const updateCurrentLot = (field, value) => {
     const updatedLot = { ...currentLot, [field]: value };
@@ -123,25 +123,21 @@ const ReceiveStock = () => {
     const newLot = {
       ...currentLot,
       quantity: computedQuantity,
-      warehouse: selectedWarehouse,
+      warehouse: selectedWarehouseId, // ใช้ _id
       supplierId: selectedSupplier
     };
 
-    // ตรวจสอบและอัปเดตหรือเพิ่มรายการ
     setAddedLots(prevLots => {
       const existingIndex = prevLots.findIndex(lot => lot.lotCode === currentLot.lotCode);
       if (existingIndex !== -1) {
-        // อัปเดตข้อมูลในตำแหน่งเดิม
         const updatedLots = [...prevLots];
         updatedLots[existingIndex] = newLot;
         return updatedLots;
       } else {
-        // เพิ่มรายการใหม่
         return [...prevLots, newLot];
       }
     });
 
-    // รีเซ็ต currentLot
     setCurrentLot({
       productId: '',
       lotCode: '',
@@ -150,7 +146,7 @@ const ReceiveStock = () => {
       qtyPerBox: '',
       productionDate: null,
       expDate: null,
-      warehouse: selectedWarehouse,
+      warehouse: selectedWarehouseId, // ใช้ _id
       supplierId: selectedSupplier
     });
   };
@@ -171,18 +167,12 @@ const ReceiveStock = () => {
       toast.error('Please login first');
       return;
     }
-    const warehouseValid = warehouses.some(w => w.name === selectedWarehouse || w._id === selectedWarehouse);
+    const warehouseValid = warehouses.some(w => w._id === selectedWarehouseId);
     const supplierValid = suppliers.some(s => s._id === selectedSupplier);
     if (!warehouseValid || !supplierValid || addedLots.length === 0) {
       toast.error(`Please ensure ${!warehouseValid ? 'Warehouse' : ''}${!warehouseValid && !supplierValid ? ' and ' : ''}${!supplierValid ? 'Supplier' : ''} are valid and add at least one lot`);
       return;
     }
-
-    // Map warehouse id to name for all lots
-    const getWarehouseName = (val) => {
-      const found = warehouses.find(w => w._id === val || w.name === val);
-      return found ? found.name : val;
-    };
 
     // Validate all lots before submission
     for (const lot of addedLots) {
@@ -215,7 +205,7 @@ const ReceiveStock = () => {
           qtyPerBox: Number(lot.qtyPerBox),
           productionDate: lot.productionDate.toISOString(),
           expDate: lot.expDate.toISOString(),
-          warehouse: getWarehouseName(lot.warehouse),
+          warehouse: lot.warehouse, // ใช้ _id
           supplierId: lot.supplierId
         }))
       };
@@ -237,13 +227,13 @@ const ReceiveStock = () => {
         qtyPerBox: '',
         productionDate: null,
         expDate: null,
-        warehouse: selectedWarehouse,
+        warehouse: selectedWarehouseId,
         supplierId: selectedSupplier
       });
     } catch (error) {
       console.error('Error receiving stock:', error.response || error);
       const errorMessage = error.response?.data?.message || 'Failed to receive stock. Please try again.';
-      if (typeof toast === 'function' && toast.error) toast.error(errorMessage); // ตรวจสอบ toast และ method
+      toast.error(errorMessage);
       if (error.response?.status === 401) {
         navigate('/login');
       }
@@ -302,21 +292,21 @@ const ReceiveStock = () => {
               </Tabs>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <div >
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
                 <Select.Root
-                  value={selectedWarehouse}
+                  value={selectedWarehouseId}
                   onValueChange={(value) => {
-                    setSelectedWarehouse(value);
+                    setSelectedWarehouseId(value);
                     setCurrentLot(prev => ({ ...prev, warehouse: value }));
                   }}
-                  disabled={user.role !== 'admin' || isLoading}
+                  disabled={user.role !== 'admin' || isLoading} // จำกัดการเลือกสำหรับ User Role
                 >
                   <Select.Trigger
                     className="mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
                   >
                     <Select.Value placeholder="Select warehouse" />
-                    <Select.Icon className="absolute right-3 top-1/2  transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
@@ -330,8 +320,9 @@ const ReceiveStock = () => {
                         {warehouses.map(w => (
                           <Select.Item
                             key={w._id}
-                            value={w.name}
+                            value={w._id}
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
+                            disabled={user.role !== 'admin' && w._id !== user.assignedWarehouse} // จำกัดเฉพาะ assignedWarehouse
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
                             <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
@@ -362,7 +353,7 @@ const ReceiveStock = () => {
                     className="mt-1 block relative w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
                   >
                     <Select.Value placeholder="Select supplier" />
-                    <Select.Icon className="absolute right-3 top-1/2  transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>

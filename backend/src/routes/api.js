@@ -20,7 +20,7 @@ const Notification = require('../models/Notification');
 const { format, parse, startOfDay, endOfDay, differenceInDays } = require('date-fns');
 const DamagedAuditTrail = require('../models/DamagedAuditTrail');
 const Setting = require('../models/Settings');
-const updateUserSchema = User.updateUserSchema; // ใช้จาก User.js
+const updateUserSchema = User.updateUserSchema;
 
 
 // Validation Schemas
@@ -34,7 +34,7 @@ const receiveSchema = z.object({
       quantity: z.number().positive(),
       boxCount: z.number().positive(),
       qtyPerBox: z.number().positive(),
-      warehouse: z.string().min(1),
+      warehouse: z.string().min(1), // รับ _id
       supplierId: z.string().min(1),
     }).refine((data) => data.quantity === data.boxCount * data.qtyPerBox, {
       message: 'Quantity must equal Box Count * Quantity per Box',
@@ -51,6 +51,19 @@ const warehouseSchema = z.object({
   status: z.enum(['Active', 'Inactive']).optional(),
   assignedUsers: z.array(z.string()).optional(), // เปลี่ยนเป็น Array
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const userSchema = z.object({
   username: z.string().min(1),
@@ -75,6 +88,9 @@ const userSchema = z.object({
   path: ['assignedWarehouse'],
 });
 
+
+
+
 const lotSchema = z.object({
   lotCode: z.string().min(1),
   productId: z.string().min(1),
@@ -84,14 +100,14 @@ const lotSchema = z.object({
   boxCount: z.number().positive(),
   qtyPerBox: z.number().positive(),
   qtyOnHand: z.number().positive(),
-  warehouse: z.string().min(1),
+  warehouse: z.string().min(1), // รับ _id
   supplierId: z.string().min(1),
 });
 
 const issueSchema = z.object({
   productId: z.string().min(1),
   quantity: z.number().positive(),
-  warehouse: z.string().min(1),
+  warehouse: z.string().min(1), // รับ _id
   issueType: z.enum(['normal', 'expired', 'waste']),
   lotId: z.string().optional(),
 });
@@ -1140,21 +1156,27 @@ router.post('/receive', authMiddleware, async (req, res) => {
 
     const { lots } = result.data;
     const userId = req.user._id;
-    // Use warehouseCode for transaction counter (assume single warehouse for now)
-    const warehouseCode = 'PNH-WH-01';
-    // Generate a unique transactionNumber for each lot (avoid duplicate key error)
-    const transactionNumbers = [];
-    const transactions = await Promise.all(lots.map(async (lot, idx) => {
-      // Increase counter for each lot
+
+    const transactions = await Promise.all(lots.map(async (lot) => {
+      // ตรวจสอบและแปลง warehouse เป็น _id
+      const warehouse = await Warehouse.findOne({ _id: lot.warehouse });
+      if (!warehouse) {
+        return res.status(400).json({ message: `Warehouse ${lot.warehouse} not found` });
+      }
+      const warehouseCode = warehouse.warehouseCode;
+
+      // เพิ่ม Transaction Counter ตาม Warehouse
       const transactionCounter = await TransactionCounter.findOneAndUpdate(
         { warehouseCode },
         { $inc: { sequence: 1 } },
         { new: true, upsert: true }
       );
+      if (!transactionCounter || transactionCounter.sequence === undefined) {
+        throw new Error(`Failed to generate sequence for warehouse ${warehouseCode}`);
+      }
       const transactionNumber = `${warehouseCode}-${format(new Date(), 'yyyyMMdd')}-${String(transactionCounter.sequence).padStart(3, '0')}`;
-      transactionNumbers.push(transactionNumber);
 
-      // First, ensure the Lot exists and get its _id
+      // ตรวจสอบ Lot เดิม
       let existingLot = await Lot.findOne({ lotCode: lot.lotCode });
       let lotId;
       if (existingLot) {
@@ -1171,7 +1193,7 @@ router.post('/receive', authMiddleware, async (req, res) => {
           boxCount: lot.boxCount,
           qtyPerBox: lot.qtyPerBox,
           qtyOnHand: lot.quantity,
-          warehouse: lot.warehouse,
+          warehouse: lot.warehouse, // ใช้ _id
           supplierId: lot.supplierId,
           transactionNumber,
           status: 'active',
@@ -1179,7 +1201,7 @@ router.post('/receive', authMiddleware, async (req, res) => {
         lotId = newLot._id;
       }
 
-      // Now create the StockTransaction with the correct lotId
+      // สร้าง Stock Transaction
       const transaction = new StockTransaction({
         transactionNumber,
         userId,
@@ -1191,15 +1213,16 @@ router.post('/receive', authMiddleware, async (req, res) => {
         qtyPerBox: lot.qtyPerBox,
         productionDate: new Date(lot.productionDate),
         expDate: new Date(lot.expDate),
-        warehouse: lot.warehouse,
+        warehouse: lot.warehouse, // ใช้ _id
         type: 'receive',
         status: 'completed',
       });
       await transaction.save();
+
       return transaction;
     }));
 
-    // Use the first transactionNumber for summary/logging
+    const transactionNumbers = transactions.map(t => t.transactionNumber);
     const summaryTransactionNumber = transactionNumbers[0];
 
     await UserTransaction.create({
@@ -1282,10 +1305,17 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
       };
     }
 
-    if (req.user.role !== 'admin' && req.user.warehouse) {
-      query.warehouse = req.user.warehouse;
-    } else if (warehouse && warehouse !== 'all') {
-      query.warehouse = warehouse;
+    if (req.user.role !== 'admin' && req.user.assignedWarehouse) {
+      query.warehouse = req.user.assignedWarehouse; // ใช้ _id
+    } else if (warehouse) { // เปลี่ยนจาก warehouse !== '' เป็น warehouse (รวมกรณีว่าง)
+      if (warehouse !== '') { // ถ้าไม่ว่าง ตรวจสอบ _id
+        const warehouseDoc = await Warehouse.findOne({ _id: warehouse });
+        if (warehouseDoc) {
+          query.warehouse = warehouseDoc._id;
+        } else {
+          return res.status(400).json({ message: 'Warehouse not found' });
+        }
+      } // ถ้า warehouse เป็น '' จะข้ามการกรอง warehouse
     }
 
     if (searchQuery) {
@@ -1299,22 +1329,21 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
     }
 
     if (userQuery) {
-      // แก้ไข: ค้นหา userId จาก username ก่อน แล้วใช้ userId ใน query
       const user = await User.findOne({ username: { $regex: userQuery, $options: 'i' } });
       if (user) {
         query.userId = user._id;
       } else {
-        // ถ้าไม่เจอ user ให้คืนผลลัพธ์ว่างทันที
-        return res.json({ data: [], total: 0, page, pages: 0 });
+        return res.status(400).json({ message: 'User not found' });
       }
     }
 
-    console.log('Export query:', query); // ดีบั๊ก query
+    console.log('Export query:', query);
     const transactions = await StockTransaction.find(query)
       .populate('userId', 'username lastName')
       .populate('supplierId', 'name')
       .populate('productId', 'name productCode')
       .populate('lotId', 'lotCode productionDate expDate')
+      .populate('warehouse', 'name')
       .lean();
 
     if (!transactions || transactions.length === 0) {
@@ -1331,7 +1360,7 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
       'Product': trans.productId?.name || 'N/A',
       'Lot Code': trans.lotId?.lotCode || 'N/A',
       'Qty': trans.quantity || 0,
-      'Warehouse': trans.warehouse || 'N/A',
+      'Warehouse': trans.warehouse?.name || 'N/A',
       'Status': trans.status || 'N/A',
       'Production Date': trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A',
       'Expiration Date': trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A',
@@ -1617,15 +1646,14 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
       };
     }
 
-    if (warehouse && warehouse !== 'all') {
-      const warehouseDoc = await Warehouse.findOne({ name: warehouse }); // ค้นหา Warehouse จากชื่อ
+    if (warehouse && warehouse !== '') { // เปลี่ยนจาก 'all' เป็น ''
+      const warehouseDoc = await Warehouse.findOne({ _id: warehouse }); // ใช้ _id
       if (warehouseDoc) {
-        query.warehouse = warehouseDoc._id; // ใช้ ObjectId หลัง Migration
+        query.warehouse = warehouseDoc._id;
       } else {
         return res.status(400).json({ message: 'Warehouse not found' });
       }
     } else if (req.user.role !== 'admin' && req.user.assignedWarehouse) {
-      // สำหรับ User Role ทั่วไป ใช้ assignedWarehouse
       query.warehouse = req.user.assignedWarehouse;
     }
 
@@ -1639,12 +1667,10 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
     }
 
     if (userQuery) {
-      // แก้ไข: ค้นหา userId จาก username ก่อน แล้วใช้ userId ใน query
       const user = await User.findOne({ username: { $regex: userQuery, $options: 'i' } });
       if (user) {
         query.userId = user._id;
       } else {
-        // ถ้าไม่เจอ user ให้คืนผลลัพธ์ว่างทันที
         return res.json({ data: [], total: 0, page, pages: 0 });
       }
     }
@@ -1668,26 +1694,22 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
       StockTransaction.countDocuments(query),
     ]);
 
-    // กรอง transactions ที่ userId populate ไม่สำเร็จ
     const validTransactions = transactions.filter(trans => trans.userId && trans.userId.username);
     if (transactions.length > validTransactions.length) {
       console.warn('Some transactions have invalid userId data, filtered out:', transactions.length - validTransactions.length);
     }
 
-    // แปลง warehouse object กลับเป็นชื่อสำหรับ response
     const formattedTransactions = validTransactions.map(trans => ({
       ...trans,
       warehouse: trans.warehouse ? trans.warehouse.name : null
     }));
 
-    // Always return total = จำนวนทั้งหมดในฐานข้อมูล (ไม่ใช่แค่ validTransactions)
     res.json({
       data: formattedTransactions,
       total,
       page,
       pages: Math.ceil(total / limit),
     });
-
   } catch (error) {
     logger.error('Error fetching receive history', {
       message: error.message,

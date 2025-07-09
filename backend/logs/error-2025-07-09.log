@@ -166,3 +166,65 @@ TokenExpiredError: jwt expired
     at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
     at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
     at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-09 13:49:00 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-09 13:55:30 [error]: Error fetching receive history Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:1641:28
+2025-07-09 13:55:37 [error]: Error fetching receive history Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:1641:28
+2025-07-09 13:56:45 [error]: Error fetching receive history Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+CastError: Cast to ObjectId failed for value "Kampong Cham Warehouse" (type string) at path "_id" for model "Warehouse"
+    at SchemaObjectId.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schema\objectId.js:251:11)
+    at SchemaType.applySetters (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1255:12)
+    at SchemaType.castForQuery (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1673:17)
+    at cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\cast.js:390:32)
+    at Query.cast (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:5055:12)
+    at Query._castConditions (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2351:10)
+    at model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2674:8)
+    at model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:80)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\routes\api.js:1641:28
+2025-07-09 13:57:22 [error]: Error receiving stock: E11000 duplicate key error collection: stock-management.stocktransactions index: transactionNumber_1 dup key: { transactionNumber: "KCM-WH-01-20250709-undefined" }
+MongoServerError: E11000 duplicate key error collection: stock-management.stocktransactions index: transactionNumber_1 dup key: { transactionNumber: "KCM-WH-01-20250709-undefined" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
+2025-07-09 14:24:22 [error]: Error receiving stock: E11000 duplicate key error collection: stock-management.stocktransactions index: transactionNumber_1 dup key: { transactionNumber: "KCM-WH-01-20250709-undefined" }
+MongoServerError: E11000 duplicate key error collection: stock-management.stocktransactions index: transactionNumber_1 dup key: { transactionNumber: "KCM-WH-01-20250709-undefined" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
