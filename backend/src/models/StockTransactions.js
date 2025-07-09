@@ -11,8 +11,8 @@ const stockTransactionSchema = new mongoose.Schema({
   qtyPerBox: { type: Number, required: true },
   productionDate: { type: Date, required: true },
   expDate: { type: Date, required: true },
-  warehouse: { type: String, required: true },
-  type: { type: String, enum: ['receive', 'issue', 'adjust'], required: true }, // เปลี่ยนจาก action เป็น type
+  warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true }, // เปลี่ยนเป็น ObjectId
+  type: { type: String, enum: ['receive', 'issue', 'adjust'], required: true },
   auditTrail: { type: mongoose.Schema.Types.ObjectId, ref: 'UserTransaction' },
   timestamp: { type: Date, default: Date.now },
   status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'completed' }

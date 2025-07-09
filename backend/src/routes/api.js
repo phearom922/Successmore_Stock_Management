@@ -43,12 +43,13 @@ const receiveSchema = z.object({
   ),
 });
 
+
 const warehouseSchema = z.object({
   warehouseCode: z.string().min(1),
   name: z.string().min(1),
   branch: z.string().min(1),
   status: z.enum(['Active', 'Inactive']).optional(),
-  assignedUser: z.string().optional(), // อาจต้องปรับเป็น Array ต่อไป
+  assignedUsers: z.array(z.string()).optional(), // เปลี่ยนเป็น Array
 });
 
 const userSchema = z.object({
@@ -56,7 +57,7 @@ const userSchema = z.object({
   lastName: z.string().min(1),
   password: z.string().min(6).optional(),
   role: z.enum(['admin', 'user']),
-  assignedWarehouse: z.string().min(1), // บังคับให้ระบุ Warehouse
+  assignedWarehouse: z.string().optional(), // เปลี่ยนเป็น Optional จริงๆ
   permissions: z.array(
     z.object({
       feature: z.enum(['lotManagement', 'manageDamage', 'category', 'products']),
@@ -64,6 +65,14 @@ const userSchema = z.object({
     })
   ).optional(),
   isActive: z.boolean().optional(),
+}).refine((data) => {
+  if (data.role === 'user' && !data.assignedWarehouse) {
+    return false; // User role ต้องมี assignedWarehouse ถ้าไม่ใช่ Admin
+  }
+  return true;
+}, {
+  message: 'User role must have an assigned warehouse',
+  path: ['assignedWarehouse'],
 });
 
 const lotSchema = z.object({
@@ -94,7 +103,6 @@ const supplierSchema = z.object({
 });
 
 // Login Endpoint
-// Login Endpoint
 router.post('/login', async (req, res) => {
   try {
     logger.info('Login attempt:', req.body.username);
@@ -112,9 +120,18 @@ router.post('/login', async (req, res) => {
       logger.warn('User is disabled:', { username });
       return res.status(403).json({ message: 'User is disabled' });
     }
+
+    // ตั้งค่าเริ่มต้น assignedWarehouse เป็น PNH-WH-01 ถ้าไม่มี
     if (!user.assignedWarehouse) {
-      logger.warn('User not assigned to a warehouse:', { username, userId: user._id });
-      return res.status(400).json({ message: 'User must be assigned to a warehouse' });
+      const defaultWarehouse = await Warehouse.findOne({ warehouseCode: 'PNH-WH-01' });
+      if (defaultWarehouse) {
+        await User.findByIdAndUpdate(user._id, { assignedWarehouse: defaultWarehouse._id }, { runValidators: true });
+        user.assignedWarehouse = defaultWarehouse._id;
+        logger.info('Assigned default warehouse PNH-WH-01 to user:', { username, userId: user._id });
+      } else {
+        logger.error('Default warehouse PNH-WH-01 not found');
+        return res.status(500).json({ message: 'Default warehouse not found' });
+      }
     }
 
     // ดึงข้อมูล warehouse ด้วย ObjectId
@@ -146,32 +163,19 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
-
-
-
-// Create User (ปรับให้ใช้ ObjectId)
+// Create User
 router.post('/users', authMiddleware, async (req, res) => {
   try {
-    logger.info('Creating user, payload:', req.body, 'user:', req.user);
+    console.log('Creating user:', req.body);
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can create users' });
     }
     const data = userSchema.parse(req.body);
     const { username, lastName, password, role, assignedWarehouse, permissions, isActive } = data;
 
-    if (!password) {
-      return res.status(400).json({ message: 'Password is required for new users' });
-    }
-
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
+    const exists = await User.findOne({ username });
+    if (exists) {
       return res.status(400).json({ message: 'Username already exists' });
-    }
-
-    const warehouse = await Warehouse.findById(assignedWarehouse); // ใช้ ObjectId
-    if (!warehouse) {
-      return res.status(400).json({ message: 'Warehouse not found' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -180,14 +184,22 @@ router.post('/users', authMiddleware, async (req, res) => {
       lastName,
       password: hashedPassword,
       role,
-      assignedWarehouse: warehouse._id, // ใช้ ObjectId
-      permissions: permissions || [],
+      assignedWarehouse: assignedWarehouse || (await Warehouse.findOne({ warehouseCode: 'PNH-WH-01' })?._id), // ตั้งค่าเริ่มต้น PNH-WH-01
+      permissions,
       isActive: isActive !== undefined ? isActive : true,
     });
 
-    res.json({ message: 'User created successfully', user: { ...user.toObject(), password: undefined } });
+    // อัปเดต Warehouse ถ้ามี assignedWarehouse
+    if (user.assignedWarehouse) {
+      await Warehouse.updateOne(
+        { _id: user.assignedWarehouse },
+        { $addToSet: { assignedUsers: user._id }, $set: { hasAssignedUserHistory: true } }
+      );
+    }
+
+    res.status(201).json({ message: 'User created successfully', user });
   } catch (error) {
-    logger.error('Error creating user:', { error: error.message, stack: error.stack });
+    console.error('Error creating user:', error);
     res.status(error instanceof z.ZodError ? 400 : 500).json({
       message: error instanceof z.ZodError ? 'Invalid input' : 'Error creating user',
       error: error.message
@@ -195,17 +207,14 @@ router.post('/users', authMiddleware, async (req, res) => {
   }
 });
 
-
-
-
 // Update User
 router.put('/users/:id', authMiddleware, async (req, res) => {
   try {
-    logger.info('Updating user:', req.params.id, 'payload:', req.body);
+    console.log('Updating user:', req.params.id, req.body);
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can update users' });
     }
-    const data = updateUserSchema.parse(req.body); // ใช้ schema ที่อนุญาต optional และ passthrough
+    const data = userSchema.parse(req.body);
     const { username, lastName, password, role, assignedWarehouse, permissions, isActive } = data;
 
     const user = await User.findById(req.params.id);
@@ -213,39 +222,48 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // ตรวจสอบการเปลี่ยน username
-    if (username && username !== user.username) {
-      const existingUser = await User.findOne({ username, _id: { $ne: user._id } });
-      if (existingUser) {
-        return res.status(400).json({ message: 'Username already exists' });
+    const exists = await User.findOne({ username, _id: { $ne: user._id } });
+    if (exists) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    user.username = username;
+    user.lastName = lastName;
+    user.role = role;
+    user.permissions = permissions || user.permissions;
+    user.isActive = isActive !== undefined ? isActive : user.isActive;
+
+    // อัปเดต assignedWarehouse
+    if (assignedWarehouse && assignedWarehouse !== user.assignedWarehouse) {
+      // ลบ User ออกจาก Warehouse เดิม
+      if (user.assignedWarehouse) {
+        await Warehouse.updateOne(
+          { _id: user.assignedWarehouse },
+          { $pull: { assignedUsers: user._id } }
+        );
       }
-      user.username = username;
+      // เพิ่ม User ไปยัง Warehouse ใหม่
+      await Warehouse.updateOne(
+        { _id: assignedWarehouse },
+        { $addToSet: { assignedUsers: user._id }, $set: { hasAssignedUserHistory: true } }
+      );
+      user.assignedWarehouse = assignedWarehouse;
+    } else if (!assignedWarehouse && user.assignedWarehouse) {
+      await Warehouse.updateOne(
+        { _id: user.assignedWarehouse },
+        { $pull: { assignedUsers: user._id } }
+      );
+      user.assignedWarehouse = null;
     }
 
-    // อัปเดตฟิลด์อื่นๆ ถ้ามี
-    if (lastName) user.lastName = lastName;
-    if (password) user.password = await bcrypt.hash(password, 10); // อัปเดต password เฉพาะถ้ามี
-    if (role) user.role = role;
-    if (assignedWarehouse && assignedWarehouse !== user.assignedWarehouse.toString()) {
-      const warehouse = await Warehouse.findOne({ name: assignedWarehouse.split('(')[0].trim() }); // ดึงจากชื่อ
-      if (!warehouse) {
-        return res.status(400).json({ message: 'Warehouse not found' });
-      }
-      user.assignedWarehouse = warehouse._id; // ตั้งค่าเป็น ObjectId
-    }
-    if (permissions) user.permissions = permissions;
+    await user.save();
 
-    // อัปเดต isActive โดยไม่บังคับ permissions
-    if (isActive !== undefined) {
-      user.isActive = isActive;
-    }
-
-    const updated = await user.save();
-    logger.info('User updated successfully:', { userId: user._id });
-
-    res.json({ message: 'User updated successfully', user: { ...updated.toObject(), password: undefined } });
+    res.json({ message: 'User updated successfully', user });
   } catch (error) {
-    logger.error('Error updating user:', { error: error.message, stack: error.stack, payload: req.body });
+    console.error('Error updating user:', error);
     res.status(error instanceof z.ZodError ? 400 : 500).json({
       message: error instanceof z.ZodError ? 'Invalid input' : 'Error updating user',
       error: error.message
@@ -253,22 +271,38 @@ router.put('/users/:id', authMiddleware, async (req, res) => {
   }
 });
 
+
 // Delete User
 router.delete('/users/:id', authMiddleware, async (req, res) => {
   try {
-    logger.info('Deleting user:', req.params.id);
+    console.log('Deleting user:', req.params.id);
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can delete users' });
     }
+
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    // ตรวจสอบว่า User ยังอยู่ใน assignedUsers ของ Warehouse
+    if (user.assignedWarehouse) {
+      const warehouse = await Warehouse.findById(user.assignedWarehouse);
+      if (warehouse && warehouse.assignedUsers.includes(user._id)) {
+        return res.status(400).json({ message: 'Cannot delete user. Please remove from Warehouse Management first.' });
+      }
+    }
+
+    // ลบ User
     await User.findByIdAndDelete(req.params.id);
+
     res.json({ message: 'User deleted successfully' });
   } catch (error) {
-    logger.error('Error deleting user:', { error: error.message, stack: error.stack });
-    res.status(500).json({ message: 'Error deleting user', error: error.message });
+    console.error('Error deleting user:', error);
+    res.status(500).json({
+      message: 'Error deleting user',
+      error: error.message
+    });
   }
 });
 
@@ -294,8 +328,6 @@ router.get('/users', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching users', error: error.message });
   }
 });
-
-
 
 
 // Create Lot
@@ -638,24 +670,24 @@ router.post('/warehouses', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Only admins can create warehouses' });
     }
     const data = warehouseSchema.parse(req.body);
-    const { warehouseCode, name, branch, status, assignedUser } = data;
+    const { warehouseCode, name, branch, status, assignedUsers } = data;
 
     const exists = await Warehouse.findOne({ warehouseCode });
     if (exists) {
       return res.status(400).json({ message: 'Warehouse code already exists' });
     }
 
-    let validAssignedUser = null;
-    if (assignedUser) {
-      if (!mongoose.Types.ObjectId.isValid(assignedUser)) {
-        return res.status(400).json({ message: 'Invalid assigned user ID format' });
-      }
-      validAssignedUser = await User.findById(assignedUser);
-      if (!validAssignedUser) {
-        return res.status(400).json({ message: 'Invalid assigned user' });
-      }
-      if (validAssignedUser.assignedWarehouse) {
-        return res.status(400).json({ message: 'User is already assigned to another warehouse' });
+    let validAssignedUsers = [];
+    if (assignedUsers && assignedUsers.length > 0) {
+      for (const userId of assignedUsers) {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ message: `Invalid assigned user ID format: ${userId}` });
+        }
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(400).json({ message: `Invalid assigned user: ${userId}` });
+        }
+        validAssignedUsers.push(user._id);
       }
     }
 
@@ -664,18 +696,20 @@ router.post('/warehouses', authMiddleware, async (req, res) => {
       name,
       branch,
       status: status || 'Active',
-      assignedUser: validAssignedUser ? validAssignedUser._id : null,
-      hasAssignedUserHistory: !!validAssignedUser,
+      assignedUsers: validAssignedUsers,
+      hasAssignedUserHistory: validAssignedUsers.length > 0,
     });
 
-    if (validAssignedUser) {
-      await User.findByIdAndUpdate(
-        assignedUser,
-        { assignedWarehouse: warehouse._id }
+    // อัปเดต assignedWarehouse ให้ User
+    if (validAssignedUsers.length > 0) {
+      await User.updateMany(
+        { _id: { $in: validAssignedUsers } },
+        { $set: { assignedWarehouse: warehouse._id } },
+        { runValidators: true }
       );
     }
 
-    res.json({ message: 'Warehouse created successfully', warehouse });
+    res.status(201).json({ message: 'Warehouse created successfully', warehouse });
   } catch (error) {
     console.error('Error creating warehouse:', error);
     res.status(error instanceof z.ZodError ? 400 : 500).json({
@@ -693,7 +727,7 @@ router.put('/warehouses/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Only admins can update warehouses' });
     }
     const data = warehouseSchema.parse(req.body);
-    const { warehouseCode, name, branch, status, assignedUser } = data;
+    const { warehouseCode, name, branch, status, assignedUsers } = data;
 
     const warehouse = await Warehouse.findById(req.params.id);
     if (!warehouse) {
@@ -708,40 +742,51 @@ router.put('/warehouses/:id', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Warehouse code already in use' });
     }
 
-    let validAssignedUser = null;
-    if (assignedUser) {
-      if (!mongoose.Types.ObjectId.isValid(assignedUser)) {
-        return res.status(400).json({ message: 'Invalid assigned user ID format' });
-      }
-      validAssignedUser = await User.findById(assignedUser);
-      if (!validAssignedUser) {
-        return res.status(400).json({ message: 'Invalid assigned user' });
-      }
-      if (validAssignedUser.assignedWarehouse && validAssignedUser.assignedWarehouse.toString() !== warehouse._id.toString()) {
-        return res.status(400).json({ message: 'User is already assigned to another warehouse' });
+    let validAssignedUsers = [];
+    if (assignedUsers && assignedUsers.length > 0) {
+      for (const userId of assignedUsers) {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ message: `Invalid assigned user ID format: ${userId}` });
+        }
+        const user = await User.findById(userId);
+        if (!user) {
+          console.warn(`User ${userId} not found, skipping...`);
+          continue; // ข้าม User ที่ไม่พบแทนการ Error
+        }
+        validAssignedUsers.push(user._id);
       }
     }
 
-    if (warehouse.assignedUser && (!assignedUser || assignedUser !== warehouse.assignedUser.toString())) {
-      await User.findByIdAndUpdate(
-        warehouse.assignedUser,
-        { assignedWarehouse: null }
-      );
+    // อัปเดต assignedWarehouse ของ User เดิม
+    if (warehouse.assignedUsers && warehouse.assignedUsers.length > 0) {
+      const usersToUpdate = await User.find({ _id: { $in: warehouse.assignedUsers }, assignedWarehouse: warehouse._id });
+      for (const user of usersToUpdate) {
+        if (!validAssignedUsers.includes(user._id)) {
+          // ไม่ตั้งค่า assignedWarehouse เป็น null ถ้า User ยังมี Warehouse อื่น
+          if (!validAssignedUsers.some(u => u.equals(user.assignedWarehouse))) {
+            user.assignedWarehouse = null; // ตั้งค่าเป็น null เฉพาะถ้าไม่มี Warehouse อื่น
+            await user.save({ validateBeforeSave: false }); // ปิด Validation ชั่วคราว
+          }
+        }
+      }
     }
 
+    // อัปเดตข้อมูล Warehouse
     warehouse.warehouseCode = warehouseCode;
     warehouse.name = name;
     warehouse.branch = branch;
     warehouse.status = status || 'Active';
-    warehouse.assignedUser = validAssignedUser ? validAssignedUser._id : null;
-    warehouse.hasAssignedUserHistory = warehouse.hasAssignedUserHistory || !!validAssignedUser;
+    warehouse.assignedUsers = validAssignedUsers;
+    warehouse.hasAssignedUserHistory = validAssignedUsers.length > 0;
 
     const updated = await warehouse.save();
 
-    if (validAssignedUser) {
-      await User.findByIdAndUpdate(
-        assignedUser,
-        { assignedWarehouse: warehouse._id }
+    // อัปเดต assignedWarehouse ให้ User ใหม่
+    if (validAssignedUsers.length > 0) {
+      await User.updateMany(
+        { _id: { $in: validAssignedUsers }, assignedWarehouse: { $ne: warehouse._id } },
+        { $set: { assignedWarehouse: warehouse._id } },
+        { runValidators: true }
       );
     }
 
@@ -750,10 +795,27 @@ router.put('/warehouses/:id', authMiddleware, async (req, res) => {
     console.error('Error updating warehouse:', error);
     res.status(error instanceof z.ZodError ? 400 : 500).json({
       message: error instanceof z.ZodError ? 'Invalid input' : 'Error updating warehouse',
-      error: error.message
+      error: error.message,
+      stack: error.stack
     });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Delete Warehouse
 router.delete('/warehouses/:id', authMiddleware, async (req, res) => {
@@ -762,28 +824,25 @@ router.delete('/warehouses/:id', authMiddleware, async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can delete warehouses' });
     }
+
     const warehouse = await Warehouse.findById(req.params.id);
     if (!warehouse) {
       return res.status(404).json({ message: 'Warehouse not found' });
     }
-    if (warehouse.hasAssignedUserHistory) {
-      return res.status(400).json({ message: 'Cannot delete warehouse with user assignment history' });
+
+    if (warehouse.assignedUsers.length > 0) {
+      return res.status(400).json({ message: 'Cannot delete warehouse with assigned users' });
     }
-    const lotsUsingWarehouse = await Lot.countDocuments({ warehouse: warehouse.name });
-    if (lotsUsingWarehouse > 0) {
-      return res.status(400).json({ message: 'Cannot delete warehouse in use by lots' });
-    }
-    if (warehouse.assignedUser) {
-      await User.findByIdAndUpdate(
-        warehouse.assignedUser,
-        { assignedWarehouse: null }
-      );
-    }
+
     await Warehouse.findByIdAndDelete(req.params.id);
     res.json({ message: 'Warehouse deleted successfully' });
   } catch (error) {
     console.error('Error deleting warehouse:', error);
-    res.status(500).json({ message: 'Error deleting warehouse', error: error.message });
+    res.status(500).json({
+      message: 'Error deleting warehouse',
+      error: error.message,
+      stack: error.stack
+    });
   }
 });
 
@@ -1559,7 +1618,15 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
     }
 
     if (warehouse && warehouse !== 'all') {
-      query.warehouse = { $regex: new RegExp(warehouse, 'i') }; // Case-insensitive search for warehouse
+      const warehouseDoc = await Warehouse.findOne({ name: warehouse }); // ค้นหา Warehouse จากชื่อ
+      if (warehouseDoc) {
+        query.warehouse = warehouseDoc._id; // ใช้ ObjectId หลัง Migration
+      } else {
+        return res.status(400).json({ message: 'Warehouse not found' });
+      }
+    } else if (req.user.role !== 'admin' && req.user.assignedWarehouse) {
+      // สำหรับ User Role ทั่วไป ใช้ assignedWarehouse
+      query.warehouse = req.user.assignedWarehouse;
     }
 
     if (searchQuery) {
@@ -1593,6 +1660,7 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
         .populate('supplierId', 'name')
         .populate('productId', 'name productCode')
         .populate('lotId', 'lotCode productionDate expDate')
+        .populate('warehouse', 'name') // เพิ่ม populate สำหรับ warehouse
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 })
@@ -1606,9 +1674,15 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
       console.warn('Some transactions have invalid userId data, filtered out:', transactions.length - validTransactions.length);
     }
 
+    // แปลง warehouse object กลับเป็นชื่อสำหรับ response
+    const formattedTransactions = validTransactions.map(trans => ({
+      ...trans,
+      warehouse: trans.warehouse ? trans.warehouse.name : null
+    }));
+
     // Always return total = จำนวนทั้งหมดในฐานข้อมูล (ไม่ใช่แค่ validTransactions)
     res.json({
-      data: validTransactions,
+      data: formattedTransactions,
       total,
       page,
       pages: Math.ceil(total / limit),
@@ -1626,6 +1700,7 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
     });
   }
 });
+
 
 // Manage Damage
 router.post('/manage-damage', authMiddleware, async (req, res) => {
@@ -1763,17 +1838,13 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
       if (!user.assignedWarehouse) {
         return res.status(400).json({ message: 'User must be assigned to a warehouse' });
       }
-      const warehouseDoc = await Warehouse.findById(user.assignedWarehouse);
-      if (!warehouseDoc) {
-        return res.status(400).json({ message: 'Warehouse not found for user' });
-      }
-      query.warehouse = warehouseDoc.name; // ใช้ชื่อ Warehouse จาก ObjectId
+      query.warehouse = user.assignedWarehouse; // ใช้ ObjectId
     } else if (warehouse && warehouse !== 'all') {
       const warehouseDoc = await Warehouse.findById(warehouse);
       if (!warehouseDoc) {
         return res.status(400).json({ message: 'Warehouse not found' });
       }
-      query.warehouse = warehouseDoc.name;
+      query.warehouse = warehouseDoc._id; // ใช้ ObjectId
     }
 
     if (search) {
@@ -1789,6 +1860,7 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
     const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
 
     const lots = await Lot.find(query)
+      .populate('warehouse', 'name') // Populate warehouse name
       .populate('productId', 'productCode name')
       .lean();
 
@@ -1800,7 +1872,7 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         reportData = lots.filter(lot => {
           if (!lot.expDate) return false;
           const expDate = new Date(lot.expDate);
-          const daysLeft = Math.floor((expDate - today) / (1000 * 60 * 60 * 24)); // คำนวณวัน
+          const daysLeft = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
           return daysLeft <= warningDays && daysLeft > 0;
         });
         break;
@@ -1815,6 +1887,12 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         reportData = lots;
         break;
     }
+
+    // แปลง warehouse object กลับเป็นชื่อสำหรับ response
+    reportData = reportData.map(lot => ({
+      ...lot,
+      warehouse: lot.warehouse ? lot.warehouse.name : null
+    }));
 
     logger.info('Stock report data:', reportData);
     res.json({ data: reportData, warningDays, lowStockThreshold });

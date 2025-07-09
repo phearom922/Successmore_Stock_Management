@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaPlus, FaSearch, FaWarehouse, FaUserAlt } from 'react-icons/fa';
+import { FaEdit, FaPlus, FaSearch, FaWarehouse, FaUserAlt, FaTrash } from 'react-icons/fa';
 import { HiStatusOnline, HiStatusOffline } from 'react-icons/hi';
 
 const Warehouses = () => {
@@ -13,7 +13,7 @@ const Warehouses = () => {
   const [name, setName] = useState('');
   const [branch, setBranch] = useState('');
   const [status, setStatus] = useState('Active');
-  const [assignedUser, setAssignedUser] = useState('');
+  const [assignedUsers, setAssignedUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,7 +47,7 @@ const Warehouses = () => {
     setName('');
     setBranch('');
     setStatus('Active');
-    setAssignedUser('');
+    setAssignedUsers([]);
     setIsModalOpen(false);
   };
 
@@ -58,19 +58,25 @@ const Warehouses = () => {
       return;
     }
     try {
-      const payload = { warehouseCode, name, branch, status, assignedUser };
+      const existingWarehouse = warehouses.find(w => w.warehouseCode === warehouseCode && w._id !== editingId);
+      if (existingWarehouse) {
+        toast.error('Warehouse code already exists');
+        return;
+      }
+
+      const payload = { warehouseCode, name, branch, status, assignedUsers };
       if (editingId) {
         const res = await axios.put(`http://localhost:3000/api/warehouses/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWarehouses(warehouses.map(w => w._id === editingId ? res.data.warehouse : w));
-        toast.success(res.data.message);
+        toast.success('Warehouse updated successfully');
       } else {
         const res = await axios.post('http://localhost:3000/api/warehouses', payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWarehouses([...warehouses, res.data.warehouse]);
-        toast.success(res.data.message);
+        toast.success('Warehouse created successfully');
       }
       resetForm();
     } catch (error) {
@@ -84,25 +90,24 @@ const Warehouses = () => {
     setName(warehouse.name);
     setBranch(warehouse.branch);
     setStatus(warehouse.status || 'Active');
-    setAssignedUser(warehouse.assignedUser ? warehouse.assignedUser._id : '');
+    setAssignedUsers(warehouse.assignedUsers ? warehouse.assignedUsers.map(u => u._id ? u._id.toString() : u.toString()) : []);
     setIsModalOpen(true);
   };
 
-  const handleDeleteWarehouse = async (id) => {
-    if (!token) {
-      toast.error('Please login first');
-      return;
-    }
-    if (window.confirm('Are you sure you want to delete this warehouse?')) {
-      try {
-        const res = await axios.delete(`http://localhost:3000/api/warehouses/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setWarehouses(warehouses.filter(w => w._id !== id));
-        toast.success(res.data.message);
-      } catch (error) {
-        toast.error(error.response?.data?.message || 'Network Error');
+  const handleDeleteWarehouse = async (warehouseId) => {
+    try {
+      const warehouse = warehouses.find(w => w._id.toString() === warehouseId);
+      if (warehouse.assignedUsers.length > 0) {
+        toast.error('Cannot delete warehouse. Please remove all assigned users first.');
+        return;
       }
+      await axios.delete(`http://localhost:3000/api/warehouses/${warehouseId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setWarehouses(warehouses.filter(w => w._id.toString() !== warehouseId));
+      toast.success('Warehouse deleted successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete warehouse');
     }
   };
 
@@ -114,7 +119,7 @@ const Warehouses = () => {
         name: warehouse.name,
         branch: warehouse.branch,
         status: newStatus,
-        assignedUser: warehouse.assignedUser?._id || '',
+        assignedUsers: warehouse.assignedUsers ? warehouse.assignedUsers.map(u => u._id ? u._id.toString() : u.toString()) : [],
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -222,19 +227,18 @@ const Warehouses = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Assigned User</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Users</label>
                   <select
-                    value={assignedUser}
-                    onChange={(e) => setAssignedUser(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    multiple
+                    value={assignedUsers}
+                    onChange={(e) => {
+                      const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                      setAssignedUsers(selectedOptions);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-32"
                   >
-                    <option value="">No User Assigned</option>
                     {users.map(user => (
-                      <option
-                        key={user._id}
-                        value={user._id}
-                        disabled={user.assignedWarehouse && user.assignedWarehouse._id !== editingId}
-                      >
+                      <option key={user._id} value={user._id}>
                         {user.username}
                       </option>
                     ))}
@@ -279,7 +283,7 @@ const Warehouses = () => {
                     Status
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Assigned User
+                    Assigned Users
                   </th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -317,11 +321,20 @@ const Warehouses = () => {
                         </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {warehouse.assignedUser ? (
-                          <span className="inline-flex items-center">
-                            <FaUserAlt className="mr-1 text-indigo-500" />
-                            {warehouse.assignedUser.username}
-                          </span>
+                        {warehouse.assignedUsers && warehouse.assignedUsers.length > 0 ? (
+                          warehouse.assignedUsers.map(userId => {
+                            const user = users.find(u => u._id && u._id.toString() === (userId._id ? userId._id.toString() : userId.toString()));
+                            return user ? (
+                              <span key={user._id} className="inline-flex items-center mr-2">
+                                <FaUserAlt className="mr-1 text-indigo-500" />
+                                {user.username}
+                              </span>
+                            ) : (
+                              <span key={userId} className="inline-flex items-center mr-2 text-gray-400">
+                                <FaUserAlt className="mr-1" /> Unknown User
+                              </span>
+                            );
+                          })
                         ) : (
                           'None'
                         )}
@@ -336,9 +349,9 @@ const Warehouses = () => {
                         </button>
                         <button
                           onClick={() => handleDeleteWarehouse(warehouse._id)}
-                          className={`${warehouse.status === 'Active' ? 'text-gray-400 cursor-not-allowed' : 'text-red-600 hover:text-red-900'}`}
-                          disabled={warehouse.status === 'Active'}
-                          title={warehouse.status === 'Active' ? 'Cannot delete active warehouse' : 'Delete'}
+                          className={`text-red-600 hover:text-red-900 ${warehouse.assignedUsers.length > 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                          title={warehouse.assignedUsers.length > 0 ? 'Cannot delete warehouse with assigned users' : 'Delete'}
+                          disabled={warehouse.assignedUsers.length > 0}
                         >
                           <FaTrash />
                         </button>

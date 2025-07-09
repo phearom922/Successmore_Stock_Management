@@ -25,6 +25,7 @@ const Users = () => {
   const [editingId, setEditingId] = useState(null);
   const [viewUser, setViewUser] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ open: false, user: null });
+  const [isFetching, setIsFetching] = useState(false); // Flag เพื่อป้องกัน Loop
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -46,23 +47,32 @@ const Users = () => {
   }, []);
 
   const fetchData = async () => {
+    if (isFetching) return; // ป้องกันการเรียกซ้ำ
+    setIsFetching(true);
     try {
       const [userRes, whRes] = await Promise.all([
         axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } })
+        axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
       ]);
+      console.log('Fetched users:', userRes.data); // ดีบั๊ก
+      console.log('Fetched warehouses:', whRes.data); // ดีบั๊ก
       setUsers(userRes.data);
       setWarehouses(whRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Failed to load users or warehouses');
+    } finally {
+      setIsFetching(false); // รีเซ็ต Flag หลังเสร็จ
     }
   };
 
   const filteredUsers = users.filter(u => {
     const matchSearch = u.username.toLowerCase().includes(search.toLowerCase()) ||
       u.lastName.toLowerCase().includes(search.toLowerCase());
-    const warehouse = u.assignedWarehouse ? warehouses.find(w => w._id.toString() === u.assignedWarehouse.toString().replace(' ()', '')) : null;
+    const warehouse = u.assignedWarehouse ? warehouses.find(w => {
+      const cleanUserWarehouse = u.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
+      return w._id.toString() === cleanUserWarehouse;
+    }) : null;
     const warehouseName = warehouse ? warehouse.name : '';
     const matchWarehouse = warehouseFilter === 'all' || 
       (warehouseName && warehouseName.toLowerCase().includes(warehouseFilter.toLowerCase()));
@@ -75,34 +85,49 @@ const Users = () => {
   };
 
   const handleSubmit = async () => {
-    if (!form.username || !form.lastName || (!editingId && !form.password) || !form.assignedWarehouse) {
+    if (!form.username || !form.lastName || (!editingId && !form.password)) {
       toast.error('Please fill all required fields');
       return;
     }
 
+    console.log('Submitting form:', form); // ดีบั๊ก Payload
     try {
       if (editingId) {
         const originalUser = users.find(u => u._id === editingId);
-        let assignedWarehouse = form.assignedWarehouse;
-        let updatePayload = { ...form, assignedWarehouse };
-        let originalAssigned = originalUser.assignedWarehouse;
-        if (assignedWarehouse.toString() === originalAssigned?.toString()) {
+        let updatePayload = { ...form };
+        if (form.assignedWarehouse === originalUser.assignedWarehouse) {
           delete updatePayload.assignedWarehouse;
+        } else {
+          const warehouse = warehouses.find(w => w._id.toString() === form.assignedWarehouse);
+          if (warehouse) {
+            const isAssigned = warehouse.assignedUsers.some(userId => userId.toString() === editingId);
+            if (!isAssigned) {
+              toast.error('Cannot change warehouse unless assigned in Warehouse Management');
+              return;
+            }
+          }
         }
         await axios.put(`http://localhost:3000/api/users/${editingId}`, updatePayload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         toast.success('User updated');
       } else {
-        const warehouse = warehouses.find(w => w._id.toString() === form.assignedWarehouse);
-        if (warehouse) {
-          await axios.post(`http://localhost:3000/api/users`, { ...form, assignedWarehouse: warehouse._id }, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          toast.success('User created');
-        } else {
-          toast.error('Warehouse not found');
+        const defaultWarehouse = warehouses.find(w => w.warehouseCode === 'PNH-WH-01');
+        const payload = { ...form, assignedWarehouse: form.assignedWarehouse || (defaultWarehouse ? defaultWarehouse._id : warehouses.length > 0 ? warehouses[0]._id : null) };
+        if (payload.role === 'user' && !payload.assignedWarehouse) {
+          toast.error('User role must have an assigned warehouse');
+          return;
         }
+        const response = await axios.post(`http://localhost:3000/api/users`, payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (payload.assignedWarehouse) {
+          await axios.put(`http://localhost:3000/api/warehouses/${payload.assignedWarehouse}`, {
+            assignedUsers: [response.data.user._id]
+          }, { headers: { Authorization: `Bearer ${token}` } });
+        }
+        toast.success('User created successfully');
+        navigate('/users'); // กลับไปหน้า Users หลังสร้างสำเร็จ
       }
       fetchData();
       setOpenModal(false);
@@ -110,16 +135,17 @@ const Users = () => {
     } catch (error) {
       console.error('Error saving user:', error.response?.data || error);
       toast.error('Error saving user: ' + (error.response?.data?.message || error.message));
+      setOpenModal(false); // ปิด Modal หลัง Error
+      resetForm(); // รีเซ็ต Form หลัง Error
     }
   };
 
   const handleEdit = (user) => {
-    let assignedWarehouse = user.assignedWarehouse?.toString().replace(' ()', '') || '';
     setForm({
       ...user,
       password: '', // รีเซ็ต password เฉพาะ
       permissions: user.permissions || defaultPermissions,
-      assignedWarehouse
+      assignedWarehouse: user.assignedWarehouse || '',
     });
     setEditingId(user._id);
     setOpenModal(true);
@@ -127,13 +153,15 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     try {
+      const user = users.find(u => u._id === id);
       await axios.delete(`http://localhost:3000/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('User deleted');
       fetchData();
-    } catch {
-      toast.error('Delete failed');
+    } catch (error) {
+      console.error('Error deleting user:', error.response?.data || error);
+      toast.error('Delete failed: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -311,7 +339,6 @@ const Users = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-            {/* แถบซ้าย: User */}
             <div>
               <Table className="text-sm">
                 <TableHeader>
@@ -335,8 +362,11 @@ const Users = () => {
                       </TableCell>
                       <TableCell>
                         {user.assignedWarehouse ? 
-                          (warehouses.find(w => w._id.toString() === user.assignedWarehouse.toString().replace(' ()', ''))?.name || user.assignedWarehouse.toString().replace(' ()', '')) 
-                          : <span className="text-gray-400">-</span>}
+                          (warehouses.find(w => {
+                            const cleanUserWarehouse = user.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
+                            return w._id.toString() === cleanUserWarehouse;
+                          })?.name || 'Not Assigned') 
+                          : 'Not Assigned'}
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.isActive ? 'default' : 'outline'} className={user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
@@ -364,6 +394,14 @@ const Users = () => {
                                   <>
                                     <p>Are you sure you want to delete user <span className="font-bold text-red-600">{deleteModal.user.username}</span>?</p>
                                     <p className="mt-2 text-sm text-gray-500">This action cannot be undone.</p>
+                                    {deleteModal.user.assignedWarehouse && (
+                                      <p className="mt-2 text-sm text-yellow-600">
+                                        Warning: This user is assigned to {warehouses.find(w => {
+                                          const cleanUserWarehouse = deleteModal.user.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
+                                          return w._id.toString() === cleanUserWarehouse;
+                                        })?.name || 'a warehouse'}. Please update Warehouse Management after deletion.
+                                      </p>
+                                    )}
                                     <p className="mt-4 text-xs text-gray-500">Admin: <span className="font-semibold text-indigo-600">{userRole}</span></p>
                                   </>
                                 )}
@@ -402,7 +440,10 @@ const Users = () => {
                 <div><strong className="text-gray-700">Name:</strong> {viewUser.username} {viewUser.lastName}</div>
                 <div><strong className="text-gray-700">Role:</strong> {viewUser.role}</div>
                 <div><strong className="text-gray-700">Status:</strong> {viewUser.isActive ? 'Active' : 'Disabled'}</div>
-                <div><strong className="text-gray-700">Warehouse:</strong> {warehouses.find(w => w._id.toString() === viewUser.assignedWarehouse.toString().replace(' ()', ''))?.name || viewUser.assignedWarehouse?.toString().replace(' ()', '') || '-'}</div>
+                <div><strong className="text-gray-700">Warehouse:</strong> {warehouses.find(w => {
+                  const cleanUserWarehouse = viewUser.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
+                  return w._id.toString() === cleanUserWarehouse;
+                })?.name || 'Not Assigned'}</div>
               </div>
               <Table className="text-sm">
                 <TableHeader>
