@@ -212,7 +212,7 @@ const ReceiveHistory = () => {
             {!isAdmin && warehouseId && (
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
-                <div className="px-3 py-2 bg-gray-50 rounded-md border border-gray-200">
+                <div className="px-3 py-2 bg-gray-100 text-gray-500 rounded-md border border-gray-200">
                   {warehouses.find(w => w._id === warehouseId)?.name || 'N/A'}
                 </div>
               </div>

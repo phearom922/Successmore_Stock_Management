@@ -303,7 +303,7 @@ const ReceiveStock = () => {
                   disabled={user.role !== 'admin' || isLoading} // จำกัดการเลือกสำหรับ User Role
                 >
                   <Select.Trigger
-                    className="mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                    className={`${user.role == 'user' ? "bg-gray-200 text-gray-500" : "bg-white" } mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none  hover:bg-gray-100 transition-colors duration-200`}
                   >
                     <Select.Value placeholder="Select warehouse" />
                     <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">

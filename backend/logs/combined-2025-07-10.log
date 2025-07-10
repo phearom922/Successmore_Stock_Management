@@ -665,3 +665,5 @@ JsonWebTokenError: jwt malformed
 2025-07-10 10:27:34 [info]: Received GET request to /api/notifications
 2025-07-10 10:28:34 [info]: Received GET request to /api/notifications
 2025-07-10 10:29:34 [info]: Received GET request to /api/notifications
+2025-07-10 10:44:29 [info]: Logger initialized successfully
+2025-07-10 10:44:32 [info]: Server running on port 3000

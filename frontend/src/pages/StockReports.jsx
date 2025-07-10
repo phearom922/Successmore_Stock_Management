@@ -182,7 +182,7 @@ const StockReports = () => {
                   </SelectContent>
                 </Select>
               ) : (
-                <div className="py-2 px-3 rounded bg-gray-100 text-gray-700 font-medium">
+                <div className="py-2 px-3 rounded bg-gray-100 text-gray-500 font-medium">
                   {warehouses.find(w => w._id.toString() === userWarehouseId)?.name || 'No warehouse assigned'}
                 </div>
               )}
