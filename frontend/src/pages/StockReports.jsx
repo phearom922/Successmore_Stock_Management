@@ -26,29 +26,23 @@ const StockReports = () => {
   // ดึงข้อมูล user จาก token
   const userData = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const isAdmin = userData.role === 'admin';
-  const userWarehouseId = userData.assignedWarehouse || ''; // ใช้ assignedWarehouse (ObjectId) จาก Token
-  const userWarehouseName = userData.warehouseName || ''; // ใช้ warehouseName เป็นข้อมูลสำรอง
+  const userWarehouseId = userData.assignedWarehouse ? userData.assignedWarehouse.toString() : '';
+  console.log('User data from token:', { userWarehouseId, isAdmin, rawAssignedWarehouse: userData.assignedWarehouse }); // เพิ่มการดีบั๊ก
 
   useEffect(() => {
     fetchWarehouses();
-    if (!isAdmin && userWarehouseName) { // ใช้ userWarehouseName แทน userWarehouseId
-      setSelectedWarehouse(userWarehouseName);
+    if (!isAdmin && userWarehouseId) {
+      setSelectedWarehouse(userWarehouseId); // ใช้ _id สำหรับ User Role
     }
-    fetchData('all-stock', null, isAdmin ? 'all' : userWarehouseName); // ใช้ userWarehouseName
-  }, [userWarehouseName]);
+    fetchData('all-stock', null, isAdmin ? 'all' : userWarehouseId); // ใช้ _id
+  }, [userWarehouseId]);
 
   const fetchWarehouses = async () => {
     try {
       const { data } = await axios.get('http://localhost:3000/api/warehouses', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!isAdmin && userWarehouseName) {
-        const filtered = data.filter(w => w.name === userWarehouseName);
-        setWarehouses(filtered.length > 0 ? filtered : data); // ใช้ข้อมูลทั้งหมดถ้าไม่พบ
-        setSelectedWarehouse(filtered.length > 0 ? userWarehouseName : 'all');
-      } else {
-        setWarehouses(data);
-      }
+      setWarehouses(data);
     } catch (error) {
       console.error('Error fetching warehouses:', error);
       toast.error('Failed to load warehouses');
@@ -62,7 +56,7 @@ const StockReports = () => {
       const tabType = type || currentTab || 'all-stock';
       const search = customSearch !== null ? customSearch : searchQuery;
       const warehouseVal = customWarehouse !== null ? customWarehouse : selectedWarehouse;
-      const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseName : warehouseVal; // ใช้ userWarehouseName
+      const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseId : warehouseVal; // ใช้ _id
       console.log('Fetching data with warehouse:', effectiveWarehouse); // Debug
       const { data } = await axios.get('http://localhost:3000/api/stock-reports', {
         headers: { Authorization: `Bearer ${token}` },
@@ -81,8 +75,9 @@ const StockReports = () => {
       }
       setData(sortedData);
     } catch (error) {
-      console.error('Error fetching stock reports:', error);
-      toast.error(`Failed to load ${currentTab.replace('-', ' ')} reports`);
+      console.error('Error fetching stock reports:', error.response || error);
+      const errorMessage = error.response?.data?.message || 'Unknown error';
+      toast.error(`Failed to load ${currentTab.replace('-', ' ')} reports: ${errorMessage}`);
       setData([]); // ตั้งค่าเป็น array ว่างถ้า error
     } finally {
       setIsLoading(false);
@@ -182,13 +177,13 @@ const StockReports = () => {
                   <SelectContent>
                     <SelectItem value="all">All Warehouses</SelectItem>
                     {warehouses.map(w => (
-                      <SelectItem key={w._id} value={w._id}>{w.name}</SelectItem>
+                      <SelectItem key={w._id} value={w._id.toString()}>{w.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               ) : (
                 <div className="py-2 px-3 rounded bg-gray-100 text-gray-700 font-medium">
-                  {warehouses.find(w => w._id.toString() === userWarehouseId)?.name || userWarehouseName || 'No warehouse assigned'}
+                  {warehouses.find(w => w._id.toString() === userWarehouseId)?.name || 'No warehouse assigned'}
                 </div>
               )}
             </div>

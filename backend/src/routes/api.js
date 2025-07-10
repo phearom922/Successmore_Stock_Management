@@ -1843,18 +1843,43 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
     const user = req.user;
     const query = {};
 
-    // Admin: ดูได้ทุกคลัง, User: ดูได้เฉพาะคลังตัวเองเท่านั้น
     if (user.role !== 'admin') {
-      if (!user.assignedWarehouse) {
+      let assignedWarehouse = user.assignedWarehouse;
+      logger.debug('User assignedWarehouse from token:', { assignedWarehouse, type: typeof assignedWarehouse });
+
+      if (!assignedWarehouse) {
+        logger.warn('User not assigned to a warehouse', { userId: user._id });
         return res.status(400).json({ message: 'User must be assigned to a warehouse' });
       }
-      query.warehouse = user.assignedWarehouse; // ใช้ ObjectId
-    } else if (warehouse && warehouse !== 'all') {
-      const warehouseDoc = await Warehouse.findById(warehouse);
+
+      let warehouseId;
+      if (typeof assignedWarehouse === 'object' && assignedWarehouse._id) {
+        warehouseId = assignedWarehouse._id.toString();
+      } else if (assignedWarehouse instanceof mongoose.Types.ObjectId) {
+        warehouseId = assignedWarehouse.toString();
+      } else if (typeof assignedWarehouse === 'string') {
+        warehouseId = assignedWarehouse;
+      } else {
+        logger.warn('Invalid assignedWarehouse format', { assignedWarehouse });
+        return res.status(400).json({ message: 'User assigned warehouse is in an invalid format' });
+      }
+
+      const warehouseIdObj = new mongoose.Types.ObjectId(warehouseId);
+      const warehouseDoc = await Warehouse.findById(warehouseIdObj);
       if (!warehouseDoc) {
+        logger.warn('Assigned warehouse not found', { warehouseId: warehouseId });
+        return res.status(400).json({ message: 'Assigned warehouse not found' });
+      }
+      query.warehouse = warehouseIdObj;
+      logger.debug('User warehouse query set', { warehouseId });
+    } else if (warehouse && warehouse !== 'all') {
+      const warehouseId = new mongoose.Types.ObjectId(warehouse);
+      const warehouseDoc = await Warehouse.findById(warehouseId);
+      if (!warehouseDoc) {
+        logger.warn('Requested warehouse not found', { warehouseId: warehouse });
         return res.status(400).json({ message: 'Warehouse not found' });
       }
-      query.warehouse = warehouseDoc._id; // ใช้ ObjectId
+      query.warehouse = warehouseId;
     }
 
     if (search) {
@@ -1870,8 +1895,77 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
     const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
 
     const lots = await Lot.find(query)
-      .populate('warehouse', 'name') // Populate warehouse name
+      .populate('warehouse', 'name')
       .populate('productId', 'productCode name')
+      .lean();
+
+    if (lots.length === 0) {
+      logger.warn('No lots found for the query', { query });
+    }
+
+    let reportData = [];
+    const today = new Date();
+
+    switch (type) {
+      case 'expiring-soon':
+        reportData = lots.filter(lot => {
+          if (!lot.expDate) return false;
+          const expDate = new Date(lot.expDate);
+          const daysLeft = Math.floor((expDate - today) / (1000 * 60 * 60 * 24));
+          return daysLeft <= warningDays && daysLeft > 0;
+        });
+        break;
+      case 'damaged':
+        reportData = lots.filter(lot => (lot.damaged || 0) > 0);
+        break;
+      case 'low-stock':
+        reportData = lots.filter(lot => (lot.qtyOnHand || 0) < lowStockThreshold);
+        break;
+      case 'all-stock':
+      default:
+        reportData = lots;
+        break;
+    }
+
+    reportData = reportData.map(lot => ({
+      ...lot,
+      warehouse: lot.warehouse ? lot.warehouse.name : null
+    }));
+
+    logger.info('Stock report data:', { count: reportData.length, sample: reportData.slice(0, 2) });
+    res.json({ data: reportData, warningDays, lowStockThreshold });
+  } catch (error) {
+    logger.error('Error fetching stock reports:', { error: error.message, stack: error.stack, query: req.query });
+    res.status(500).json({ message: 'Error fetching stock reports', error: error.message });
+  }
+});
+
+
+// เพิ่ม endpoint สำหรับ Export Stock Reports
+router.get('/stock-reports/export', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Exporting stock reports', { user: req.user, query: req.query });
+
+    const { type, warehouse, search } = req.query;
+    const user = req.user;
+    const query = user.role === 'admin' ? {} : { warehouse: new mongoose.Types.ObjectId(user.assignedWarehouse) };
+    if (warehouse && warehouse !== 'all') query.warehouse = new mongoose.Types.ObjectId(warehouse);
+
+    const setting = await Setting.findOne();
+    const warningDays = setting ? setting.expirationWarningDays : 15;
+    const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
+
+    if (search) {
+      query.$or = [
+        { lotCode: { $regex: search, $options: 'i' } },
+        { 'productId.productCode': { $regex: search, $options: 'i' } },
+        { 'productId.name': { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const lots = await Lot.find(query)
+      .populate('productId', 'productCode name')
+      .populate('warehouse', 'name') // Populate warehouse name
       .lean();
 
     let reportData = [];
@@ -1898,74 +1992,10 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         break;
     }
 
-    // แปลง warehouse object กลับเป็นชื่อสำหรับ response
-    reportData = reportData.map(lot => ({
-      ...lot,
-      warehouse: lot.warehouse ? lot.warehouse.name : null
-    }));
-
-    logger.info('Stock report data:', reportData);
-    res.json({ data: reportData, warningDays, lowStockThreshold });
-  } catch (error) {
-    logger.error('Error fetching stock reports:', { error: error.message, stack: error.stack });
-    res.status(500).json({ message: 'Error fetching stock reports', error: error.message });
-  }
-});
-
-// เพิ่ม endpoint สำหรับ Export Stock Reports
-router.get('/stock-reports/export', authMiddleware, async (req, res) => {
-  try {
-    logger.info('Exporting stock reports', { user: req.user, query: req.query });
-
-    const { type, warehouse, search } = req.query;
-    const user = req.user;
-    const query = user.role === 'admin' ? {} : { warehouse: user.assignedWarehouse?.toString() };
-    if (warehouse && warehouse !== 'all') query.warehouse = warehouse;
-
-    const setting = await Setting.findOne();
-    const warningDays = setting ? setting.expirationWarningDays : 15;
-    const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
-
-    if (search) {
-      query.$or = [
-        { lotCode: { $regex: search, $options: 'i' } },
-        { 'productId.productCode': { $regex: search, $options: 'i' } },
-        { 'productId.name': { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    const lots = await Lot.find(query)
-      .populate('productId', 'productCode name')
-      .lean();
-
-    let reportData = [];
-    const today = new Date();
-
-    switch (type) {
-      case 'expiring-soon':
-        reportData = lots.filter(lot => {
-          if (!lot.expDate) return false;
-          const expDate = new Date(lot.expDate);
-          const daysLeft = differenceInDays(expDate, today);
-          return daysLeft <= warningDays && daysLeft > 0;
-        });
-        break;
-      case 'damaged':
-        reportData = lots.filter(lot => (lot.damaged || 0) > 0);
-        break;
-      case 'low-stock':
-        reportData = lots.filter(lot => (lot.qtyOnHand || 0) < lowStockThreshold);
-        break;
-      case 'all-stock':
-      default:
-        reportData = lots;
-        break;
-    }
-
     const worksheetData = reportData.map(lot => ({
       'Lot Code': lot.lotCode || 'N/A',
       'Product Name': lot.productId?.name || 'N/A',
-      'Warehouse': lot.warehouse || 'N/A',
+      'Warehouse': lot.warehouse?.name || 'N/A', // ใช้ lot.warehouse.name
       'Product Code': lot.productId?.productCode || 'N/A',
       'qtyOnHand': lot.qtyOnHand || 0,
       'Damaged': lot.damaged || 0,

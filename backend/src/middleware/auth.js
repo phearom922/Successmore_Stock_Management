@@ -12,9 +12,9 @@ const authMiddleware = (req, res, next) => {
       _id: decoded.id,
       role: decoded.role,
       username: decoded.username,
-      warehouse: decoded.warehouse,
-      permissions: decoded.permissions || [], // เพิ่ม permissions จาก token
-      isActive: decoded.isActive || true,
+      assignedWarehouse: decoded.assignedWarehouse, // ✅ แก้ตรงนี้
+      permissions: decoded.permissions || [],
+      isActive: decoded.isActive ?? true,
     };
     if (!req.user.isActive) {
       return res.status(403).json({ message: 'User is disabled' });

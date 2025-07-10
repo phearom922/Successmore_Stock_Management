@@ -91,7 +91,7 @@ function App() {
               <Route path="/manage-stock-status" element={<ManageStockStatus />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/products" element={<Products />} />
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/*" element={<Dashboard />} />
               <Route path="/suppliers" element={<Suppliers />} />
               <Route path="/receive-stock" element={<ReceiveStock />} />
               <Route path="/receive-history" element={<ReceiveHistory />} />

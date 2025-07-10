@@ -1,0 +1,194 @@
+2025-07-10 10:03:26 [info]: Logger initialized successfully
+2025-07-10 10:03:29 [info]: Server running on port 3000
+2025-07-10 10:03:29 [info]: Connected to MongoDB
+2025-07-10 10:03:35 [info]: Received GET request to /api/notifications
+2025-07-10 10:03:35 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-10 10:03:35 [info]: Received GET request to /api/notifications
+2025-07-10 10:03:35 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-10 10:03:39 [info]: Received POST request to /api/login
+2025-07-10 10:03:39 [info]: Login attempt:
+2025-07-10 10:03:40 [info]: Login successful:
+2025-07-10 10:03:40 [info]: Received GET request to /api/notifications
+2025-07-10 10:03:40 [info]: Received GET request to /api/products
+2025-07-10 10:03:40 [info]: Received GET request to /api/lots
+2025-07-10 10:03:40 [info]: Received GET request to /api/warehouses
+2025-07-10 10:03:40 [info]: Received GET request to /api/notifications
+2025-07-10 10:03:40 [info]: Received GET request to /api/warehouses
+2025-07-10 10:03:40 [info]: Received GET request to /api/lots
+2025-07-10 10:03:40 [info]: Received GET request to /api/products
+2025-07-10 10:03:43 [info]: Received GET request to /api/warehouses
+2025-07-10 10:03:43 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:03:43 [info]: Fetching stock reports
+2025-07-10 10:03:43 [warn]: User not assigned to a warehouse
+2025-07-10 10:03:43 [info]: Received GET request to /api/warehouses
+2025-07-10 10:03:43 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:03:43 [info]: Fetching stock reports
+2025-07-10 10:03:43 [warn]: User not assigned to a warehouse
+2025-07-10 10:03:45 [info]: Received GET request to /api/notifications
+2025-07-10 10:03:45 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:03:45 [info]: Fetching stock reports
+2025-07-10 10:03:45 [warn]: User not assigned to a warehouse
+2025-07-10 10:03:45 [info]: Received GET request to /api/warehouses
+2025-07-10 10:03:45 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:03:45 [info]: Fetching stock reports
+2025-07-10 10:03:45 [warn]: User not assigned to a warehouse
+2025-07-10 10:03:45 [info]: Received GET request to /api/notifications
+2025-07-10 10:03:45 [info]: Received GET request to /api/warehouses
+2025-07-10 10:04:16 [info]: Received GET request to /api/notifications
+2025-07-10 10:04:46 [info]: Received GET request to /api/notifications
+2025-07-10 10:05:16 [info]: Received GET request to /api/notifications
+2025-07-10 10:05:46 [info]: Received GET request to /api/notifications
+2025-07-10 10:06:16 [info]: Received GET request to /api/notifications
+2025-07-10 10:06:46 [info]: Received GET request to /api/notifications
+2025-07-10 10:07:34 [info]: Received GET request to /api/notifications
+2025-07-10 10:08:34 [info]: Received GET request to /api/notifications
+2025-07-10 10:08:48 [info]: Received GET request to /api/notifications
+2025-07-10 10:08:51 [info]: Received GET request to /api/notifications
+2025-07-10 10:08:51 [info]: Received GET request to /api/warehouses
+2025-07-10 10:08:51 [info]: Received GET request to /api/notifications
+2025-07-10 10:08:51 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:08:51 [info]: Fetching stock reports
+2025-07-10 10:08:51 [warn]: User not assigned to a warehouse
+2025-07-10 10:08:51 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:08:51 [info]: Fetching stock reports
+2025-07-10 10:08:51 [warn]: User not assigned to a warehouse
+2025-07-10 10:08:51 [info]: Received GET request to /api/warehouses
+2025-07-10 10:09:22 [info]: Received GET request to /api/notifications
+2025-07-10 10:09:52 [info]: Received GET request to /api/notifications
+2025-07-10 10:10:22 [info]: Received GET request to /api/notifications
+2025-07-10 10:10:52 [info]: Received GET request to /api/notifications
+2025-07-10 10:11:22 [info]: Received GET request to /api/notifications
+2025-07-10 10:11:52 [info]: Received GET request to /api/notifications
+2025-07-10 10:12:34 [info]: Received GET request to /api/notifications
+2025-07-10 10:13:34 [info]: Received GET request to /api/notifications
+2025-07-10 10:14:34 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:03 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:06 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:06 [info]: Received GET request to /api/receive-history?startDate=10-07-2025&endDate=10-07-2025&warehouse=686d62eed57dbab8f45bb135&searchQuery=&userQuery=&page=1&limit=25
+2025-07-10 10:15:06 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:06 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:06 [info]: Received GET request to /api/receive-history?startDate=10-07-2025&endDate=10-07-2025&warehouse=686d62eed57dbab8f45bb135&searchQuery=&userQuery=&page=1&limit=25
+2025-07-10 10:15:06 [info]: Received GET request to /api/receive-history?startDate=10-07-2025&endDate=10-07-2025&warehouse=686d62eed57dbab8f45bb135&searchQuery=&userQuery=&page=1&limit=25
+2025-07-10 10:15:21 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:21 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-10 10:15:21 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:21 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-10 10:15:24 [info]: Received POST request to /api/login
+2025-07-10 10:15:24 [info]: Login attempt:
+2025-07-10 10:15:24 [info]: Login successful:
+2025-07-10 10:15:24 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:24 [info]: Received GET request to /api/lots
+2025-07-10 10:15:24 [info]: Received GET request to /api/products
+2025-07-10 10:15:24 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:24 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:24 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:24 [info]: Received GET request to /api/lots
+2025-07-10 10:15:24 [info]: Received GET request to /api/products
+2025-07-10 10:15:26 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:26 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:26 [info]: Fetching stock reports
+2025-07-10 10:15:26 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:26 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:26 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:26 [info]: Fetching stock reports
+2025-07-10 10:15:26 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:28 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:28 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:28 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:28 [info]: Fetching stock reports
+2025-07-10 10:15:28 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:28 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:28 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:28 [info]: Fetching stock reports
+2025-07-10 10:15:28 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:28 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:32 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:33 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:33 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:33 [info]: Fetching stock reports
+2025-07-10 10:15:33 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:33 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:33 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:33 [info]: Fetching stock reports
+2025-07-10 10:15:33 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:33 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:36 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:36 [info]: Received GET request to /api/receive-history?startDate=10-07-2025&endDate=10-07-2025&warehouse=686d62eed57dbab8f45bb135&searchQuery=&userQuery=&page=1&limit=25
+2025-07-10 10:15:36 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:36 [info]: Received GET request to /api/receive-history?startDate=10-07-2025&endDate=10-07-2025&warehouse=686d62eed57dbab8f45bb135&searchQuery=&userQuery=&page=1&limit=25
+2025-07-10 10:15:36 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:36 [info]: Received GET request to /api/receive-history?startDate=10-07-2025&endDate=10-07-2025&warehouse=686d62eed57dbab8f45bb135&searchQuery=&userQuery=&page=1&limit=25
+2025-07-10 10:15:36 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:36 [info]: Fetching stock reports
+2025-07-10 10:15:36 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:36 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:36 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:36 [info]: Fetching stock reports
+2025-07-10 10:15:36 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:36 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:38 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:38 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:38 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:38 [info]: Fetching stock reports
+2025-07-10 10:15:38 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:38 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:38 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:38 [info]: Fetching stock reports
+2025-07-10 10:15:38 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:38 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:44 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:44 [info]: Received GET request to /api/notifications
+2025-07-10 10:15:44 [info]: Received GET request to /api/warehouses
+2025-07-10 10:15:44 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:44 [info]: Fetching stock reports
+2025-07-10 10:15:44 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:44 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=686d62eed57dbab8f45bb135&search=
+2025-07-10 10:15:44 [info]: Fetching stock reports
+2025-07-10 10:15:44 [warn]: User not assigned to a warehouse
+2025-07-10 10:15:44 [info]: Received GET request to /api/warehouses
+2025-07-10 10:16:15 [info]: Received GET request to /api/notifications
+2025-07-10 10:16:45 [info]: Received GET request to /api/notifications
