@@ -10,6 +10,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'; // ใช้คอมโพเนนต์จาก UI Library (เช่น shadcn)
 
 const ReceiveStock = () => {
   const [selectedWarehouseId, setSelectedWarehouseId] = useState(''); // ใช้ _id
@@ -32,6 +34,7 @@ const ReceiveStock = () => {
   const [addedLots, setAddedLots] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // State สำหรับ Modal
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
@@ -194,6 +197,17 @@ const ReceiveStock = () => {
       }
     }
 
+    // คำนวณข้อมูลสำหรับ Modal
+    const totalStockItems = addedLots.length;
+    const totalBoxes = addedLots.reduce((sum, lot) => sum + Number(lot.boxCount), 0);
+    const totalQuantity = addedLots.reduce((sum, lot) => sum + Number(lot.quantity), 0);
+
+    // แสดง Modal Confirm
+    setShowConfirmModal(true);
+  };
+
+  const confirmReceive = async () => {
+    setShowConfirmModal(false);
     setIsLoading(true);
     try {
       const payload = {
@@ -242,6 +256,10 @@ const ReceiveStock = () => {
     }
   };
 
+  const cancelReceive = () => {
+    setShowConfirmModal(false);
+  };
+
   const filteredProducts = selectedCategory === 'All'
     ? products
     : products.filter(p => p.category && p.category._id === selectedCategory);
@@ -254,7 +272,7 @@ const ReceiveStock = () => {
         <h2 className="text-3xl font-bold text-gray-800">Receive Stock</h2>
         <div className="flex space-x-3">
           <button
-            type="submit"
+            type="button"
             onClick={handleSubmit}
             className={`inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white ${isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'}`}
             disabled={isLoading || addedLots.length === 0}
@@ -269,7 +287,7 @@ const ReceiveStock = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={e => e.preventDefault()} className="space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="mb-6">
               <Tabs onSelect={index => setSelectedCategory(index === 0 ? 'All' : categories[index - 1]._id)}>
@@ -303,7 +321,7 @@ const ReceiveStock = () => {
                   disabled={user.role !== 'admin' || isLoading} // จำกัดการเลือกสำหรับ User Role
                 >
                   <Select.Trigger
-                    className={`${user.role == 'user' ? "bg-gray-200 text-gray-500" : "bg-white" } mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none  hover:bg-gray-100 transition-colors duration-200`}
+                    className={`${user.role === 'user' ? "bg-gray-200 text-gray-500" : "bg-white"} mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none  hover:bg-gray-100 transition-colors duration-200`}
                   >
                     <Select.Value placeholder="Select warehouse" />
                     <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -668,6 +686,29 @@ const ReceiveStock = () => {
           )}
         </form>
       )}
+
+      {/* Confirm Modal */}
+      <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Stock Receipt</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <p><strong>Total Stock Items to Receive:</strong> {addedLots.length}</p>
+            <p><strong>Total Boxes:</strong> {addedLots.reduce((sum, lot) => sum + Number(lot.boxCount), 0)}</p>
+            <p><strong>Total Quantity:</strong> {addedLots.reduce((sum, lot) => sum + Number(lot.quantity), 0)}</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelReceive} disabled={isLoading}>
+              Cancel
+            </Button>
+            <Button onClick={confirmReceive} disabled={isLoading}>
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );

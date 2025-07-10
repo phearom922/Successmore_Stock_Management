@@ -358,7 +358,7 @@ const Users = () => {
                         <div className="text-gray-500 text-sm">{user.lastName}</div>
                       </TableCell>
                       <TableCell>
-                        <Badge className="bg-blue-100 text-blue-800">{user.role}</Badge>
+                        <Badge className={`${user.role === "user" ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800" } `}>{user.role}</Badge>
                       </TableCell>
                       <TableCell>
                         {user.assignedWarehouse ? 
