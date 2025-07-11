@@ -4,7 +4,7 @@ import {
   FiUpload,
   FiPackage,
   FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers,
-  FiArrowDownCircle,
+  FiArrowDownCircle, FiArrowUpCircle
 } from 'react-icons/fi';
 import { FaBuilding, FaCubes } from "react-icons/fa";
 import { GiBrokenPottery } from "react-icons/gi";
@@ -157,6 +157,15 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
                 {isOpen && <span className='text-sm'>Receive Stock</span>}
               </Link>
             )}
+            {(userRole === 'admin' || userRole === 'user') && ( // ยังคงใช้ userRole สำหรับเมนูทั่วไป
+              <Link
+                to="/issue-stock"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/issue-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiArrowUpCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Issue Stock</span>}
+              </Link>
+            )}
 
             {(userRole === 'admin' || userRole === 'user') && (
               <Link
@@ -165,6 +174,15 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
               >
                 <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} />
                 {isOpen && <span className='text-sm'>Receive History</span>}
+              </Link>
+            )}
+            {(userRole === 'admin' || userRole === 'user') && (
+              <Link
+                to="/issue-history"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/issue-history') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <FiClipboard className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Issue History</span>}
               </Link>
             )}
             {(userRole === 'admin' || userRole === 'user') && (

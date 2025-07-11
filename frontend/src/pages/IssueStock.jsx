@@ -7,8 +7,6 @@ import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
 
 const IssueStock = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -26,6 +24,7 @@ const IssueStock = () => {
   const [addedItems, setAddedItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isManualSelection, setIsManualSelection] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
@@ -47,11 +46,17 @@ const IssueStock = () => {
         axios.get('http://localhost:3000/api/categories', { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       setWarehouses(warehousesRes.data);
-      setProducts(productsRes.data);
+      setProducts(productsRes.data.map(p => ({ ...p, _id: p._id.toString() })));
       setCategories(categoriesRes.data);
+      console.log('Fetched Products:', productsRes.data);
 
       const defaultWarehouse = user.role !== 'admin' ? user.warehouse : warehousesRes.data[0]?._id;
+      if (!defaultWarehouse) {
+        toast.error('No warehouse assigned or available');
+        return;
+      }
       setSelectedWarehouse(defaultWarehouse);
+      console.log('Default Warehouse set to:', defaultWarehouse);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load data');
       if (error.response?.status === 401) navigate('/login');
@@ -67,25 +72,69 @@ const IssueStock = () => {
         headers: { Authorization: `Bearer ${token}` },
         params: { productId, warehouse: selectedWarehouse }
       });
-      setLots(data.filter(lot => lot.qtyOnHand > 0));
-      setCurrentItem(prev => ({ ...prev, lotId: '', quantity: '' }));
+      const filteredLots = data.filter(lot => lot.warehouse.toString() === selectedWarehouse && lot.qtyOnHand > 0);
+      const sortedLots = filteredLots.sort((a, b) => new Date(a.expDate) - new Date(b.expDate));
+      setLots(sortedLots);
+      console.log('Fetched and Sorted Lots for Product:', productId, sortedLots);
+      if (!isManualSelection && sortedLots.length > 0) {
+        setCurrentItem(prev => ({ ...prev, lotId: sortedLots[0]._id }));
+      }
     } catch (error) {
       toast.error('Failed to load lots');
     }
   };
 
   const addItem = () => {
-    if (!currentItem.lotId || !currentItem.quantity || !currentItem.transactionType) {
+    const quantity = Number(currentItem.quantity);
+    if (!quantity || !currentItem.transactionType) {
       toast.error('Please fill all required fields');
       return;
     }
-    const lot = lots.find(l => l._id === currentItem.lotId);
-    if (Number(currentItem.quantity) > lot.qtyOnHand) {
-      toast.error(`Quantity exceeds available stock (${lot.qtyOnHand})`);
+
+    let remainingQuantity = quantity;
+    const selectedLots = [];
+    let currentLots = [...lots]; // คัดลอก lots เพื่อไม่กระทบ State เดิม
+
+    while (remainingQuantity > 0 && currentLots.length > 0) {
+      const lot = currentLots[0];
+      if (!lot) {
+        toast.error('No available lots for the selected quantity');
+        return;
+      }
+
+      const qtyToTake = Math.min(remainingQuantity, lot.qtyOnHand);
+      if (qtyToTake <= 0) {
+        toast.error('Quantity exceeds available stock');
+        return;
+      }
+
+      const productId = lot.productId._id ? lot.productId._id.toString() : lot.productId.toString();
+      const product = products.find(p => p._id === productId);
+
+      selectedLots.push({
+        lotId: lot._id,
+        quantity: qtyToTake,
+        transactionType: currentItem.transactionType,
+        productName: product?.name || 'Unknown',
+        productCode: product?.productCode || 'N/A',
+        lotCode: lot.lotCode,
+        prodDate: lot.productionDate,
+        expDate: lot.expDate
+      });
+
+      remainingQuantity -= qtyToTake;
+      currentLots = currentLots.filter(l => l._id.toString() !== lot._id); // ลบ Lot ที่ใช้ไปแล้ว
+    }
+
+    if (remainingQuantity > 0) {
+      toast.error('Insufficient stock across all lots');
       return;
     }
-    setAddedItems([...addedItems, { ...currentItem, productName: products.find(p => p._id === lot.productId)?._name }]);
+
+    setAddedItems(prevItems => [...prevItems, ...selectedLots]);
+    setSelectedProduct('');
     setCurrentItem({ lotId: '', quantity: '', transactionType: 'Sale' });
+    fetchLots(''); // รีเซ็ต lots
   };
 
   const removeItem = index => {
@@ -108,16 +157,18 @@ const IssueStock = () => {
     try {
       const payload = {
         lots: addedItems.map(item => ({ lotId: item.lotId, quantity: Number(item.quantity) })),
-        type: addedItems[0].transactionType, // ใช้ type เดียวกันสำหรับทั้งหมด
+        type: addedItems[0].transactionType,
         warehouse: selectedWarehouse,
         note: ''
       };
+      console.log('Issuing with payload:', JSON.stringify(payload, null, 2));
       const response = await axios.post('http://localhost:3000/api/issue', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(response.data.message);
       setAddedItems([]);
     } catch (error) {
+      console.error('Issue error:', error.response?.data || error);
       toast.error(error.response?.data?.message || 'Failed to issue stock');
     } finally {
       setIsLoading(false);
@@ -131,8 +182,6 @@ const IssueStock = () => {
   const filteredProducts = selectedCategory === 'All'
     ? products
     : products.filter(p => p.category && p.category._id === selectedCategory);
-
-  if (!token) return null;
 
   return (
     <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
@@ -157,21 +206,16 @@ const IssueStock = () => {
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="mb-6">
-              <Tabs onSelect={index => setSelectedCategory(index === 0 ? 'All' : categories[index - 1]._id)}>
-                <TabList className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-                  <Tab className="px-4 py-2 text-sm font-medium rounded-md cursor-pointer ui-selected:bg-white ui-selected:shadow ui-selected:text-red-600 text-gray-600 hover:text-red-500">
-                    All Products
-                  </Tab>
-                  {categories.map(category => (
-                    <Tab
-                      key={category._id}
-                      className="px-4 py-2 text-sm font-medium rounded-md cursor-pointer ui-selected:bg-white ui-selected:shadow ui-selected:text-red-600 text-gray-600 hover:text-red-500"
-                    >
-                      {category.name}
-                    </Tab>
-                  ))}
-                </TabList>
-              </Tabs>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full p-2 border rounded"
+              >
+                <option value="All">All Products</option>
+                {categories.map(category => (
+                  <option key={category._id} value={category._id}>{category.name}</option>
+                ))}
+              </select>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -263,47 +307,77 @@ const IssueStock = () => {
                 </Select.Root>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lot</label>
-                <Select.Root
-                  value={currentItem.lotId}
-                  onValueChange={(value) => setCurrentItem(prev => ({ ...prev, lotId: value }))}
-                  disabled={isLoading || !selectedProduct}
-                >
-                  <Select.Trigger
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <Select.Value placeholder="Select lot" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronUpIcon />
-                    </Select.ScrollUpButton>
-                    <Select.Viewport>
-                      <Select.Group>
-                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Lots</Select.Label>
-                        {lots.map(lot => (
-                          <Select.Item
-                            key={lot._id}
-                            value={lot._id}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
-                          >
-                            <Select.ItemText>{lot.lotCode} (Qty: {lot.qtyOnHand})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                              <CheckIcon />
-                            </Select.ItemIndicator>
-                          </Select.Item>
-                        ))}
-                      </Select.Group>
-                    </Select.Viewport>
-                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronDownIcon />
-                    </Select.ScrollDownButton>
-                  </Select.Content>
-                </Select.Root>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Manual Lot Selection</label>
+                <input
+                  type="checkbox"
+                  checked={isManualSelection}
+                  onChange={(e) => {
+                    setIsManualSelection(e.target.checked);
+                    if (!e.target.checked && lots.length > 0) {
+                      setCurrentItem(prev => ({ ...prev, lotId: lots[0]._id }));
+                    } else {
+                      setCurrentItem(prev => ({ ...prev, lotId: '' }));
+                    }
+                  }}
+                  className="mr-2 leading-tight"
+                />
+                <span>Select Lot Manually</span>
               </div>
+              {!isManualSelection && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Selected Lot (FEFO)</label>
+                  <input
+                    type="text"
+                    value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
+                    readOnly
+                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-gray-100"
+                  />
+                </div>
+              )}
+              {isManualSelection && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Lot</label>
+                  <Select.Root
+                    value={currentItem.lotId}
+                    onValueChange={(value) => setCurrentItem(prev => ({ ...prev, lotId: value }))}
+                    disabled={isLoading || !selectedProduct}
+                  >
+                    <Select.Trigger
+                      className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                    >
+                      <Select.Value placeholder="Select lot" />
+                      <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <ChevronDownIcon />
+                      </Select.Icon>
+                    </Select.Trigger>
+                    <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
+                      <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                        <ChevronUpIcon />
+                      </Select.ScrollUpButton>
+                      <Select.Viewport>
+                        <Select.Group>
+                          <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Lots</Select.Label>
+                          {lots.map(lot => (
+                            <Select.Item
+                              key={lot._id}
+                              value={lot._id}
+                              className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
+                            >
+                              <Select.ItemText>{lot.lotCode} (Qty: {lot.qtyOnHand}, Exp: {new Date(lot.expDate).toLocaleDateString()})</Select.ItemText>
+                              <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                                <CheckIcon />
+                              </Select.ItemIndicator>
+                            </Select.Item>
+                          ))}
+                        </Select.Group>
+                      </Select.Viewport>
+                      <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
+                        <ChevronDownIcon />
+                      </Select.ScrollDownButton>
+                    </Select.Content>
+                  </Select.Root>
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
                 <input
@@ -361,17 +435,10 @@ const IssueStock = () => {
             <div className="mt-6 flex justify-end space-x-4">
               <Button
                 onClick={addItem}
-                disabled={isLoading || !currentItem.lotId || !currentItem.quantity || !currentItem.transactionType}
+                disabled={isLoading || !currentItem.quantity || !currentItem.transactionType || (isManualSelection && !currentItem.lotId)}
                 className="px-4 py-2 text-sm font-medium rounded-lg shadow-sm bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
                 Add Item
-              </Button>
-              <Button
-                onClick={() => navigate('/issue-stock/preview')}
-                disabled={isLoading || addedItems.length === 0}
-                className="px-4 py-2 text-sm font-medium rounded-lg shadow-sm bg-yellow-600 text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-              >
-                Preview
               </Button>
             </div>
           </div>
@@ -383,24 +450,30 @@ const IssueStock = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available Qty</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ProductCode</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ProductName</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot Code</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prod Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exp Date</th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {addedItems.map((item, index) => {
-                      const lot = lots.find(l => l._id === item.lotId);
+                      const lotInTable = addedItems.find(i => i.lotCode === item.lotCode);
+                      const lot = lots.find(l => l._id.toString() === item.lotId) || lotInTable;
+                      console.log('Mapping item:', item, 'Lot found:', lot);
+                      const productId = lot?.productId?._id?.toString() || lot?.productId?.toString();
+                      const product = productId ? products.find(p => p._id === productId) : null;
                       return (
                         <tr key={index} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.productName}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lot?.lotCode}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product?.productCode || lotInTable?.productCode || 'N/A'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product?.name || lotInTable?.productName || 'Unknown'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.lotCode}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lot?.qtyOnHand}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.transactionType}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lot ? new Date(lot.prodDate || lot.productionDate).toLocaleDateString() : '-'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lot ? new Date(lot.expDate).toLocaleDateString() : '-'}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button
                               onClick={() => removeItem(index)}

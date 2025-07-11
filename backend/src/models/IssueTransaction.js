@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const issueTransactionSchema = new mongoose.Schema({
   transactionNumber: { type: String, required: true, unique: true },
   type: { type: String, enum: ['Sale', 'Waste', 'Welfares', 'Activities', 'Transfer'], required: true },
@@ -12,3 +14,5 @@ const issueTransactionSchema = new mongoose.Schema({
   status: { type: String, enum: ['Active', 'Cancelled'], default: 'Active' },
   note: String
 });
+
+module.exports = mongoose.model('IssueTransaction', issueTransactionSchema);

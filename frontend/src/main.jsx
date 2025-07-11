@@ -15,6 +15,9 @@ import ManageDamage from './pages/ManageDamage';
 import Settings from './pages/Settings';
 import StockReports from './pages/StockReports';
 import Suppliers from './pages/Suppliers';
+import IssueStock from './pages/IssueStock';
+import IssueHistory from './pages/IssueHistory';
+
 
 // Component เพื่อแสดง Toast เมื่อ Unauthorized
 const UnauthorizedToast = () => {
@@ -97,6 +100,8 @@ createRoot(document.getElementById('root')).render(
           <Route path="/manage-damage" element={<ProtectedRoute requiredPermissions={[{ feature: 'manageDamage', permissions: ['Show'] }]}><ManageDamage /></ProtectedRoute>} />
           <Route path="/stock-reports" element={<ProtectedRoute requiredRoles={['admin', 'user']}><StockReports /></ProtectedRoute>} />
           <Route path="/suppliers" element={<ProtectedRoute requiredRoles={['admin', 'user']}><Suppliers /></ProtectedRoute>} />
+          <Route path="/issue-stock" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueStock /></ProtectedRoute>} />
+          <Route path="/issue-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueHistory /></ProtectedRoute>} />
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />

@@ -21,6 +21,9 @@ const { format, parse, startOfDay, endOfDay, differenceInDays } = require('date-
 const DamagedAuditTrail = require('../models/DamagedAuditTrail');
 const Setting = require('../models/Settings');
 const { updateUserSchema } = require('../models/User');
+const IssueTransaction = require('../models/IssueTransaction');
+
+
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -403,15 +406,15 @@ router.get('/products', authMiddleware, async (req, res) => {
       }
       products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
 
-    // Admin สามารถดู Product ทั้งหมดได้ 
-    // } else if (req.user.role !== 'admin' && req.user.warehouse) { // เปลี่ยนจาก assignedWarehouse
-    //   const warehouseId = new mongoose.Types.ObjectId(req.user.warehouse);
-    //   const lots = await Lot.find({ warehouse: warehouseId }).select('productId').lean();
-    //   const productIds = [...new Set(lots.map(l => l.productId?.toString()).filter(Boolean))];
-    //   if (productIds.length === 0) {
-    //     return res.status(200).json([]); // ไม่มี Product ใน Warehouse นี้
-    //   }
-    //   products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
+      // Admin สามารถดู Product ทั้งหมดได้ 
+      // } else if (req.user.role !== 'admin' && req.user.warehouse) { // เปลี่ยนจาก assignedWarehouse
+      //   const warehouseId = new mongoose.Types.ObjectId(req.user.warehouse);
+      //   const lots = await Lot.find({ warehouse: warehouseId }).select('productId').lean();
+      //   const productIds = [...new Set(lots.map(l => l.productId?.toString()).filter(Boolean))];
+      //   if (productIds.length === 0) {
+      //     return res.status(200).json([]); // ไม่มี Product ใน Warehouse นี้
+      //   }
+      //   products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
 
 
     } else {
@@ -444,6 +447,14 @@ router.post('/products', authMiddleware, async (req, res) => {
     if (existingProduct) {
       return res.status(400).json({ message: 'Product code already exists' });
     }
+
+
+    // ตรวจสอบว่า category ถูกต้อง
+    const categoryExists = await Category.findById(category);
+    if (!categoryExists) {
+      return res.status(400).json({ message: 'Invalid category' });
+    }
+
 
     const product = await Product.create({ productCode, name, category, sku });
     res.json({ message: 'Product created successfully', product });
@@ -1915,9 +1926,127 @@ router.get('/stock-reports/export', authMiddleware, async (req, res) => {
 });
 
 ///////////////////////////
+// Issue Stock
+router.post('/issue', authMiddleware, async (req, res) => {
+  try {
+    const { lots, type, destinationWarehouseId, note } = req.body;
+    const user = req.user;
+    const warehouseId = user.role !== 'admin' ? user.warehouse : req.body.warehouse;
+
+    if (!warehouseId || !type || !lots || lots.length === 0) {
+      return res.status(400).json({ message: 'Warehouse, type, and lots are required' });
+    }
+
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res.status(400).json({ message: 'Warehouse not found' });
+    }
+
+    // Generate Transaction Number
+    const count = await Lot.countDocuments({ warehouse: warehouseId }); // ใช้ Lot แทน TransactionCounter
+    const transactionNumber = `ISS-${warehouse.warehouseCode}-${String(count + 1).padStart(5, '0')}`;
+
+    for (const lot of lots) {
+      const dbLot = await Lot.findById(lot.lotId);
+      if (!dbLot || dbLot.qtyOnHand < lot.quantity) {
+        return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId}` });
+      }
+      dbLot.qtyOnHand -= lot.quantity;
+      dbLot.transactions.push({
+        userId: user._id,
+        reason: `Issued (${type})`,
+        quantityAdjusted: -lot.quantity,
+        beforeQty: dbLot.qtyOnHand + lot.quantity,
+        afterQty: dbLot.qtyOnHand,
+        transactionType: 'Issue',
+        warehouseId: new mongoose.Types.ObjectId(warehouseId)
+      });
+      if (destinationWarehouseId) {
+        dbLot.transactions.push({
+          userId: user._id,
+          reason: `Transferred to ${destinationWarehouseId}`,
+          quantityAdjusted: -lot.quantity,
+          beforeQty: dbLot.qtyOnHand + lot.quantity,
+          afterQty: dbLot.qtyOnHand,
+          transactionType: 'Transfer',
+          warehouseId: new mongoose.Types.ObjectId(warehouseId),
+          destinationWarehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
+        });
+        // Transfer logic to destination (to be implemented)
+      }
+      await dbLot.save();
+    }
+
+    logger.info('Issue transaction created', { transactionNumber });
+    res.json({ message: 'Stock issued successfully', transactionNumber });
+  } catch (error) {
+    logger.error('Error issuing stock:', error);
+    res.status(500).json({ message: 'Error issuing stock', error: error.message });
+  }
+});
+
+// Issue History
+router.get('/issue-history', authMiddleware, async (req, res) => {
+  try {
+    const { type, warehouse, startDate, endDate } = req.query;
+    const user = req.user;
+    const query = {};
+
+    if (user.role !== 'admin' && user.warehouse) {
+      query.warehouseId = new mongoose.Types.ObjectId(user.warehouse);
+    } else if (warehouse && warehouse !== 'all') {
+      query.warehouseId = new mongoose.Types.ObjectId(warehouse);
+    }
+
+    if (type) query.type = type;
+    if (startDate && endDate) {
+      query.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+
+    const history = await IssueTransaction.find(query)
+      .populate('warehouseId')
+      .populate('userId')
+      .lean();
+    res.json(history);
+  } catch (error) {
+    logger.error('Error fetching issue history:', error);
+    res.status(500).json({ message: 'Error fetching issue history', error: error.message });
+  }
+});
 
 
+// Adjust Stock
+router.post('/adjust-stock', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only admin can adjust stock' });
+    }
+    const { lotId, quantity, reason } = req.body;
+    const lot = await Lot.findById(lotId);
+    if (!lot) return res.status(404).json({ message: 'Lot not found' });
 
+    const beforeQty = lot.qtyOnHand;
+    lot.qtyOnHand += Number(quantity);
+    const afterQty = lot.qtyOnHand;
+
+    lot.transactions.push({
+      userId: req.user._id,
+      reason,
+      quantityAdjusted: quantity,
+      beforeQty,
+      afterQty,
+      transactionType: 'Adjust',
+      warehouseId: lot.warehouse
+    });
+
+    await lot.save();
+    logger.info('Stock adjusted', { lotId, quantity, reason });
+    res.json({ message: 'Stock adjusted successfully', newQtyOnHand: afterQty });
+  } catch (error) {
+    logger.error('Error adjusting stock:', error);
+    res.status(500).json({ message: 'Error adjusting stock', error: error.message });
+  }
+});
 
 
 

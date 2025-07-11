@@ -44,6 +44,7 @@ const ReceiveStock = () => {
       navigate('/login');
       return;
     }
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.exp * 1000 < Date.now()) {
@@ -68,14 +69,24 @@ const ReceiveStock = () => {
           axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
           axios.get('http://localhost:3000/api/suppliers', { headers: { Authorization: `Bearer ${token}` } }),
         ]);
+
         setProducts(productsRes.data || []);
         setCategories(categoriesRes.data || []);
         setWarehouses(warehousesRes.data || []);
         setSuppliers(suppliersRes.data || []);
 
-        // ตั้งค่า Warehouse ตาม warehouse ของ User
-        const assignedWarehouseId = user.role === 'admin' ? '' : (user.warehouse || ''); // เปลี่ยนจาก user.assignedWarehouse
-        const defaultWarehouseId = assignedWarehouseId || (warehousesRes.data.length > 0 ? warehousesRes.data[0]._id : '');
+        // === ตั้งค่า default warehouse ===
+        let defaultWarehouseId = '';
+
+        if (user.role === 'admin') {
+          const assignedWarehouseExists = warehousesRes.data.find(w => w._id === user.warehouse);
+          defaultWarehouseId = assignedWarehouseExists
+            ? user.warehouse
+            : (warehousesRes.data.length > 0 ? warehousesRes.data[0]._id : '');
+        } else {
+          defaultWarehouseId = user.warehouse || '';
+        }
+
         const defaultSupplier = suppliersRes.data.length > 0 ? suppliersRes.data[0]._id : '';
 
         setSelectedWarehouseId(defaultWarehouseId);
@@ -97,8 +108,21 @@ const ReceiveStock = () => {
         setIsLoading(false);
       }
     };
+
     fetchData();
-  }, [token, navigate, user.role, user.warehouse]); // เปลี่ยนจาก user.assignedWarehouse
+  }, [token, navigate, user.role, user.warehouse]);
+
+
+
+
+
+
+
+
+
+
+
+
 
   const updateCurrentLot = (field, value) => {
     const updatedLot = { ...currentLot, [field]: value };

@@ -14,6 +14,7 @@ const lotSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
   qtyOnHand: { type: Number, default: 0 },
   damaged: { type: Number, default: 0 },
+
   transactions: [{
     timestamp: { type: Date, default: Date.now },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -22,7 +23,8 @@ const lotSchema = new mongoose.Schema({
     beforeQty: Number,
     afterQty: Number,
     transactionType: { type: String, enum: ['Receive', 'Issue', 'Transfer', 'Adjust', 'Cancel'] },
-    warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' }
+    warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' },
+    destinationWarehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' } // เพิ่มสำหรับ Transfer
   }]
 });
 

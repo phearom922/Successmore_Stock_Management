@@ -16,6 +16,11 @@ import LotManagement from './pages/LotManagement';
 import ManageDamage from './pages/ManageDamage';
 import Settings from './pages/Settings';
 import StockReports from './pages/StockReports';
+import IssueStock from './pages/IssueStock';
+import IssueHistory from './pages/IssueHistory';
+
+
+
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -83,9 +88,6 @@ function App() {
               <Route path="/users" element={<Users />} />
               <Route path="/warehouses" element={<Warehouses />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              
-              
-              
               <Route path="/categories" element={<Categories />} />
               <Route path="/products" element={<Products />} />
               <Route path="/*" element={<Dashboard />} />
@@ -96,6 +98,8 @@ function App() {
               <Route path="/manage-damage" element={<ManageDamage />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/stock-reports" element={<StockReports />} />
+              <Route path="/issue-stock" element={<IssueStock />} />
+              <Route path="/issue-history" element={<IssueHistory />} />
             </Routes>
           </div>
         </main>
