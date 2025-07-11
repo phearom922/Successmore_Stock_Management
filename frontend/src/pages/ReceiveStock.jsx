@@ -11,10 +11,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'; // ใช้คอมโพเนนต์จาก UI Library (เช่น shadcn)
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
 const ReceiveStock = () => {
-  const [selectedWarehouseId, setSelectedWarehouseId] = useState(''); // ใช้ _id
+  const [selectedWarehouseId, setSelectedWarehouseId] = useState('');
   const [selectedSupplier, setSelectedSupplier] = useState('');
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -28,13 +28,13 @@ const ReceiveStock = () => {
     qtyPerBox: '',
     productionDate: null,
     expDate: null,
-    warehouse: '', // ใช้ _id
+    warehouse: '',
     supplierId: ''
   });
   const [addedLots, setAddedLots] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // State สำหรับ Modal
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
@@ -73,10 +73,10 @@ const ReceiveStock = () => {
         setWarehouses(warehousesRes.data || []);
         setSuppliers(suppliersRes.data || []);
 
-        // ตั้งค่า Warehouse ตาม assignedWarehouse ของ User
-        const assignedWarehouseId = user.role === 'admin' ? '' : user.assignedWarehouse || '';
-        const defaultWarehouseId = assignedWarehouseId || (warehousesRes.data[0]?._id || '');
-        const defaultSupplier = suppliersRes.data[0]?._id || '';
+        // ตั้งค่า Warehouse ตาม warehouse ของ User
+        const assignedWarehouseId = user.role === 'admin' ? '' : (user.warehouse || ''); // เปลี่ยนจาก user.assignedWarehouse
+        const defaultWarehouseId = assignedWarehouseId || (warehousesRes.data.length > 0 ? warehousesRes.data[0]._id : '');
+        const defaultSupplier = suppliersRes.data.length > 0 ? suppliersRes.data[0]._id : '';
 
         setSelectedWarehouseId(defaultWarehouseId);
         setSelectedSupplier(defaultSupplier);
@@ -98,7 +98,7 @@ const ReceiveStock = () => {
       }
     };
     fetchData();
-  }, [token, navigate, user.role, user.assignedWarehouse]); // เพิ่ม user.assignedWarehouse ใน dependency
+  }, [token, navigate, user.role, user.warehouse]); // เปลี่ยนจาก user.assignedWarehouse
 
   const updateCurrentLot = (field, value) => {
     const updatedLot = { ...currentLot, [field]: value };
@@ -126,7 +126,7 @@ const ReceiveStock = () => {
     const newLot = {
       ...currentLot,
       quantity: computedQuantity,
-      warehouse: selectedWarehouseId, // ใช้ _id
+      warehouse: selectedWarehouseId,
       supplierId: selectedSupplier
     };
 
@@ -149,7 +149,7 @@ const ReceiveStock = () => {
       qtyPerBox: '',
       productionDate: null,
       expDate: null,
-      warehouse: selectedWarehouseId, // ใช้ _id
+      warehouse: selectedWarehouseId,
       supplierId: selectedSupplier
     });
   };
@@ -219,11 +219,11 @@ const ReceiveStock = () => {
           qtyPerBox: Number(lot.qtyPerBox),
           productionDate: lot.productionDate.toISOString(),
           expDate: lot.expDate.toISOString(),
-          warehouse: lot.warehouse, // ใช้ _id
+          warehouse: lot.warehouse,
           supplierId: lot.supplierId
         }))
       };
-      console.log('Payload being sent:', JSON.stringify(payload, null, 2)); // ดีบั๊ก payload
+      console.log('Payload being sent:', JSON.stringify(payload, null, 2));
       const response = await axios.post('http://localhost:3000/api/receive', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -318,10 +318,10 @@ const ReceiveStock = () => {
                     setSelectedWarehouseId(value);
                     setCurrentLot(prev => ({ ...prev, warehouse: value }));
                   }}
-                  disabled={user.role !== 'admin' || isLoading} // จำกัดการเลือกสำหรับ User Role
+                  disabled={user.role !== 'admin' || isLoading}
                 >
                   <Select.Trigger
-                    className={`${user.role === 'user' ? "bg-gray-200 text-gray-500" : "bg-white"} mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none  hover:bg-gray-100 transition-colors duration-200`}
+                    className={`${user.role === 'user' ? "bg-gray-200 text-gray-500" : "bg-white"} mt-1 block w-full relative pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none hover:bg-gray-100 transition-colors duration-200`}
                   >
                     <Select.Value placeholder="Select warehouse" />
                     <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -340,7 +340,7 @@ const ReceiveStock = () => {
                             key={w._id}
                             value={w._id}
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
-                            disabled={user.role !== 'admin' && w._id !== user.assignedWarehouse} // จำกัดเฉพาะ assignedWarehouse
+                            disabled={user.role !== 'admin' && w._id !== user.warehouse} // เปลี่ยนจาก user.assignedWarehouse
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
                             <Select.ItemIndicator className="absolute right-2 inline-flex items-center">

@@ -13,7 +13,17 @@ const lotSchema = new mongoose.Schema({
   transactionNumber: { type: String, required: true },
   status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
   qtyOnHand: { type: Number, default: 0 },
-  damaged: { type: Number, default: 0 }
+  damaged: { type: Number, default: 0 },
+  transactions: [{
+    timestamp: { type: Date, default: Date.now },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    reason: String,
+    quantityAdjusted: Number,
+    beforeQty: Number,
+    afterQty: Number,
+    transactionType: { type: String, enum: ['Receive', 'Issue', 'Transfer', 'Adjust', 'Cancel'] },
+    warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' }
+  }]
 });
 
 module.exports = mongoose.model('Lot', lotSchema);

@@ -134,9 +134,9 @@ const LotManagement = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
-      if (!isAdmin && user.assignedWarehouse) {
-        setWarehouse(user.assignedWarehouse); // ใช้ assignedWarehouse สำหรับ User Role
-        setInputWarehouse(user.assignedWarehouse); // ตั้งค่า Input ตาม assignedWarehouse
+      if (!isAdmin && user.warehouse) {
+        setWarehouse(user.warehouse); // ใช้ warehouse สำหรับ User Role
+        setInputWarehouse(user.warehouse); // ตั้งค่า Input ตาม warehouse
       }
     } catch (error) {
       console.error('Error fetching warehouses:', error);
@@ -164,7 +164,7 @@ const LotManagement = () => {
     try {
       const queryParams = {
         searchQuery,
-        warehouse: isAdmin ? warehouse : user.assignedWarehouse || '', // จำกัด User Role
+        warehouse: isAdmin ? warehouse : user.warehouse || '', // จำกัด User Role
         page,
         limit
       };
@@ -194,7 +194,7 @@ const LotManagement = () => {
   const checkExpiringLots = async () => {
     try {
       const queryParams = {
-        warehouse: isAdmin ? '' : user.assignedWarehouse || '' // จำกัด User Role
+        warehouse: isAdmin ? '' : user.warehouse || '' // จำกัด User Role
       };
       const { data } = await axios.get('http://localhost:3000/api/lot-management/expiring', {
         headers: { Authorization: `Bearer ${token}` },
@@ -227,7 +227,7 @@ const handleExport = async () => {
     const token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:3000/api/lot-management/export', {
       headers: { Authorization: `Bearer ${token}` },
-      params: { searchQuery, warehouse: isAdmin ? warehouse : user.assignedWarehouse || '' },
+      params: { searchQuery, warehouse: isAdmin ? warehouse : user.warehouse || '' },
       responseType: 'blob'
     });
     const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -312,9 +312,9 @@ const handleExport = async () => {
 
   const clearFilters = () => {
     setInputSearch('');
-    setInputWarehouse(isAdmin ? 'all' : user.assignedWarehouse || 'all'); // รีเซ็ตตาม Role
+    setInputWarehouse(isAdmin ? 'all' : user.warehouse || 'all'); // รีเซ็ตตาม Role
     setSearchQuery('');
-    setWarehouse(isAdmin ? 'all' : user.assignedWarehouse || 'all');
+    setWarehouse(isAdmin ? 'all' : user.warehouse || 'all');
     setPage(1);
   };
 
@@ -421,7 +421,7 @@ const handleExport = async () => {
                             key={w._id}
                             value={w._id}
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer"
-                            disabled={!isAdmin && w._id !== user.assignedWarehouse} // จำกัด User Role
+                            disabled={!isAdmin && w._id !== user.warehouse} // จำกัด User Role
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
                             <Select.ItemIndicator className="absolute right-2 inline-flex items-center">

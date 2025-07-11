@@ -6,9 +6,6 @@ import Users from './pages/Users';
 import Warehouses from './pages/Warehouses';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import IssueForm from './pages/IssueForm';
-import CreateStock from './pages/CreateStock';
-import ManageStockStatus from './pages/ManageStockStatus';
 import Categories from './pages/Categories';
 import Products from './pages/Products';
 import { toast } from 'react-toastify';
@@ -86,9 +83,9 @@ function App() {
               <Route path="/users" element={<Users />} />
               <Route path="/warehouses" element={<Warehouses />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/issue" element={<IssueForm />} />
-              <Route path="/create-stock" element={<CreateStock />} />
-              <Route path="/manage-stock-status" element={<ManageStockStatus />} />
+              
+              
+              
               <Route path="/categories" element={<Categories />} />
               <Route path="/products" element={<Products />} />
               <Route path="/*" element={<Dashboard />} />

@@ -9,23 +9,24 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-
 import { FaPlus, FaRegTrashAlt, FaEdit, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+
+
+
 
 const defaultFeatures = ['lotManagement', 'manageDamage', 'category', 'products'];
 const defaultPermissions = defaultFeatures.map(f => ({ feature: f, permissions: [] }));
-
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [search, setSearch] = useState('');
   const [warehouseFilter, setWarehouseFilter] = useState('all');
   const [openModal, setOpenModal] = useState(false);
-  const [form, setForm] = useState({ username: '', lastName: '', password: '', role: 'user', assignedWarehouse: '', permissions: defaultPermissions });
+  const [form, setForm] = useState({ username: '', lastName: '', password: '', role: 'user', warehouse: '', permissions: defaultPermissions });
   const [editingId, setEditingId] = useState(null);
   const [viewUser, setViewUser] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ open: false, user: null });
-  const [isFetching, setIsFetching] = useState(false); // Flag เพื่อป้องกัน Loop
+  const [isFetching, setIsFetching] = useState(false);
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -47,40 +48,54 @@ const Users = () => {
   }, []);
 
   const fetchData = async () => {
-    if (isFetching) return; // ป้องกันการเรียกซ้ำ
+    if (isFetching) return;
     setIsFetching(true);
     try {
       const [userRes, whRes] = await Promise.all([
         axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } }),
         axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
       ]);
-      console.log('Fetched users:', userRes.data); // ดีบั๊ก
-      console.log('Fetched warehouses:', whRes.data); // ดีบั๊ก
+      console.log('Fetched users:', userRes.data);
+      console.log('Fetched warehouses:', whRes.data.map(w => ({ _id: w._id, name: w.name, warehouseCode: w.warehouseCode })));
       setUsers(userRes.data);
       setWarehouses(whRes.data);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Failed to load users or warehouses');
     } finally {
-      setIsFetching(false); // รีเซ็ต Flag หลังเสร็จ
+      setIsFetching(false);
+    }
+  };
+
+  const refreshWarehouses = async () => {
+    try {
+      const whRes = await axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } });
+      console.log('Refreshed warehouses:', whRes.data.map(w => ({ _id: w._id, name: w.name, warehouseCode: w.warehouseCode })));
+      setWarehouses(whRes.data);
+    } catch (error) {
+      console.error('Error refreshing warehouses:', error);
+      toast.error('Failed to refresh warehouses');
     }
   };
 
   const filteredUsers = users.filter(u => {
     const matchSearch = u.username.toLowerCase().includes(search.toLowerCase()) ||
       u.lastName.toLowerCase().includes(search.toLowerCase());
-    const warehouse = u.assignedWarehouse ? warehouses.find(w => {
-      const cleanUserWarehouse = u.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
-      return w._id.toString() === cleanUserWarehouse;
-    }) : null;
-    const warehouseName = warehouse ? warehouse.name : '';
-    const matchWarehouse = warehouseFilter === 'all' || 
+    let warehouseId = u.warehouse;
+    if (warehouseId && typeof warehouseId === 'string' && warehouseId.includes('(')) {
+      warehouseId = warehouseId.split(' ')[0]; // ตัดส่วนที่ไม่ใช่ _id
+    }
+    const warehouse = warehouseId ? warehouses.find(w => w._id.toString() === warehouseId) : null;
+    const isAssigned = warehouse ? warehouse.assignedUsers.some(userId => userId.toString() === u._id.toString()) : false;
+    const warehouseName = isAssigned && warehouse ? warehouse.name : '';
+    const matchWarehouse = warehouseFilter === 'all' ||
       (warehouseName && warehouseName.toLowerCase().includes(warehouseFilter.toLowerCase()));
+    console.log(`User: ${u.username}, Warehouse ID: ${warehouseId}, Found Warehouse: ${warehouse ? warehouse.name : 'Not Found'}, Is Assigned: ${isAssigned}`);
     return matchSearch && matchWarehouse;
   });
 
   const resetForm = () => {
-    setForm({ username: '', lastName: '', password: '', role: 'user', assignedWarehouse: '', permissions: defaultPermissions });
+    setForm({ username: '', lastName: '', password: '', role: 'user', warehouse: '', permissions: defaultPermissions });
     setEditingId(null);
   };
 
@@ -90,15 +105,17 @@ const Users = () => {
       return;
     }
 
-    console.log('Submitting form:', form); // ดีบั๊ก Payload
+    console.log('Submitting form:', form);
     try {
       if (editingId) {
         const originalUser = users.find(u => u._id === editingId);
         let updatePayload = { ...form };
-        if (form.assignedWarehouse === originalUser.assignedWarehouse) {
-          delete updatePayload.assignedWarehouse;
+        if (form.warehouse === originalUser.warehouse) {
+          delete updatePayload.warehouse;
+        } else if (!form.warehouse || form.warehouse === '' || form.warehouse === 'None') {
+          updatePayload.warehouse = null; // ส่ง null แทน "None"
         } else {
-          const warehouse = warehouses.find(w => w._id.toString() === form.assignedWarehouse);
+          const warehouse = warehouses.find(w => w._id.toString() === form.warehouse);
           if (warehouse) {
             const isAssigned = warehouse.assignedUsers.some(userId => userId.toString() === editingId);
             if (!isAssigned) {
@@ -113,39 +130,40 @@ const Users = () => {
         toast.success('User updated');
       } else {
         const defaultWarehouse = warehouses.find(w => w.warehouseCode === 'PNH-WH-01');
-        const payload = { ...form, assignedWarehouse: form.assignedWarehouse || (defaultWarehouse ? defaultWarehouse._id : warehouses.length > 0 ? warehouses[0]._id : null) };
-        if (payload.role === 'user' && !payload.assignedWarehouse) {
+        const payload = { ...form, warehouse: form.warehouse || (defaultWarehouse ? defaultWarehouse._id : warehouses.length > 0 ? warehouses[0]._id : null) };
+        if (payload.role === 'user' && !payload.warehouse) {
           toast.error('User role must have an assigned warehouse');
           return;
         }
         const response = await axios.post(`http://localhost:3000/api/users`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        if (payload.assignedWarehouse) {
-          await axios.put(`http://localhost:3000/api/warehouses/${payload.assignedWarehouse}`, {
+        if (payload.warehouse) {
+          await axios.put(`http://localhost:3000/api/warehouses/${payload.warehouse}`, {
             assignedUsers: [response.data.user._id]
           }, { headers: { Authorization: `Bearer ${token}` } });
         }
         toast.success('User created successfully');
-        navigate('/users'); // กลับไปหน้า Users หลังสร้างสำเร็จ
+        navigate('/users');
+        await refreshWarehouses();
+        await fetchData();
       }
-      fetchData();
       setOpenModal(false);
       resetForm();
     } catch (error) {
       console.error('Error saving user:', error.response?.data || error);
       toast.error('Error saving user: ' + (error.response?.data?.message || error.message));
-      setOpenModal(false); // ปิด Modal หลัง Error
-      resetForm(); // รีเซ็ต Form หลัง Error
+      setOpenModal(false);
+      resetForm();
     }
   };
 
   const handleEdit = (user) => {
     setForm({
       ...user,
-      password: '', // รีเซ็ต password เฉพาะ
+      password: '',
       permissions: user.permissions || defaultPermissions,
-      assignedWarehouse: user.assignedWarehouse || '',
+      warehouse: user.warehouse || '',
     });
     setEditingId(user._id);
     setOpenModal(true);
@@ -263,7 +281,7 @@ const Users = () => {
                     <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={form.assignedWarehouse} onValueChange={(val) => setForm({ ...form, assignedWarehouse: val })}>
+                <Select value={form.warehouse} onValueChange={(val) => setForm({ ...form, warehouse: val })}>
                   <SelectTrigger className="w-full border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
                     <SelectValue placeholder="Select Warehouse" />
                   </SelectTrigger>
@@ -358,15 +376,14 @@ const Users = () => {
                         <div className="text-gray-500 text-sm">{user.lastName}</div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={`${user.role === "user" ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800" } `}>{user.role}</Badge>
+                        <Badge className={`${user.role === "user" ? "bg-orange-100 text-orange-800" : "bg-blue-100 text-blue-800"} `}>{user.role}</Badge>
                       </TableCell>
                       <TableCell>
-                        {user.assignedWarehouse ? 
-                          (warehouses.find(w => {
-                            const cleanUserWarehouse = user.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
-                            return w._id.toString() === cleanUserWarehouse;
-                          })?.name || 'Not Assigned') 
-                          : 'Not Assigned'}
+                        {user.warehouse && typeof user.warehouse === 'string' && user.warehouse.includes('(')
+                          ? (warehouses.find(w => w._id.toString() === user.warehouse.split(' ')[0])?.name || 'Not Assigned')
+                          : (user.warehouse ?
+                            (warehouses.find(w => w._id.toString() === user.warehouse.toString())?.name || 'Not Assigned') : 'Not Assigned')}
+                        {user.warehouse && warehouses.find(w => w._id.toString() === (typeof user.warehouse === 'string' && user.warehouse.includes('(') ? user.warehouse.split(' ')[0] : user.warehouse.toString()))?.assignedUsers.includes(user._id) ? '' : ' (Not Assigned)'}
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.isActive ? 'default' : 'outline'} className={user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
@@ -394,12 +411,9 @@ const Users = () => {
                                   <>
                                     <p>Are you sure you want to delete user <span className="font-bold text-red-600">{deleteModal.user.username}</span>?</p>
                                     <p className="mt-2 text-sm text-gray-500">This action cannot be undone.</p>
-                                    {deleteModal.user.assignedWarehouse && (
+                                    {deleteModal.user.warehouse && (
                                       <p className="mt-2 text-sm text-yellow-600">
-                                        Warning: This user is assigned to {warehouses.find(w => {
-                                          const cleanUserWarehouse = deleteModal.user.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
-                                          return w._id.toString() === cleanUserWarehouse;
-                                        })?.name || 'a warehouse'}. Please update Warehouse Management after deletion.
+                                        Warning: This user is assigned to {warehouses.find(w => w._id.toString() === (deleteModal.user.warehouse.includes('(') ? deleteModal.user.warehouse.split(' ')[0] : deleteModal.user.warehouse.toString()))?.name || 'a warehouse'}. Please update Warehouse Management after deletion.
                                       </p>
                                     )}
                                     <p className="mt-4 text-xs text-gray-500">Admin: <span className="font-semibold text-indigo-600">{userRole}</span></p>
@@ -440,10 +454,10 @@ const Users = () => {
                 <div><strong className="text-gray-700">Name:</strong> {viewUser.username} {viewUser.lastName}</div>
                 <div><strong className="text-gray-700">Role:</strong> {viewUser.role}</div>
                 <div><strong className="text-gray-700">Status:</strong> {viewUser.isActive ? 'Active' : 'Disabled'}</div>
-                <div><strong className="text-gray-700">Warehouse:</strong> {warehouses.find(w => {
-                  const cleanUserWarehouse = viewUser.assignedWarehouse.toString().replace(/\s*\(\)/g, '');
-                  return w._id.toString() === cleanUserWarehouse;
-                })?.name || 'Not Assigned'}</div>
+                <div><strong className="text-gray-700">Warehouse:</strong> {viewUser.warehouse && typeof viewUser.warehouse === 'string' && viewUser.warehouse.includes('(')
+                  ? (warehouses.find(w => w._id.toString() === viewUser.warehouse.split(' ')[0])?.name || 'Not Assigned')
+                  : (viewUser.warehouse ? warehouses.find(w => w._id.toString() === viewUser.warehouse.toString())?.name || 'Not Assigned' : 'Not Assigned')}
+                  {viewUser.warehouse && !warehouses.find(w => w._id.toString() === (typeof viewUser.warehouse === 'string' && viewUser.warehouse.includes('(') ? viewUser.warehouse.split(' ')[0] : viewUser.warehouse.toString()))?.assignedUsers.includes(viewUser._id) ? ' (Not Assigned)' : ''}</div>
               </div>
               <Table className="text-sm">
                 <TableHeader>

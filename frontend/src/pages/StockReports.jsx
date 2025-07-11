@@ -26,8 +26,8 @@ const StockReports = () => {
   // ดึงข้อมูล user จาก token
   const userData = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const isAdmin = userData.role === 'admin';
-  const userWarehouseId = userData.assignedWarehouse ? userData.assignedWarehouse.toString() : '';
-  console.log('User data from token:', { userWarehouseId, isAdmin, rawAssignedWarehouse: userData.assignedWarehouse }); // เพิ่มการดีบั๊ก
+  const userWarehouseId = userData.warehouse ? userData.warehouse.toString() : '';
+  console.log('User data from token:', { userWarehouseId, isAdmin, rawWarehouse: userData.warehouse }); 
 
   useEffect(() => {
     fetchWarehouses();

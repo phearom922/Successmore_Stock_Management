@@ -12,13 +12,14 @@ const authMiddleware = (req, res, next) => {
       _id: decoded.id,
       role: decoded.role,
       username: decoded.username,
-      assignedWarehouse: decoded.assignedWarehouse, // ✅ แก้ตรงนี้
+      warehouse: decoded.warehouse, // เปลี่ยนจาก assignedWarehouse
       permissions: decoded.permissions || [],
       isActive: decoded.isActive ?? true,
     };
     if (!req.user.isActive) {
       return res.status(403).json({ message: 'User is disabled' });
     }
+    logger.debug('Authenticated user:', { user: req.user });
     next();
   } catch (error) {
     logger.error('Authentication failed', { error: error.message, stack: error.stack });

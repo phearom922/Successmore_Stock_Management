@@ -4,10 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import './index.css';
 import App from './App';
 import Dashboard from './pages/Dashboard';
-import IssueForm from './pages/IssueForm';
 import Login from './pages/Login';
-import CreateStock from './pages/CreateStock';
-import ManageStockStatus from './pages/ManageStockStatus';
 import Categories from './pages/Categories';
 import Products from './pages/Products';
 import Warehouses from './pages/Warehouses';
@@ -90,11 +87,8 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<ProtectedRoute requiredRoles={['admin', 'user']}><Dashboard /></ProtectedRoute>} />
-          <Route path="/issue" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueForm /></ProtectedRoute>} />
-          <Route path="/create-stock" element={<ProtectedRoute requiredRoles={['admin']}><CreateStock /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute requiredRoles={['admin']}><Users /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute requiredRoles={['admin']}><Settings /></ProtectedRoute>} />
-          <Route path="/manage-stock-status" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ManageStockStatus /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute requiredRoles={['admin']}><Settings /></ProtectedRoute>} />       
           <Route path="/categories" element={<ProtectedRoute requiredPermissions={[{ feature: 'category', permissions: ['Show'] }]}><Categories /></ProtectedRoute>} />
           <Route path="/products" element={<ProtectedRoute requiredPermissions={[{ feature: 'products', permissions: ['Show'] }]}><Products /></ProtectedRoute>} />
           <Route path="/warehouses" element={<ProtectedRoute requiredRoles={['admin']}><Warehouses /></ProtectedRoute>} />

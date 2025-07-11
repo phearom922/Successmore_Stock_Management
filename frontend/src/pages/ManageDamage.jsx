@@ -22,12 +22,12 @@ const ManageDamage = () => {
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const isAdmin = user.role === 'admin';
 
-  // ฟิลเตอร์ warehouse เฉพาะ assignedWarehouse ถ้าไม่ใช่ admin
+  // ฟิลเตอร์ warehouse เฉพาะ warehouse ถ้าไม่ใช่ admin
   let assignedWarehouseId = '';
-  if (user.assignedWarehouse) {
-    assignedWarehouseId = typeof user.assignedWarehouse === 'object' && user.assignedWarehouse._id
-      ? user.assignedWarehouse._id.toString()
-      : user.assignedWarehouse.toString();
+  if (user.warehouse) {
+    assignedWarehouseId = typeof user.warehouse === 'object' && user.warehouse._id
+      ? user.warehouse._id.toString()
+      : user.warehouse.toString();
   }
   const visibleWarehouses = isAdmin
     ? warehouses
@@ -63,7 +63,7 @@ const ManageDamage = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWarehouses(data);
-      if (!isAdmin && user.assignedWarehouse) {
+      if (!isAdmin && user.warehouse) {
         const defaultWarehouseId = assignedWarehouseId;
         setSelectedWarehouse(defaultWarehouseId);
         fetchProducts(defaultWarehouseId);
@@ -204,7 +204,7 @@ const ManageDamage = () => {
                     setSelectedWarehouse(value);
                     fetchProducts(value);
                   }}
-                  disabled={isLoading || (!isAdmin && user.assignedWarehouse)}
+                  disabled={isLoading || (!isAdmin && user.warehouse)}
                   required
                 >
                   <Select.Trigger

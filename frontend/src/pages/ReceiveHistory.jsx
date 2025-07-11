@@ -40,8 +40,8 @@ const ReceiveHistory = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
-      if (!isAdmin && user.assignedWarehouse) {
-        setWarehouseId(user.assignedWarehouse); // ใช้ assignedWarehouse สำหรับ User Role
+      if (!isAdmin && user.warehouse) {
+        setWarehouseId(user.warehouse); // ใช้ warehouse สำหรับ User Role
       }
     } catch (error) {
       console.error('Error fetching warehouses:', error);
@@ -56,7 +56,7 @@ const ReceiveHistory = () => {
       const queryParams = {
         startDate: start,
         endDate: end,
-        warehouse: isAdmin ? (params.warehouse || warehouseId) : user.assignedWarehouse || '', // จำกัด User Role
+        warehouse: isAdmin ? (params.warehouse || warehouseId) : user.warehouse || '', // จำกัด User Role
         searchQuery: params.searchQuery || searchQuery,
         userQuery: params.userQuery || userQuery,
         page,
@@ -88,7 +88,7 @@ const ReceiveHistory = () => {
         params: {
           startDate: startDate ? format(startOfDay(startDate), 'dd-MM-yyyy') : '',
           endDate: endDate ? format(endOfDay(endDate), 'dd-MM-yyyy') : '',
-          warehouse: isAdmin ? (warehouseId || '') : user.assignedWarehouse || '', // จำกัด User Role
+          warehouse: isAdmin ? (warehouseId || '') : user.warehouse || '', // จำกัด User Role
           searchQuery,
           userQuery
         },
@@ -117,7 +117,7 @@ const ReceiveHistory = () => {
   const clearFilters = () => {
     setStartDate(startOfDay(new Date()));
     setEndDate(endOfDay(new Date()));
-    setWarehouseId(isAdmin ? '' : user.assignedWarehouse || ''); // รีเซ็ตตาม Role
+    setWarehouseId(isAdmin ? '' : user.warehouse || ''); // รีเซ็ตตาม Role
     setSearchQuery('');
     setUserQuery('');
     setPage(1);
