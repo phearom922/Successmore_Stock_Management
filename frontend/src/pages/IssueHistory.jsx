@@ -151,8 +151,10 @@ const IssueHistory = () => {
         return { ...transaction, lots: lotsWithDetails };
       }));
 
-      setHistory(enrichedHistory);
-      setFilteredHistory(enrichedHistory);
+      // Sort by createdAt descending (latest first)
+      const sortedHistory = enrichedHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setHistory(sortedHistory);
+      setFilteredHistory(sortedHistory);
       setCurrentPage(1); // Reset to first page when new data loads
     } catch (error) {
       toast.error('Failed to load issue history');
