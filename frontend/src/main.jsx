@@ -17,6 +17,7 @@ import StockReports from './pages/StockReports';
 import Suppliers from './pages/Suppliers';
 import IssueStock from './pages/IssueStock';
 import IssueHistory from './pages/IssueHistory';
+import TransferOrder from './pages/TransferOrder';
 
 
 // Component เพื่อแสดง Toast เมื่อ Unauthorized
@@ -102,6 +103,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/suppliers" element={<ProtectedRoute requiredRoles={['admin', 'user']}><Suppliers /></ProtectedRoute>} />
           <Route path="/issue-stock" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueStock /></ProtectedRoute>} />
           <Route path="/issue-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueHistory /></ProtectedRoute>} />
+          <Route path="/transfer-order" element={<ProtectedRoute requiredRoles={['admin', 'user']}><TransferOrder /></ProtectedRoute>} />
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />

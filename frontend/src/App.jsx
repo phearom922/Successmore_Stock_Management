@@ -18,7 +18,8 @@ import Settings from './pages/Settings';
 import StockReports from './pages/StockReports';
 import IssueStock from './pages/IssueStock';
 import IssueHistory from './pages/IssueHistory';
-
+import TransferOrder from './pages/TransferOrder';
+TransferOrder
 
 
 
@@ -100,6 +101,7 @@ function App() {
               <Route path="/stock-reports" element={<StockReports />} />
               <Route path="/issue-stock" element={<IssueStock />} />
               <Route path="/issue-history" element={<IssueHistory />} />
+              <Route path="/transfer-order" element={<TransferOrder />} />
             </Routes>
           </div>
         </main>

@@ -41,6 +41,8 @@ import {
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
+
+
 const IssueHistory = () => {
   const [history, setHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
@@ -218,46 +220,162 @@ const IssueHistory = () => {
   };
 
   const generatePDF = (transaction) => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text('Issue Transaction Request', 80, 20, { align: 'center' });
-
-    // Transaction Info (Left-Right Layout)
-    doc.setFontSize(12);
-    doc.text('Transaction Details:', 20, 40);
-    doc.text(`Transaction #: ${transaction.transactionNumber}`, 20, 50);
-    doc.text(`Date: ${format(new Date(transaction.createdAt), 'dd/MM/yyyy')}`, 20, 60);
-    doc.text(`User: ${transaction.userId.username}`, 20, 70);
-    doc.text(`Warehouse: ${transaction.warehouseId.name}`, 20, 80);
-    doc.text(`Status: ${transaction.status}`, 20, 90);
-    doc.text(`Cancel By: ${transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : '-'}`, 20, 100);
-    doc.text(`Canceled Date: ${transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy') : '-'}`, 20, 110);
-
-    // Lots Table with Numbering
-    const startY = 130;
-    doc.setFontSize(12);
-    doc.text('Items List:', 20, startY);
-    doc.setFontSize(10);
-    doc.text('No.', 20, startY + 10);
-    doc.text('Product Code', 30, startY + 10);
-    doc.text('Product Name', 60, startY + 10);
-    doc.text('Lot Code', 100, startY + 10);
-    doc.text('Quantity', 130, startY + 10);
-    doc.text('Production Date', 150, startY + 10);
-    doc.text('Expiration Date', 180, startY + 10);
-
-    let y = startY + 20;
-    transaction.lots.forEach((lot, index) => {
-      doc.text(`${index + 1}.`, 20, y);
-      doc.text(lot.productCode || 'N/A', 30, y);
-      doc.text(lot.productName || 'N/A', 60, y);
-      doc.text(lot.lotCode || 'N/A', 100, y);
-      doc.text(String(lot.quantity), 130, y);
-      doc.text(lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : 'N/A', 150, y);
-      doc.text(lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : 'N/A', 180, y);
-      y += 10;
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      filters: ['ASCIIHexEncode']
     });
 
+    // -------------------- HEADER --------------------
+    // Add company logo (replace with your actual logo)
+    // doc.addImage(logoData, 'PNG', 15, 10, 30, 15);
+
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(40, 40, 40);
+    doc.text('TRANSACTION REQUEST', 105, 25, { align: 'center' });
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text('Issue Document', 105, 32, { align: 'center' });
+
+    // Header divider
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(15, 35, 195, 35);
+
+    // -------------------- TRANSACTION INFO --------------------
+    doc.setFontSize(10);
+    const leftX = 20;
+    const rightX = 110;
+    let infoY = 45;
+
+    // Left column
+    doc.setTextColor(80, 80, 80);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Transaction #:', leftX, infoY);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.transactionNumber, leftX + 30, infoY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Issue Type:', leftX, infoY + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.type, leftX + 30, infoY + 7);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Issued By:', leftX, infoY + 14);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.userId?.username || '-', leftX + 30, infoY + 14);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Cancelled By:', leftX, infoY + 21);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.cancelledBy?.username || '-', leftX + 30, infoY + 21);
+
+    // Right column
+    doc.setFont('helvetica', 'bold');
+    doc.text('Warehouse:', rightX, infoY);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.warehouseId.name, rightX + 30, infoY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Date:', rightX, infoY + 7);
+    doc.setFont('helvetica', 'normal');
+    doc.text(format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss'), rightX + 30, infoY + 7);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Status:', rightX, infoY + 14);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.status, rightX + 30, infoY + 14);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Cancelled Date:', rightX, infoY + 21);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy, HH:mm:ss') : '-', rightX + 30, infoY + 21);
+
+    // -------------------- ITEM TABLE --------------------
+    const tableStartY = infoY + 30;
+    let y = tableStartY;
+
+    // Section title
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(40, 40, 40);
+    doc.text('ITEMS LIST', leftX, y);
+
+    // Table Header
+    doc.setFontSize(10);
+    doc.setFillColor(240, 240, 240);
+    doc.rect(15, y + 5, 180, 8, 'F');
+    doc.setDrawColor(220, 220, 220);
+    doc.setLineWidth(0.2);
+    doc.rect(15, y + 5, 180, 8);
+
+    doc.setTextColor(60, 60, 60);
+    doc.setFont('helvetica', 'bold');
+    doc.text('No.', 17, y + 10);
+    doc.text('Product Code', 27, y + 10);
+    doc.text('Product Name', 57, y + 10);
+    doc.text('Lot Code', 97, y + 10);
+    doc.text('Qty', 127, y + 10);
+    doc.text('Production Date', 137, y + 10);
+    doc.text('Exp Date', 167, y + 10);
+
+    y += 15;
+
+    // Table Rows
+    doc.setFont('helvetica', 'normal');
+    transaction.lots.forEach((lot, index) => {
+      if (y > 270) {
+        doc.addPage();
+        y = 22;
+        // Repeat header on new page
+        doc.setFillColor(240, 240, 240);
+        doc.rect(15, y, 180, 8, 'F');
+        doc.rect(15, y, 180, 8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('No.', 17, y + 5);
+        doc.text('Product Code', 27, y + 5);
+        doc.text('Product Name', 57, y + 5);
+        doc.text('Lot Code', 97, y + 5);
+        doc.text('Qty', 127, y + 5);
+        doc.text('Production Date', 137, y + 5);
+        doc.text('Exp Date', 167, y + 5);
+        y += 10;
+      }
+
+      // Alternate row colors
+      if (index % 2 === 0) {
+        doc.setFillColor(250, 250, 250);
+      } else {
+        doc.setFillColor(255, 255, 255);
+      }
+      doc.rect(15, y - 3, 180, 8, 'F');
+      doc.rect(15, y - 3, 180, 8);
+
+      doc.setTextColor(80, 80, 80);
+      doc.text(String(index + 1), 17, y);
+      doc.text(lot.productCode || '-', 27, y);
+      doc.text(lot.productName || '-', 57, y);
+      doc.text(lot.lotCode || '-', 97, y);
+      doc.text(String(lot.quantity), 127, y);
+      doc.text(lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : '-', 137, y);
+      doc.text(lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : '-', 167, y);
+
+      y += 8;
+    });
+
+    // -------------------- FOOTER --------------------
+    const footerY = 285;
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Generated on: ' + format(new Date(), 'dd/MM/yyyy HH:mm:ss'), 15, footerY);
+    doc.text('Page ' + doc.getCurrentPageInfo().pageNumber, 105, footerY, { align: 'center' });
+    doc.text('© Your Company Name', 185, footerY, { align: 'right' });
+
+    // -------------------- OPEN AS BLOB --------------------
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, '_blank');

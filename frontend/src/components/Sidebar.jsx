@@ -10,6 +10,7 @@ import { FaBuilding, FaCubes } from "react-icons/fa";
 import { GiBrokenPottery } from "react-icons/gi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { HiOutlineDocumentReport } from "react-icons/hi";
+import { TbTransfer } from "react-icons/tb";
 
 const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRole กลับคืนมา
   const location = useLocation();
@@ -155,6 +156,15 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
               >
                 <FiArrowDownCircle className={`${isOpen ? 'mr-3' : ''} text-sm`} />
                 {isOpen && <span className='text-sm'>Receive Stock</span>}
+              </Link>
+            )}
+            {(userRole === 'admin' || userRole === 'user') && ( // ยังคงใช้ userRole สำหรับเมนูทั่วไป
+              <Link
+                to="/transfer-order"
+                className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/transfer-order') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
+              >
+                <TbTransfer className={`${isOpen ? 'mr-3' : ''} text-sm`} />
+                {isOpen && <span className='text-sm'>Transfer Order</span>}
               </Link>
             )}
             {(userRole === 'admin' || userRole === 'user') && ( // ยังคงใช้ userRole สำหรับเมนูทั่วไป
