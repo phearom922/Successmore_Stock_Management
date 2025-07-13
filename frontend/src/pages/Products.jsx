@@ -6,6 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { FaRegTrashAlt, FaPlus, FaFileExcel, FaSearch, FaRegEdit } from 'react-icons/fa';
 import * as XLSX from 'xlsx';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
 Modal.setAppElement('#root');
 
@@ -22,9 +27,9 @@ const Products = () => {
   const [message, setMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('all');
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
-  // ลบ userRole เพราะใช้ ProtectedRoute แทน
 
   useEffect(() => {
     if (!token) {
@@ -56,13 +61,26 @@ const Products = () => {
   }, [token, navigate]);
 
   useEffect(() => {
-    const results = products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.productCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (product.category && product.category.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    let results = [...products];
+    
+    // Apply category filter
+    if (activeCategory !== 'all') {
+      results = results.filter(product => 
+        product.category && product.category._id === activeCategory
+      );
+    }
+    
+    // Apply search filter
+    if (searchTerm) {
+      results = results.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.productCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (product.category && product.category.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+    
     setFilteredProducts(results);
-  }, [searchTerm, products]);
+  }, [activeCategory, searchTerm, products]);
 
   const openModal = (product = null) => {
     if (product) {
@@ -222,6 +240,30 @@ const Products = () => {
                 {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
               </div>
             </div>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="px-4 pt-4">
+            <Tabs 
+              value={activeCategory} 
+              onValueChange={setActiveCategory}
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                <TabsTrigger value="all" className="py-2 px-4">
+                  All Categories
+                </TabsTrigger>
+                {categories.map((cat) => (
+                  <TabsTrigger 
+                    key={cat._id} 
+                    value={cat._id}
+                    className="py-2 px-4"
+                  >
+                    {cat.name}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
           </div>
 
           {isLoading ? (

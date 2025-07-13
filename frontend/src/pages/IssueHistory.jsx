@@ -61,6 +61,7 @@ const IssueHistory = () => {
   const [filters, setFilters] = useState({
     type: 'all',
     warehouse: 'all',
+    status: 'all', // เพิ่ม Status Filter
     searchUser: '',
     searchTransaction: ''
   });
@@ -105,16 +106,21 @@ const IssueHistory = () => {
     setIsLoading(true);
     try {
       console.log('Fetching with startDate:', startDate.toISOString(), 'endDate:', endDate.toISOString());
+      const params = {
+        type: filters.type !== 'all' ? filters.type : undefined,
+        warehouse: filters.warehouse !== 'all' ? filters.warehouse : undefined,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      };
+      // ส่ง status เฉพาะถ้าเป็น Active หรือ Cancel เท่านั้น
+      if (filters.status === 'Active' || filters.status === 'Cancelled') {
+        params.status = filters.status;
+      }
       const { data } = await axios.get('http://localhost:3000/api/issue-history', {
         headers: { Authorization: `Bearer ${token}` },
-        params: {
-          type: filters.type !== 'all' ? filters.type : undefined,
-          warehouse: filters.warehouse !== 'all' ? filters.warehouse : undefined,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-        }
+        params
       });
-      
+
       const enrichedHistory = await Promise.all(data.map(async (transaction) => {
         const lotsWithDetails = await Promise.all(transaction.lots.map(async (lot) => {
           try {
@@ -144,7 +150,7 @@ const IssueHistory = () => {
         }));
         return { ...transaction, lots: lotsWithDetails };
       }));
-      
+
       setHistory(enrichedHistory);
       setFilteredHistory(enrichedHistory);
       setCurrentPage(1); // Reset to first page when new data loads
@@ -158,22 +164,27 @@ const IssueHistory = () => {
   // Apply search filters
   useEffect(() => {
     let results = [...history];
-    
+
     if (filters.searchUser) {
-      results = results.filter(t => 
+      results = results.filter(t =>
         t.userId.username.toLowerCase().includes(filters.searchUser.toLowerCase())
       );
     }
-    
+
     if (filters.searchTransaction) {
-      results = results.filter(t => 
+      results = results.filter(t =>
         t.transactionNumber.toLowerCase().includes(filters.searchTransaction.toLowerCase())
       );
     }
-    
+
+    // กรองตาม status ใน frontend เผื่อ backend ไม่รองรับ
+    if (filters.status === 'Active' || filters.status === 'Cancelled') {
+      results = results.filter(t => t.status === filters.status);
+    }
+
     setFilteredHistory(results);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [history, filters.searchUser, filters.searchTransaction]);
+  }, [history, filters.searchUser, filters.searchTransaction, filters.status]);
 
   // Handle pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -206,38 +217,43 @@ const IssueHistory = () => {
 
   const generatePDF = (transaction) => {
     const doc = new jsPDF();
-    doc.setFontSize(14);
-    doc.text('Transaction Details Report', 10, 10);
+    doc.setFontSize(16);
+    doc.text('Issue Transaction Request', 80, 20, { align: 'center' });
+
+    // Transaction Info (Left-Right Layout)
     doc.setFontSize(12);
-    doc.text(`Transaction #: ${transaction.transactionNumber}`, 10, 20);
-    doc.text(`Date/Time: ${new Date(transaction.createdAt).toLocaleString()}`, 10, 30);
-    doc.text(`User: ${transaction.userId.username}`, 10, 40);
-    doc.text(`Issue Type: ${transaction.type}`, 10, 50);
-    doc.text(`Warehouse: ${transaction.warehouseId.name}`, 10, 60);
-    doc.text(`Status: ${transaction.status}`, 10, 70);
-    doc.text(`Cancel By: ${transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : 'N/A'}`, 10, 80);
-    doc.text(`Canceled Date: ${transaction.cancelledDate ? new Date(transaction.cancelledDate).toLocaleString() : 'N/A'}`, 10, 90);
+    doc.text('Transaction Details:', 20, 40);
+    doc.text(`Transaction #: ${transaction.transactionNumber}`, 20, 50);
+    doc.text(`Date: ${format(new Date(transaction.createdAt), 'dd/MM/yyyy')}`, 20, 60);
+    doc.text(`User: ${transaction.userId.username}`, 20, 70);
+    doc.text(`Warehouse: ${transaction.warehouseId.name}`, 20, 80);
+    doc.text(`Status: ${transaction.status}`, 20, 90);
+    doc.text(`Cancel By: ${transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : '-'}`, 20, 100);
+    doc.text(`Canceled Date: ${transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy') : '-'}`, 20, 110);
 
-    // Add table header for lots
-    const startY = 100;
+    // Lots Table with Numbering
+    const startY = 130;
+    doc.setFontSize(12);
+    doc.text('Items List:', 20, startY);
     doc.setFontSize(10);
-    doc.text('Lots Details:', 10, startY);
-    doc.text('Product Code', 10, startY + 10);
-    doc.text('Product Name', 40, startY + 10);
-    doc.text('Lot Code', 70, startY + 10);
-    doc.text('Quantity', 100, startY + 10);
-    doc.text('Production Date', 120, startY + 10);
-    doc.text('Expiration Date', 150, startY + 10);
+    doc.text('No.', 20, startY + 10);
+    doc.text('Product Code', 30, startY + 10);
+    doc.text('Product Name', 60, startY + 10);
+    doc.text('Lot Code', 100, startY + 10);
+    doc.text('Quantity', 130, startY + 10);
+    doc.text('Production Date', 150, startY + 10);
+    doc.text('Expiration Date', 180, startY + 10);
 
-    // Add lots data
     let y = startY + 20;
     transaction.lots.forEach((lot, index) => {
-      doc.text(lot.productCode || 'N/A', 10, y + (index * 10));
-      doc.text(lot.productName || 'N/A', 40, y + (index * 10));
-      doc.text(lot.lotCode || 'N/A', 70, y + (index * 10));
-      doc.text(String(lot.quantity), 100, y + (index * 10));
-      doc.text(lot.productionDate ? new Date(lot.productionDate).toLocaleDateString() : 'N/A', 120, y + (index * 10));
-      doc.text(lot.expDate ? new Date(lot.expDate).toLocaleDateString() : 'N/A', 150, y + (index * 10));
+      doc.text(`${index + 1}.`, 20, y);
+      doc.text(lot.productCode || 'N/A', 30, y);
+      doc.text(lot.productName || 'N/A', 60, y);
+      doc.text(lot.lotCode || 'N/A', 100, y);
+      doc.text(String(lot.quantity), 130, y);
+      doc.text(lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : 'N/A', 150, y);
+      doc.text(lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : 'N/A', 180, y);
+      y += 10;
     });
 
     const pdfBlob = doc.output('blob');
@@ -248,14 +264,14 @@ const IssueHistory = () => {
   const exportToExcel = () => {
     const excelData = history.map(transaction => ({
       'Transaction #': transaction.transactionNumber,
-      'Date/Time': new Date(transaction.createdAt).toLocaleString(),
+      'Date/Time': format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss'),
       'Issue Type': transaction.type,
       'User': transaction.userId.username,
       'Total Qty': transaction.lots.reduce((sum, l) => sum + l.quantity, 0),
       'Warehouse': transaction.warehouseId.name,
       'Status': transaction.status,
       'Cancel By': transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : 'N/A',
-      'Canceled Date': transaction.cancelledDate ? new Date(transaction.cancelledDate).toLocaleString() : 'N/A'
+      'Canceled Date': transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy, HH:mm:ss') : 'N/A'
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(excelData);
@@ -286,6 +302,7 @@ const IssueHistory = () => {
       ...prev,
       type: 'all',
       warehouse: 'all',
+      status: 'all', // รีเซ็ต Status ด้วย
       searchUser: '',
       searchTransaction: ''
     }));
@@ -310,7 +327,7 @@ const IssueHistory = () => {
   return (
     <div className="p-4 md:p-6 max-w-screen-2xl mx-auto bg-gray-50 rounded-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Issue History</h2>
-      
+
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
@@ -318,7 +335,7 @@ const IssueHistory = () => {
       ) : (
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-200">
           {/* Filters Section */}
-          <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
               <Select
@@ -338,7 +355,7 @@ const IssueHistory = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
               <Select
@@ -358,7 +375,24 @@ const IssueHistory = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <Select
+                value={filters.status}
+                onValueChange={value => setFilters({ ...filters, status: value })}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Cancelled">Cancel</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
               <DatePicker
@@ -371,7 +405,7 @@ const IssueHistory = () => {
                 className="w-full p-2 border rounded-md"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
               <DatePicker
@@ -386,7 +420,7 @@ const IssueHistory = () => {
               />
             </div>
           </div>
-          
+
           {/* Search Section */}
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -398,7 +432,7 @@ const IssueHistory = () => {
                 onChange={e => setFilters({ ...filters, searchUser: e.target.value })}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Search Transaction</label>
               <Input
@@ -408,7 +442,7 @@ const IssueHistory = () => {
                 onChange={e => setFilters({ ...filters, searchTransaction: e.target.value })}
               />
             </div>
-            
+
             <div className="flex items-end space-x-2">
               <Button onClick={fetchData} className="bg-blue-600 hover:bg-blue-700">
                 Apply Filters
@@ -421,7 +455,7 @@ const IssueHistory = () => {
               </Button>
             </div>
           </div>
-          
+
           {/* Table Section */}
           <div className="overflow-x-auto">
             <Table className="min-w-full">
@@ -449,19 +483,19 @@ const IssueHistory = () => {
                           {transaction.type}
                         </span>
                       </TableCell>
-                      <TableCell>{format(new Date(transaction.createdAt), 'dd-MM-yyyy, HH:mm:ss').toLocaleString()}</TableCell>
+                      <TableCell>{format(new Date(transaction.createdAt), 'dd-MM-yyyy, HH:mm:ss')}</TableCell>
                       <TableCell>{transaction.userId.username}</TableCell>
                       <TableCell>{transaction.lots.reduce((sum, l) => sum + l.quantity, 0)}</TableCell>
                       <TableCell>{transaction.warehouseId.name}</TableCell>
                       <TableCell className={transaction.status === 'Active' ? 'text-green-600' : 'text-red-600'}>
                         {transaction.status}
                       </TableCell>
-                      <TableCell>{transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : '-'}</TableCell>
-                      <TableCell >{transaction.cancelledDate ? new Date(transaction.cancelledDate).toLocaleString() : '-'}</TableCell>
+                      <TableCell>{transaction.cancelledBy ? transaction.cancelledBy.username || '-' : '-'}</TableCell>
+                      <TableCell>{transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd-MM-yyyy, HH:mm:ss') : '-'}</TableCell>
                       <TableCell className="text-right space-x-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={() => generatePDF(transaction)}
                         >
                           View PDF
@@ -487,51 +521,67 @@ const IssueHistory = () => {
               </TableBody>
             </Table>
           </div>
-          
+
           {/* Pagination */}
           {filteredHistory.length > itemsPerPage && (
-            <div className="mt-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                      disabled={currentPage === 1}
-                    />
-                  </PaginationItem>
-                  
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-                    
-                    return (
-                      <PaginationItem key={pageNum}>
-                        <PaginationLink
-                          isActive={currentPage === pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
-                        >
-                          {pageNum}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
-                  
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                      disabled={currentPage === totalPages}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+            <div className="mt-4 flex justify-between items-center">
+              <div className="text-sm text-gray-500 flex ">
+                <span> Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredHistory.length)} of {filteredHistory.length} results </span>
+              </div>
+              <div>
+                <Pagination >
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Previous
+                      </PaginationPrevious>
+                    </PaginationItem>
+
+                    {Array.from({ length: totalPages }, (_, i) => {
+                      const pageNum = i + 1;
+                      if (totalPages > 5) {
+                        if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)) {
+                          return (
+                            <PaginationItem key={pageNum}>
+                              <PaginationLink
+                                isActive={currentPage === pageNum}
+                                onClick={() => setCurrentPage(pageNum)}
+                              >
+                                {pageNum === currentPage - 1 && currentPage > 2 ? '...' : ''}
+                                {pageNum}
+                                {pageNum === currentPage + 1 && currentPage < totalPages - 1 ? '...' : ''}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        }
+                        return null;
+                      }
+                      return (
+                        <PaginationItem key={pageNum}>
+                          <PaginationLink
+                            isActive={currentPage === pageNum}
+                            onClick={() => setCurrentPage(pageNum)}
+                          >
+                            {pageNum}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    })}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </PaginationNext>
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
             </div>
           )}
         </div>
@@ -568,10 +618,10 @@ const IssueHistory = () => {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={closeModal}>Cancel</Button>
-              <Button 
-                onClick={() => { 
-                  handleCancel(confirmCancel.id); 
-                  closeModal(); 
+              <Button
+                onClick={() => {
+                  handleCancel(confirmCancel.id);
+                  closeModal();
                 }}
               >
                 Confirm Cancel

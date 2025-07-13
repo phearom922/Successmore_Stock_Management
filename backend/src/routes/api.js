@@ -22,6 +22,7 @@ const DamagedAuditTrail = require('../models/DamagedAuditTrail');
 const Setting = require('../models/Settings');
 const { updateUserSchema } = require('../models/User');
 const IssueTransaction = require('../models/IssueTransaction');
+const Counter = require('../models/Counter');
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -1938,6 +1939,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
     const warehouseId = user.role !== 'admin' ? user.warehouse : req.body.warehouse;
 
     if (!warehouseId || !type || !lots || lots.length === 0) {
+      await session.abortTransaction();
       return res.status(400).json({ message: 'Warehouse, type, and lots are required' });
     }
 
@@ -1947,9 +1949,21 @@ router.post('/issue', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Warehouse not found' });
     }
 
-    // Generate Transaction Number
-    const count = await IssueTransaction.countDocuments({ warehouseId }).session(session);
-    const transactionNumber = `ISS-${warehouse.warehouseCode}-${String(count + 1).padStart(5, '0')}`;
+    // Generate Transaction Number with Counter
+    let counter = await Counter.findOneAndUpdate(
+      { warehouseId: new mongoose.Types.ObjectId(warehouseId) },
+      { $inc: { sequence: 1 } },
+      { new: true, upsert: true, session }
+    );
+    const transactionNumber = `ISS-${warehouse.warehouseCode}-${String(counter.sequence).padStart(5, '0')}`;
+    console.log('Generated transactionNumber:', transactionNumber); // Debug
+
+    // Check for duplicate transactionNumber
+    const existingTransaction = await IssueTransaction.findOne({ transactionNumber }).session(session);
+    if (existingTransaction) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Duplicate transaction number detected', transactionNumber });
+    }
 
     // Prepare Issue Transaction
     const issueTransaction = new IssueTransaction({
@@ -1962,7 +1976,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
         quantity: lot.quantity
       })),
       userId: new mongoose.Types.ObjectId(user._id),
-      note
+      note: note || ''
     });
 
     // Update Lots
@@ -1995,7 +2009,6 @@ router.post('/issue', authMiddleware, async (req, res) => {
           warehouseId: new mongoose.Types.ObjectId(warehouseId),
           destinationWarehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
         });
-        // Transfer logic to destination (to be implemented in a separate endpoint or logic)
       }
       await dbLot.save({ session });
     }
@@ -2015,9 +2028,6 @@ router.post('/issue', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error issuing stock', error: error.message });
   }
 });
-
-
-
 
 // Issue History
 router.get('/issue-history', authMiddleware, async (req, res) => {
@@ -2126,6 +2136,9 @@ router.patch('/issue-history/:id/cancel', authMiddleware, async (req, res) => {
   }
 });
 
+
+
+
 // Lot ID
 router.get('/lots/:id', authMiddleware, async (req, res) => {
   try {
@@ -2149,7 +2162,6 @@ router.get('/lots/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching lot', error: error.message });
   }
 });
-
 
 
 // Adjust Stock
