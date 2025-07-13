@@ -296,7 +296,7 @@ const IssueHistory = () => {
     doc.text(transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy, HH:mm:ss') : '-', rightX + 30, infoY + 21);
 
     // -------------------- ITEM TABLE --------------------
-    const tableStartY = infoY + 30;
+    const tableStartY = infoY + 33;
     let y = tableStartY;
 
     // Section title
@@ -356,13 +356,23 @@ const IssueHistory = () => {
       doc.rect(15, y - 3, 180, 8);
 
       doc.setTextColor(80, 80, 80);
-      doc.text(String(index + 1), 17, y);
-      doc.text(lot.productCode || '-', 27, y);
-      doc.text(lot.productName || '-', 57, y);
-      doc.text(lot.lotCode || '-', 97, y);
-      doc.text(String(lot.quantity), 127, y);
-      doc.text(lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : '-', 137, y);
-      doc.text(lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : '-', 167, y);
+
+
+
+      const centerY = y + 2.5; // << ขยับลงนิดนึงเพื่อให้อยู่กลางแถว 8px
+      doc.text(String(index + 1), 17, centerY);
+      doc.text(lot.productCode || '-', 27, centerY);
+      doc.text(lot.productName || '-', 57, centerY);
+      doc.text(lot.lotCode || '-', 97, centerY);
+      doc.text(String(lot.quantity), 127, centerY);
+      doc.text(
+        lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : '-',
+        137, centerY
+      );
+      doc.text(
+        lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : '-',
+        167, centerY
+      );
 
       y += 8;
     });
@@ -373,13 +383,21 @@ const IssueHistory = () => {
     doc.setTextColor(150, 150, 150);
     doc.text('Generated on: ' + format(new Date(), 'dd/MM/yyyy HH:mm:ss'), 15, footerY);
     doc.text('Page ' + doc.getCurrentPageInfo().pageNumber, 105, footerY, { align: 'center' });
-    doc.text('© Your Company Name', 185, footerY, { align: 'right' });
+    doc.text('© Successmore Being Cambodia', 185, footerY, { align: 'right' });
 
     // -------------------- OPEN AS BLOB --------------------
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, '_blank');
   };
+
+
+
+
+
+
+
+
 
   const exportToExcel = () => {
     const excelData = history.map(transaction => ({
