@@ -12,7 +12,9 @@ const issueTransactionSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   status: { type: String, enum: ['Active', 'Cancelled'], default: 'Active' },
-  note: String
+  note: String,
+  cancelledBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  cancelledDate: { type: Date }
 });
 
 module.exports = mongoose.model('IssueTransaction', issueTransactionSchema);

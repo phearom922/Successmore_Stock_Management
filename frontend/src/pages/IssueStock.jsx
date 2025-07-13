@@ -152,28 +152,33 @@ const IssueStock = () => {
   };
 
   const confirmIssue = async () => {
-    setShowConfirmModal(false);
-    setIsLoading(true);
-    try {
-      const payload = {
-        lots: addedItems.map(item => ({ lotId: item.lotId, quantity: Number(item.quantity) })),
-        type: addedItems[0].transactionType,
-        warehouse: selectedWarehouse,
-        note: ''
-      };
-      console.log('Issuing with payload:', JSON.stringify(payload, null, 2));
-      const response = await axios.post('http://localhost:3000/api/issue', payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success(response.data.message);
-      setAddedItems([]);
-    } catch (error) {
-      console.error('Issue error:', error.response?.data || error);
-      toast.error(error.response?.data?.message || 'Failed to issue stock');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  setShowConfirmModal(false);
+  setIsLoading(true);
+  try {
+    const payload = {
+      lots: addedItems.map(item => ({ lotId: item.lotId, quantity: Number(item.quantity) })),
+      type: addedItems[0].transactionType,
+      warehouse: selectedWarehouse,
+      destinationWarehouseId: "", /* ใส่ค่า ถ้ามี */
+      note: ''
+    };
+    console.log('Issuing with payload:', JSON.stringify(payload, null, 2));
+    const response = await axios.post('http://localhost:3000/api/issue', payload, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    toast.success(response.data.message);
+    console.log('Transaction Number:', response.data.transactionNumber); // Debug หรือใช้ต่อ
+    setAddedItems([]);
+  } catch (error) {
+    console.error('Issue error:', error.response?.data || error);
+    toast.error(error.response?.data?.message || 'Failed to issue stock');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
 
   const cancelIssue = () => {
     setShowConfirmModal(false);

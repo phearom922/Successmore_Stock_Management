@@ -69,6 +69,16 @@
             "date": 1752166800254,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-11.log",
             "hash": "b5139d2cbaa7686094f7b718fa6b5fe1013d803e9bad690077b8f12907c24bcb"
+        },
+        {
+            "date": 1752253229774,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-12.log",
+            "hash": "5b4ed3843cab092e2702bb120cfddf981f2bcaa4307608207e12be022b84e2cc"
+        },
+        {
+            "date": 1752339600383,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-13.log",
+            "hash": "264fd7803384f230831f602688178dac87cbf65a2b8663feceba0f10ea788e65"
         }
     ],
     "hashType": "sha256"

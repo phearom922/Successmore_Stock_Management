@@ -23,8 +23,6 @@ const Setting = require('../models/Settings');
 const { updateUserSchema } = require('../models/User');
 const IssueTransaction = require('../models/IssueTransaction');
 
-
-
 // Validation Schemas
 const receiveSchema = z.object({
   lots: z.array(
@@ -1179,8 +1177,8 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
     };
 
     if (startDate && endDate) {
-      const parsedStart = parse(startDate, 'dd-MM-yyyy', new Date());
-      const parsedEnd = parse(endDate, 'dd-MM-yyyy', new Date());
+      const parsedStart = parse(startDate, 'dd/MM/yyyy', new Date());
+      const parsedEnd = parse(endDate, 'dd/MM/yyyy', new Date());
       query.createdAt = {
         $gte: startOfDay(parsedStart),
         $lte: endOfDay(parsedEnd),
@@ -1239,7 +1237,7 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
 
     const worksheetData = transactions.map(trans => ({
       'Transaction #': trans.transactionNumber || 'N/A',
-      'Date/Time': trans.createdAt ? format(new Date(trans.createdAt), 'dd-MM-yyyy HH:mm') : 'N/A',
+      'Date/Time': trans.createdAt ? format(new Date(trans.createdAt), 'dd/MM/yyyy HH:mm') : 'N/A',
       'User': `${trans.userId?.username || ''} ${trans.userId?.lastName || ''}`.trim() || 'N/A',
       'Supplier': trans.supplierId?.name || 'N/A',
       'Product Code': trans.productId?.productCode || 'N/A',
@@ -1248,8 +1246,8 @@ router.get('/receive-history/export', authMiddleware, async (req, res) => {
       'Qty': trans.quantity || 0,
       'Warehouse': trans.warehouse?.name || 'N/A',
       'Status': trans.status || 'N/A',
-      'Production Date': trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd-MM-yyyy') : 'N/A',
-      'Expiration Date': trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd-MM-yyyy') : 'N/A',
+      'Production Date': trans.lotId?.productionDate ? format(new Date(trans.lotId.productionDate), 'dd/MM/yyyy') : 'N/A',
+      'Expiration Date': trans.lotId?.expDate ? format(new Date(trans.lotId.expDate), 'dd/MM/yyyy') : 'N/A',
     }));
 
     if (worksheetData.length === 0) {
@@ -1926,8 +1924,14 @@ router.get('/stock-reports/export', authMiddleware, async (req, res) => {
 });
 
 ///////////////////////////
+
+
+
 // Issue Stock
 router.post('/issue', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { lots, type, destinationWarehouseId, note } = req.body;
     const user = req.user;
@@ -1937,23 +1941,41 @@ router.post('/issue', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Warehouse, type, and lots are required' });
     }
 
-    const warehouse = await Warehouse.findById(warehouseId);
+    const warehouse = await Warehouse.findById(warehouseId).session(session);
     if (!warehouse) {
+      await session.abortTransaction();
       return res.status(400).json({ message: 'Warehouse not found' });
     }
 
     // Generate Transaction Number
-    const count = await Lot.countDocuments({ warehouse: warehouseId }); // ใช้ Lot แทน TransactionCounter
+    const count = await IssueTransaction.countDocuments({ warehouseId }).session(session);
     const transactionNumber = `ISS-${warehouse.warehouseCode}-${String(count + 1).padStart(5, '0')}`;
 
+    // Prepare Issue Transaction
+    const issueTransaction = new IssueTransaction({
+      transactionNumber,
+      type,
+      warehouseId: new mongoose.Types.ObjectId(warehouseId),
+      destinationWarehouseId: destinationWarehouseId ? new mongoose.Types.ObjectId(destinationWarehouseId) : null,
+      lots: lots.map(lot => ({
+        lotId: new mongoose.Types.ObjectId(lot.lotId),
+        quantity: lot.quantity
+      })),
+      userId: new mongoose.Types.ObjectId(user._id),
+      note
+    });
+
+    // Update Lots
     for (const lot of lots) {
-      const dbLot = await Lot.findById(lot.lotId);
+      const dbLot = await Lot.findById(lot.lotId).session(session);
       if (!dbLot || dbLot.qtyOnHand < lot.quantity) {
+        await session.abortTransaction();
         return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId}` });
       }
       dbLot.qtyOnHand -= lot.quantity;
       dbLot.transactions.push({
-        userId: user._id,
+        timestamp: new Date(),
+        userId: new mongoose.Types.ObjectId(user._id),
         reason: `Issued (${type})`,
         quantityAdjusted: -lot.quantity,
         beforeQty: dbLot.qtyOnHand + lot.quantity,
@@ -1963,7 +1985,8 @@ router.post('/issue', authMiddleware, async (req, res) => {
       });
       if (destinationWarehouseId) {
         dbLot.transactions.push({
-          userId: user._id,
+          timestamp: new Date(),
+          userId: new mongoose.Types.ObjectId(user._id),
           reason: `Transferred to ${destinationWarehouseId}`,
           quantityAdjusted: -lot.quantity,
           beforeQty: dbLot.qtyOnHand + lot.quantity,
@@ -1972,18 +1995,29 @@ router.post('/issue', authMiddleware, async (req, res) => {
           warehouseId: new mongoose.Types.ObjectId(warehouseId),
           destinationWarehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
         });
-        // Transfer logic to destination (to be implemented)
+        // Transfer logic to destination (to be implemented in a separate endpoint or logic)
       }
-      await dbLot.save();
+      await dbLot.save({ session });
     }
+
+    // Save Issue Transaction
+    await issueTransaction.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     logger.info('Issue transaction created', { transactionNumber });
     res.json({ message: 'Stock issued successfully', transactionNumber });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     logger.error('Error issuing stock:', error);
     res.status(500).json({ message: 'Error issuing stock', error: error.message });
   }
 });
+
+
+
 
 // Issue History
 router.get('/issue-history', authMiddleware, async (req, res) => {
@@ -2006,6 +2040,7 @@ router.get('/issue-history', authMiddleware, async (req, res) => {
     const history = await IssueTransaction.find(query)
       .populate('warehouseId')
       .populate('userId')
+      .populate('cancelledBy') // เพิ่มการ Populate cancelledBy
       .lean();
     res.json(history);
   } catch (error) {
@@ -2013,6 +2048,108 @@ router.get('/issue-history', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching issue history', error: error.message });
   }
 });
+
+// Cancel Issue Transaction
+router.patch('/issue-history/:id/cancel', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { id } = req.params;
+    const { cancelledBy, cancelledDate } = req.body;
+    const user = req.user;
+
+    console.log('Cancel Request Body:', req.body); // Debug req.body
+
+    if (user.role !== 'admin') {
+      await session.abortTransaction();
+      return res.status(403).json({ message: 'Only admin can cancel transactions' });
+    }
+
+    if (!cancelledBy || !cancelledDate) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'cancelledBy and cancelledDate are required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(cancelledBy)) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Invalid cancelledBy ID' });
+    }
+
+    const transaction = await IssueTransaction.findById(id)
+      .populate('cancelledBy')
+      .session(session);
+    if (!transaction || transaction.status === 'Cancelled') {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Transaction not found or already cancelled' });
+    }
+
+    for (const lot of transaction.lots) {
+      const dbLot = await Lot.findById(lot.lotId).session(session);
+      if (!dbLot) {
+        await session.abortTransaction();
+        return res.status(400).json({ message: `Lot ${lot.lotId} not found` });
+      }
+      dbLot.qtyOnHand += lot.quantity;
+      dbLot.transactions.push({
+        timestamp: new Date(),
+        userId: new mongoose.Types.ObjectId(cancelledBy),
+        reason: 'Cancelled Issue',
+        quantityAdjusted: lot.quantity,
+        beforeQty: dbLot.qtyOnHand - lot.quantity,
+        afterQty: dbLot.qtyOnHand,
+        transactionType: 'Cancel',
+        warehouseId: transaction.warehouseId
+      });
+      await dbLot.save({ session });
+    }
+
+    transaction.status = 'Cancelled';
+    transaction.cancelledBy = new mongoose.Types.ObjectId(cancelledBy);
+    transaction.cancelledDate = new Date(cancelledDate);
+    await transaction.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    const updatedTransaction = await IssueTransaction.findById(id)
+      .populate('cancelledBy')
+      .populate('userId')
+      .lean();
+    logger.info('Transaction cancelled', { transactionId: id });
+    res.json({ message: 'Transaction cancelled successfully', transaction: updatedTransaction });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    logger.error('Error cancelling transaction:', error);
+    res.status(500).json({ message: 'Error cancelling transaction', error: error.message });
+  }
+});
+
+// Lot ID
+router.get('/lots/:id', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lot = await Lot.findById(id)
+      .populate('productId')
+      .lean();
+    if (!lot) {
+      return res.status(404).json({ message: 'Lot not found' });
+    }
+    res.json({
+      ...lot,
+      productCode: lot.productId.productCode,
+      productName: lot.productId.name,
+      lotCode: lot.lotCode,
+      productionDate: lot.productionDate,
+      expDate: lot.expDate
+    });
+  } catch (error) {
+    logger.error('Error fetching lot:', error);
+    res.status(500).json({ message: 'Error fetching lot', error: error.message });
+  }
+});
+
 
 
 // Adjust Stock

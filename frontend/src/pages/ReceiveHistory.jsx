@@ -86,8 +86,8 @@ const ReceiveHistory = () => {
       const response = await axios.get('http://localhost:3000/api/receive-history/export', {
         headers: { Authorization: `Bearer ${token}` },
         params: {
-          startDate: startDate ? format(startOfDay(startDate), 'dd-MM-yyyy') : '',
-          endDate: endDate ? format(endOfDay(endDate), 'dd-MM-yyyy') : '',
+          startDate: startDate ? format(startOfDay(startDate), 'dd/MM/yyyy') : '',
+          endDate: endDate ? format(endOfDay(endDate), 'dd/MM/yyyy') : '',
           warehouse: isAdmin ? (warehouseId || '') : user.warehouse || '', // จำกัด User Role
           searchQuery,
           userQuery

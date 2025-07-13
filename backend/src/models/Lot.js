@@ -8,7 +8,7 @@ const lotSchema = new mongoose.Schema({
   quantity: { type: Number, required: true },
   boxCount: { type: Number, required: true },
   qtyPerBox: { type: Number, required: true },
-  warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true }, // ยืนยันเป็น _id
+  warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
   supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier', required: true },
   transactionNumber: { type: String, required: true },
   status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
