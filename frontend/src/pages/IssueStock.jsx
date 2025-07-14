@@ -70,9 +70,16 @@ const IssueStock = () => {
     try {
       const { data } = await axios.get('http://localhost:3000/api/lots', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { productId, warehouse: selectedWarehouse }
+        params: { 
+          productId,
+          warehouse: selectedWarehouse,
+          damagedOnly: currentItem.transactionType === 'Waste'
+        }
       });
-      const filteredLots = data.filter(lot => lot.warehouse.toString() === selectedWarehouse && lot.qtyOnHand > 0);
+      let filteredLots = data.filter(lot => lot.warehouse.toString() === selectedWarehouse && lot.qtyOnHand > 0);
+      if (currentItem.transactionType === 'Waste') {
+        filteredLots = filteredLots.filter(lot => lot.damaged > 0); // กรองเฉพาะ Lot ที่มี damaged
+      }
       const sortedLots = filteredLots.sort((a, b) => new Date(a.expDate) - new Date(b.expDate));
       setLots(sortedLots);
       console.log('Fetched and Sorted Lots for Product:', productId, sortedLots);
@@ -93,7 +100,7 @@ const IssueStock = () => {
 
     let remainingQuantity = quantity;
     const selectedLots = [];
-    let currentLots = [...lots]; // คัดลอก lots เพื่อไม่กระทบ State เดิม
+    let currentLots = [...lots];
 
     while (remainingQuantity > 0 && currentLots.length > 0) {
       const lot = currentLots[0];
@@ -102,9 +109,22 @@ const IssueStock = () => {
         return;
       }
 
-      const qtyToTake = Math.min(remainingQuantity, lot.qtyOnHand);
+      let qtyToTake = 0;
+      if (currentItem.transactionType === 'Waste' && lot.damaged >= remainingQuantity) {
+        qtyToTake = remainingQuantity; // ตัดจาก damaged เท่าที่เหลือ
+      } else if (currentItem.transactionType === 'Waste' && lot.damaged > 0) {
+        qtyToTake = Math.min(remainingQuantity, lot.damaged); // ตัดจาก damaged ก่อน
+        remainingQuantity -= qtyToTake;
+        if (remainingQuantity > 0 && lot.qtyOnHand >= remainingQuantity) {
+          qtyToTake += remainingQuantity; // ตัดส่วนที่เหลือจาก qtyOnHand
+          remainingQuantity = 0;
+        }
+      } else {
+        qtyToTake = Math.min(remainingQuantity, lot.qtyOnHand); // ตัดจาก qtyOnHand ปกติ
+      }
+
       if (qtyToTake <= 0) {
-        toast.error('Quantity exceeds available stock');
+        toast.error('Quantity exceeds available stock or damaged stock');
         return;
       }
 
@@ -119,11 +139,12 @@ const IssueStock = () => {
         productCode: product?.productCode || 'N/A',
         lotCode: lot.lotCode,
         prodDate: lot.productionDate,
-        expDate: lot.expDate
+        expDate: lot.expDate,
+        fromDamaged: currentItem.transactionType === 'Waste' && lot.damaged > 0 // ระบุว่ามาจาก damaged
       });
 
       remainingQuantity -= qtyToTake;
-      currentLots = currentLots.filter(l => l._id.toString() !== lot._id); // ลบ Lot ที่ใช้ไปแล้ว
+      currentLots = currentLots.filter(l => l._id.toString() !== lot._id);
     }
 
     if (remainingQuantity > 0) {
@@ -152,33 +173,34 @@ const IssueStock = () => {
   };
 
   const confirmIssue = async () => {
-  setShowConfirmModal(false);
-  setIsLoading(true);
-  try {
-    const payload = {
-      lots: addedItems.map(item => ({ lotId: item.lotId, quantity: Number(item.quantity) })),
-      type: addedItems[0].transactionType,
-      warehouse: selectedWarehouse,
-      destinationWarehouseId: "", /* ใส่ค่า ถ้ามี */
-      note: ''
-    };
-    console.log('Issuing with payload:', JSON.stringify(payload, null, 2));
-    const response = await axios.post('http://localhost:3000/api/issue', payload, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    toast.success(response.data.message);
-    console.log('Transaction Number:', response.data.transactionNumber); // Debug หรือใช้ต่อ
-    setAddedItems([]);
-  } catch (error) {
-    console.error('Issue error:', error.response?.data || error);
-    toast.error(error.response?.data?.message || 'Failed to issue stock');
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-
+    setShowConfirmModal(false);
+    setIsLoading(true);
+    try {
+      const payload = {
+        lots: addedItems.map(item => ({
+          lotId: item.lotId,
+          quantity: Number(item.quantity),
+          fromDamaged: item.fromDamaged || false // ส่งข้อมูลว่าใช้ damaged หรือไม่
+        })),
+        type: addedItems[0].transactionType,
+        warehouse: selectedWarehouse,
+        destinationWarehouseId: "",
+        note: ''
+      };
+      console.log('Issuing with payload:', JSON.stringify(payload, null, 2));
+      const response = await axios.post('http://localhost:3000/api/issue', payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(response.data.message);
+      console.log('Transaction Number:', response.data.transactionNumber);
+      setAddedItems([]);
+    } catch (error) {
+      console.error('Issue error:', error.response?.data || error);
+      toast.error(error.response?.data?.message || 'Failed to issue stock');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const cancelIssue = () => {
     setShowConfirmModal(false);
@@ -333,7 +355,7 @@ const IssueStock = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Selected Lot (FEFO)</label>
                   <input
                     type="text"
-                    value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
+                    value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Damaged: ${lots[0].damaged}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
                     readOnly
                     className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-gray-100"
                   />
@@ -368,7 +390,7 @@ const IssueStock = () => {
                               value={lot._id}
                               className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
                             >
-                              <Select.ItemText>{lot.lotCode} (Qty: {lot.qtyOnHand}, Exp: {new Date(lot.expDate).toLocaleDateString()})</Select.ItemText>
+                              <Select.ItemText>{lot.lotCode} (Qty: {lot.qtyOnHand}, Damaged: {lot.damaged}, Exp: {new Date(lot.expDate).toLocaleDateString()})</Select.ItemText>
                               <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
                                 <CheckIcon />
                               </Select.ItemIndicator>
@@ -398,7 +420,10 @@ const IssueStock = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
                 <Select.Root
                   value={currentItem.transactionType}
-                  onValueChange={(value) => setCurrentItem(prev => ({ ...prev, transactionType: value }))}
+                  onValueChange={(value) => {
+                    setCurrentItem(prev => ({ ...prev, transactionType: value, lotId: '' })); // รีเซ็ต lotId เมื่อเปลี่ยน type
+                    fetchLots(selectedProduct); // อัปเดต lots ตาม transactionType
+                  }}
                   disabled={isLoading}
                 >
                   <Select.Trigger

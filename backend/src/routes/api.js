@@ -23,6 +23,7 @@ const Setting = require('../models/Settings');
 const { updateUserSchema } = require('../models/User');
 const IssueTransaction = require('../models/IssueTransaction');
 const Counter = require('../models/Counter');
+const TransferTransaction = require('../models/TransferTransaction')
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -1612,51 +1613,127 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
   }
 });
 
+
+
 // Manage Damage
 router.post('/manage-damage', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { lotId, quantity, reason } = req.body;
     const userId = req.user._id;
-    const warehouse = req.user.warehouse ? req.user.warehouse.toString() : null; // เปลี่ยนจาก assignedWarehouse
+    const warehouseId = req.user.warehouse ? req.user.warehouse.toString() : null;
 
-    // ตรวจสอบ Warehouse
-    if (!warehouse && req.user.role !== 'admin') {
+    console.log('Received payload:', { lotId, quantity, reason, userId, warehouseId });
+
+    if (!warehouseId && req.user.role !== 'admin') {
+      await session.abortTransaction();
       return res.status(400).json({ message: 'Warehouse is required for non-admin users' });
     }
-    if (req.user.role !== 'admin' && warehouse) {
-      const lot = await Lot.findById(lotId);
-      if (!lot || lot.warehouse.toString() !== warehouse) {
+    if (req.user.role !== 'admin' && warehouseId) {
+      const lot = await Lot.findById(lotId).session(session);
+      if (!lot || lot.warehouse.toString() !== warehouseId) {
+        await session.abortTransaction();
         return res.status(403).json({ message: 'Access denied to this warehouse' });
       }
     }
 
-    // ตรวจสอบสต็อกคงเหลือ
-    const lot = await Lot.findById(lotId);
-    if (!lot) return res.status(404).json({ message: 'Lot not found' });
+    const lot = await Lot.findById(lotId).session(session);
+    if (!lot) {
+      await session.abortTransaction();
+      return res.status(404).json({ message: 'Lot not found' });
+    }
     const remainingStock = lot.qtyOnHand - lot.damaged;
     logger.info('Checking remaining stock', { lotId, qtyOnHand: lot.qtyOnHand, damaged: lot.damaged, remainingStock });
-    if (quantity > remainingStock) {
-      return res.status(400).json({ message: `Insufficient stock. Remaining: ${remainingStock}` });
+    if (quantity <= 0 || quantity > remainingStock) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: `Invalid quantity. Remaining stock: ${remainingStock}` });
     }
+
+    const warehouse = await Warehouse.findById(warehouseId).session(session);
+    const counter = await DamagedAuditTrail.countDocuments({ warehouseId: new mongoose.Types.ObjectId(warehouseId) }).session(session);
+    const transactionNumber = `DAM-${warehouse.warehouseCode}-${req.user.role}-${String(counter + 1).padStart(5, '0')}`;
+    console.log('Generated transactionNumber:', transactionNumber);
 
     // อัปเดต Lot
     lot.damaged += quantity;
     lot.qtyOnHand -= quantity;
-    await lot.save();
+    await lot.save({ session });
     logger.info('Updated lot', { lotId, newQtyOnHand: lot.qtyOnHand, newDamaged: lot.damaged });
 
-    // บันทึกประวัติ
-    await DamagedAuditTrail.create({ lotId, userId, quantity, reason });
+    // บันทึกประวัติโดยใช้ Array ตามคำแนะนำของ Mongoose
+    await DamagedAuditTrail.create([
+      {
+        transactionNumber,
+        lotId: new mongoose.Types.ObjectId(lotId),
+        userId: new mongoose.Types.ObjectId(userId),
+        quantity,
+        reason,
+        warehouseId: new mongoose.Types.ObjectId(warehouseId)
+      }
+    ], { session });
 
-    res.json({ message: 'Damage recorded successfully', remainingStock: lot.qtyOnHand });
+    await session.commitTransaction();
+    session.endSession();
+
+    res.json({ message: 'Damage recorded successfully', remainingStock: lot.qtyOnHand, transactionNumber });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     logger.error('Error managing damage:', {
       message: error.message,
       stack: error.stack,
+      details: error.toString()
     });
-    res.status(500).json({ message: 'Error managing damage', error: error.message });
+    res.status(500).json({ message: 'Error managing damage', error: error.message, details: error.toString() });
   }
 });
+
+// Endpoint ใหม่สำหรับดึงประวัติ
+router.get('/manage-damage/history', authMiddleware, async (req, res) => {
+  try {
+    const { warehouse, startDate, endDate, user, transaction } = req.query;
+    const query = {};
+
+    if (req.user.role !== 'admin' && req.user.warehouse) {
+      query['lotId.warehouse'] = new mongoose.Types.ObjectId(req.user.warehouse);
+    } else if (warehouse && warehouse !== 'all') {
+      query['lotId.warehouse'] = new mongoose.Types.ObjectId(warehouse);
+    }
+
+    if (startDate && endDate) {
+      query.timestamp = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+    if (user) {
+      query['userId.username'] = { $regex: user, $options: 'i' };
+    }
+    if (transaction) {
+      query.transactionNumber = { $regex: transaction, $options: 'i' };
+    }
+
+    const history = await DamagedAuditTrail.find(query)
+      .populate({
+        path: 'lotId',
+        populate: [
+          { path: 'productId', select: 'name productCode' },
+          { path: 'warehouse', select: 'name warehouseCode' }
+        ]
+      })
+      .populate('userId', 'username')
+      .lean();
+
+    res.json(history);
+  } catch (error) {
+    logger.error('Error fetching damage history:', error);
+    res.status(500).json({ message: 'Error fetching damage history', error: error.message });
+  }
+});
+
+
 
 // Configurable expiration warning days (default to 15 days)
 router.get('/lot-management/expiring', authMiddleware, async (req, res) => {
@@ -1924,10 +2001,6 @@ router.get('/stock-reports/export', authMiddleware, async (req, res) => {
   }
 });
 
-///////////////////////////
-
-
-
 // Issue Stock
 router.post('/issue', authMiddleware, async (req, res) => {
   const session = await mongoose.startSession();
@@ -1982,11 +2055,38 @@ router.post('/issue', authMiddleware, async (req, res) => {
     // Update Lots
     for (const lot of lots) {
       const dbLot = await Lot.findById(lot.lotId).session(session);
-      if (!dbLot || dbLot.qtyOnHand < lot.quantity) {
+      if (!dbLot) {
         await session.abortTransaction();
-        return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId}` });
+        return res.status(400).json({ message: `Lot ${lot.lotId} not found` });
       }
-      dbLot.qtyOnHand -= lot.quantity;
+
+      let quantityToDeduct = lot.quantity;
+      let remainingQuantity = quantityToDeduct;
+
+      if (type === 'Waste' && lot.fromDamaged) {
+        if (dbLot.damaged >= remainingQuantity) {
+          dbLot.damaged -= remainingQuantity;
+          remainingQuantity = 0;
+        } else {
+          remainingQuantity -= dbLot.damaged;
+          dbLot.damaged = 0;
+          if (dbLot.qtyOnHand >= remainingQuantity) {
+            dbLot.qtyOnHand -= remainingQuantity;
+            remainingQuantity = 0;
+          } else {
+            await session.abortTransaction();
+            return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId}` });
+          }
+        }
+      } else {
+        if (dbLot.qtyOnHand < quantityToDeduct) {
+          await session.abortTransaction();
+          return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId}` });
+        }
+        dbLot.qtyOnHand -= quantityToDeduct;
+      }
+
+      // บันทึก Transaction
       dbLot.transactions.push({
         timestamp: new Date(),
         userId: new mongoose.Types.ObjectId(user._id),
@@ -1994,9 +2094,10 @@ router.post('/issue', authMiddleware, async (req, res) => {
         quantityAdjusted: -lot.quantity,
         beforeQty: dbLot.qtyOnHand + lot.quantity,
         afterQty: dbLot.qtyOnHand,
-        transactionType: 'Issue',
+        transactionType: type === 'Waste' ? 'Waste' : type,
         warehouseId: new mongoose.Types.ObjectId(warehouseId)
       });
+
       if (destinationWarehouseId) {
         dbLot.transactions.push({
           timestamp: new Date(),
@@ -2010,6 +2111,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
           destinationWarehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
         });
       }
+
       await dbLot.save({ session });
     }
 
@@ -2028,6 +2130,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error issuing stock', error: error.message });
   }
 });
+
 
 // Issue History
 router.get('/issue-history', authMiddleware, async (req, res) => {
@@ -2137,8 +2240,6 @@ router.patch('/issue-history/:id/cancel', authMiddleware, async (req, res) => {
 });
 
 
-
-
 // Lot ID
 router.get('/lots/:id', authMiddleware, async (req, res) => {
   try {
@@ -2162,7 +2263,6 @@ router.get('/lots/:id', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching lot', error: error.message });
   }
 });
-
 
 // Adjust Stock
 router.post('/adjust-stock', authMiddleware, async (req, res) => {
@@ -2197,6 +2297,123 @@ router.post('/adjust-stock', authMiddleware, async (req, res) => {
   }
 });
 
+///////////////////Transfer Order Management///////////////////
+
+// Transfer Order
+router.post('/transfer', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { lots, sourceWarehouseId, destinationWarehouseId, note } = req.body;
+    const user = req.user;
+
+    if (!sourceWarehouseId || !destinationWarehouseId || !lots || lots.length === 0) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Source warehouse, destination warehouse, and lots are required' });
+    }
+
+    const sourceWarehouse = await Warehouse.findById(sourceWarehouseId).session(session);
+    const destWarehouse = await Warehouse.findById(destinationWarehouseId).session(session);
+    if (!sourceWarehouse || !destWarehouse) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Warehouse not found' });
+    }
+
+    // Generate Transfer Number with Counter
+    let counter = await Counter.findOneAndUpdate(
+      { warehouseId: new mongoose.Types.ObjectId(sourceWarehouseId) },
+      { $inc: { sequence: 1 } },
+      { new: true, upsert: true, session }
+    );
+    const transferNumber = `TRF-${sourceWarehouse.warehouseCode}-${String(counter.sequence).padStart(5, '0')}`;
+
+    // Prepare Transfer Transaction
+    const transferTransaction = new TransferTransaction({
+      transferNumber,
+      sourceWarehouseId: new mongoose.Types.ObjectId(sourceWarehouseId),
+      destinationWarehouseId: new mongoose.Types.ObjectId(destinationWarehouseId),
+      lots: lots.map(lot => ({
+        lotId: new mongoose.Types.ObjectId(lot.lotId),
+        quantity: lot.quantity
+      })),
+      userId: new mongoose.Types.ObjectId(user._id),
+      note: note || ''
+    });
+
+    // Update Lots (Reduce from Source, Add to Destination)
+    for (const lot of lots) {
+      const sourceLot = await Lot.findOne({ _id: lot.lotId, warehouse: sourceWarehouseId }).session(session);
+      if (!sourceLot || sourceLot.qtyOnHand < lot.quantity) {
+        await session.abortTransaction();
+        return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId} in source warehouse` });
+      }
+
+      sourceLot.qtyOnHand -= lot.quantity;
+      sourceLot.transactions.push({
+        timestamp: new Date(),
+        userId: new mongoose.Types.ObjectId(user._id),
+        reason: `Transferred to ${destinationWarehouseId}`,
+        quantityAdjusted: -lot.quantity,
+        beforeQty: sourceLot.qtyOnHand + lot.quantity,
+        afterQty: sourceLot.qtyOnHand,
+        transactionType: 'TransferOut',
+        warehouseId: new mongoose.Types.ObjectId(sourceWarehouseId)
+      });
+      await sourceLot.save({ session });
+
+      // Add to Destination (สมมติว่า Lot ใหม่จะถูกสร้างหรืออัปเดต)
+      let destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: destinationWarehouseId }).session(session);
+      if (!destLot) {
+        destLot = new Lot({
+          lotCode: sourceLot.lotCode,
+          productId: sourceLot.productId,
+          warehouse: destinationWarehouseId,
+          qtyOnHand: lot.quantity,
+          productionDate: sourceLot.productionDate,
+          expDate: sourceLot.expDate,
+          transactions: [{
+            timestamp: new Date(),
+            userId: new mongoose.Types.ObjectId(user._id),
+            reason: `Transferred from ${sourceWarehouseId}`,
+            quantityAdjusted: lot.quantity,
+            beforeQty: 0,
+            afterQty: lot.quantity,
+            transactionType: 'TransferIn',
+            warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
+          }]
+        });
+      } else {
+        destLot.qtyOnHand += lot.quantity;
+        destLot.transactions.push({
+          timestamp: new Date(),
+          userId: new mongoose.Types.ObjectId(user._id),
+          reason: `Transferred from ${sourceWarehouseId}`,
+          quantityAdjusted: lot.quantity,
+          beforeQty: destLot.qtyOnHand - lot.quantity,
+          afterQty: destLot.qtyOnHand,
+          transactionType: 'TransferIn',
+          warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
+        });
+      }
+      await destLot.save({ session });
+    }
+
+    // Save Transfer Transaction
+    await transferTransaction.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    logger.info('Transfer transaction created', { transferNumber });
+    res.json({ message: 'Stock transferred successfully', transferNumber });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    logger.error('Error transferring stock:', error);
+    res.status(500).json({ message: 'Error transferring stock', error: error.message });
+  }
+});
 
 
 module.exports = router;

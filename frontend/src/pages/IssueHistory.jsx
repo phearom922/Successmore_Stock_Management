@@ -435,18 +435,70 @@ const IssueHistory = () => {
     setConfirmCancel(null);
   };
 
-  const clearFilters = () => {
+  const clearFilters = async () => {
+    const newStartDate = startOfDay(new Date());
+    const newEndDate = endOfDay(new Date());
+    
     setFilters(prev => ({
       ...prev,
       type: 'all',
       warehouse: 'all',
-      status: 'all', // รีเซ็ต Status ด้วย
+      status: 'all',
       searchUser: '',
       searchTransaction: ''
     }));
-    setStartDate(startOfDay(new Date()));
-    setEndDate(endOfDay(new Date()));
-    fetchData();
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+
+    // Fetch with reset values immediately
+    setIsLoading(true);
+    try {
+      const { data } = await axios.get('http://localhost:3000/api/issue-history', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          startDate: newStartDate.toISOString(),
+          endDate: newEndDate.toISOString()
+        }
+      });
+
+      const enrichedHistory = await Promise.all(data.map(async (transaction) => {
+        const lotsWithDetails = await Promise.all(transaction.lots.map(async (lot) => {
+          try {
+            const response = await axios.get(`http://localhost:3000/api/lots/${lot.lotId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            const dbLot = response.data;
+            return {
+              ...lot,
+              productCode: dbLot.productCode || 'N/A',
+              productName: dbLot.productName || 'N/A',
+              lotCode: dbLot.lotCode || 'N/A',
+              productionDate: dbLot.productionDate || null,
+              expDate: dbLot.expDate || null
+            };
+          } catch (error) {
+            return {
+              ...lot,
+              productCode: 'N/A',
+              productName: 'N/A',
+              lotCode: 'N/A',
+              productionDate: null,
+              expDate: null
+            };
+          }
+        }));
+        return { ...transaction, lots: lotsWithDetails };
+      }));
+
+      const sortedHistory = enrichedHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setHistory(sortedHistory);
+      setFilteredHistory(sortedHistory);
+      setCurrentPage(1);
+    } catch (error) {
+      toast.error('Failed to load issue history');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getIssueTypeColor = (type) => {

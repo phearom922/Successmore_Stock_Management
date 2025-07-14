@@ -412,8 +412,8 @@ const handleExport = async () => {
                     <Select.Viewport className="p-1">
                       <Select.Group>
                         {isAdmin && (
-                          <Select.Item value="all" className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
-                            <Select.ItemText>All Warehouses</Select.ItemText>
+                          <Select.Item value="all" className=" px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded cursor-pointer">
+                            <Select.ItemText >All Warehouses</Select.ItemText>
                           </Select.Item>
                         )}
                         {warehouses.map(w => (
@@ -424,7 +424,7 @@ const handleExport = async () => {
                             disabled={!isAdmin && w._id !== user.warehouse} // จำกัด User Role
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                            <Select.ItemIndicator className=" absolute right-2 inline-flex items-center">
                               <CheckIcon />
                             </Select.ItemIndicator>
                           </Select.Item>
