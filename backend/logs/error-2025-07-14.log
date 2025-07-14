@@ -802,3 +802,47 @@ ValidationError: DamagedAuditTrail validation failed: warehouseId: Path `warehou
     at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
     at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-14 16:50:24 [error]: Error issuing stock: Lot validation failed: transactions.8.transactionType: `Sale` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `Sale` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-14 17:16:12 [error]: Error issuing stock: Lot validation failed: transactions.3.transactionType: `Sale` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.3.transactionType: `Sale` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-14 17:19:45 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-14 17:35:36 [error]: Error issuing stock: Lot validation failed: initialQuantity: Path `initialQuantity` is required.
+ValidationError: Lot validation failed: initialQuantity: Path `initialQuantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-14 17:39:53 [error]: Error issuing stock: Lot validation failed: initialQuantity: Path `initialQuantity` is required.
+ValidationError: Lot validation failed: initialQuantity: Path `initialQuantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-14 17:45:27 [error]: Error issuing stock: Lot validation failed: initialQuantity: Path `initialQuantity` is required.
+ValidationError: Lot validation failed: initialQuantity: Path `initialQuantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)

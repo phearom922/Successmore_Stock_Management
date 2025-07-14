@@ -22,7 +22,10 @@ const lotSchema = new mongoose.Schema({
     quantityAdjusted: Number,
     beforeQty: Number,
     afterQty: Number,
-    transactionType: { type: String, enum: ['Receive', 'Issue', 'Transfer', 'Adjust', 'Cancel'] },
+    transactionType: {
+      type: String,
+      enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities']
+    },
     warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' },
     destinationWarehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' } // เพิ่มสำหรับ Transfer
   }]
