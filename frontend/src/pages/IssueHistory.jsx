@@ -41,8 +41,6 @@ import {
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-
-
 const IssueHistory = () => {
   const [history, setHistory] = useState([]);
   const [filteredHistory, setFilteredHistory] = useState([]);
@@ -57,13 +55,13 @@ const IssueHistory = () => {
   const navigate = useNavigate();
 
   // Initialize dates with start and end of current day
-  const [startDate, setStartDate] = useState(startOfDay(new Date())); // 00:00 (UTC)
-  const [endDate, setEndDate] = useState(endOfDay(new Date())); // 23:59 (UTC)
+  const [startDate, setStartDate] = useState(startOfDay(new Date()));
+  const [endDate, setEndDate] = useState(endOfDay(new Date()));
 
   const [filters, setFilters] = useState({
     type: 'all',
     warehouse: 'all',
-    status: 'all', // เพิ่ม Status Filter
+    status: 'all',
     searchUser: '',
     searchTransaction: ''
   });
@@ -114,7 +112,6 @@ const IssueHistory = () => {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
       };
-      // ส่ง status เฉพาะถ้าเป็น Active หรือ Cancel เท่านั้น
       if (filters.status === 'Active' || filters.status === 'Cancelled') {
         params.status = filters.status;
       }
@@ -132,8 +129,8 @@ const IssueHistory = () => {
             const dbLot = response.data;
             return {
               ...lot,
-              productCode: dbLot.productCode || 'N/A',
-              productName: dbLot.productName || 'N/A',
+              productCode: dbLot.productId?.productCode || 'N/A',
+              productName: dbLot.productId?.name || 'N/A',
               lotCode: dbLot.lotCode || 'N/A',
               productionDate: dbLot.productionDate || null,
               expDate: dbLot.expDate || null
@@ -153,11 +150,10 @@ const IssueHistory = () => {
         return { ...transaction, lots: lotsWithDetails };
       }));
 
-      // Sort by createdAt descending (latest first)
       const sortedHistory = enrichedHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setHistory(sortedHistory);
       setFilteredHistory(sortedHistory);
-      setCurrentPage(1); // Reset to first page when new data loads
+      setCurrentPage(1);
     } catch (error) {
       toast.error('Failed to load issue history');
     } finally {
@@ -165,7 +161,6 @@ const IssueHistory = () => {
     }
   };
 
-  // Apply search filters
   useEffect(() => {
     let results = [...history];
 
@@ -181,16 +176,14 @@ const IssueHistory = () => {
       );
     }
 
-    // กรองตาม status ใน frontend เผื่อ backend ไม่รองรับ
     if (filters.status === 'Active' || filters.status === 'Cancelled') {
       results = results.filter(t => t.status === filters.status);
     }
 
     setFilteredHistory(results);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [history, filters.searchUser, filters.searchTransaction, filters.status]);
 
-  // Handle pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredHistory.slice(indexOfFirstItem, indexOfLastItem);
@@ -202,7 +195,7 @@ const IssueHistory = () => {
       return;
     }
 
-    setIsLoading(false);
+    setIsLoading(true);
     setConfirmCancel(null);
 
     try {
@@ -216,6 +209,8 @@ const IssueHistory = () => {
     } catch (error) {
       toast.error('Failed to cancel transaction');
       console.error('Error cancelling transaction:', error.response ? error.response.data : error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -227,10 +222,6 @@ const IssueHistory = () => {
       filters: ['ASCIIHexEncode']
     });
 
-    // -------------------- HEADER --------------------
-    // Add company logo (replace with your actual logo)
-    // doc.addImage(logoData, 'PNG', 15, 10, 30, 15);
-
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(40, 40, 40);
@@ -241,18 +232,15 @@ const IssueHistory = () => {
     doc.setTextColor(100, 100, 100);
     doc.text('Issue Document', 105, 32, { align: 'center' });
 
-    // Header divider
     doc.setDrawColor(200, 200, 200);
     doc.setLineWidth(0.3);
     doc.line(15, 35, 195, 35);
 
-    // -------------------- TRANSACTION INFO --------------------
     doc.setFontSize(10);
     const leftX = 20;
     const rightX = 110;
     let infoY = 45;
 
-    // Left column
     doc.setTextColor(80, 80, 80);
     doc.setFont('helvetica', 'bold');
     doc.text('Transaction #:', leftX, infoY);
@@ -274,7 +262,6 @@ const IssueHistory = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(transaction.cancelledBy?.username || '-', leftX + 30, infoY + 21);
 
-    // Right column
     doc.setFont('helvetica', 'bold');
     doc.text('Warehouse:', rightX, infoY);
     doc.setFont('helvetica', 'normal');
@@ -295,17 +282,14 @@ const IssueHistory = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy, HH:mm:ss') : '-', rightX + 30, infoY + 21);
 
-    // -------------------- ITEM TABLE --------------------
     const tableStartY = infoY + 33;
     let y = tableStartY;
 
-    // Section title
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(40, 40, 40);
     doc.text('ITEMS LIST', leftX, y);
 
-    // Table Header
     doc.setFontSize(10);
     doc.setFillColor(240, 240, 240);
     doc.rect(15, y + 5, 180, 8, 'F');
@@ -325,13 +309,11 @@ const IssueHistory = () => {
 
     y += 15;
 
-    // Table Rows
     doc.setFont('helvetica', 'normal');
     transaction.lots.forEach((lot, index) => {
       if (y > 270) {
         doc.addPage();
         y = 22;
-        // Repeat header on new page
         doc.setFillColor(240, 240, 240);
         doc.rect(15, y, 180, 8, 'F');
         doc.rect(15, y, 180, 8);
@@ -346,7 +328,6 @@ const IssueHistory = () => {
         y += 10;
       }
 
-      // Alternate row colors
       if (index % 2 === 0) {
         doc.setFillColor(250, 250, 250);
       } else {
@@ -356,10 +337,7 @@ const IssueHistory = () => {
       doc.rect(15, y - 3, 180, 8);
 
       doc.setTextColor(80, 80, 80);
-
-
-
-      const centerY = y + 2.5; // << ขยับลงนิดนึงเพื่อให้อยู่กลางแถว 8px
+      const centerY = y + 2.5;
       doc.text(String(index + 1), 17, centerY);
       doc.text(lot.productCode || '-', 27, centerY);
       doc.text(lot.productName || '-', 57, centerY);
@@ -377,7 +355,6 @@ const IssueHistory = () => {
       y += 8;
     });
 
-    // -------------------- FOOTER --------------------
     const footerY = 285;
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
@@ -385,32 +362,28 @@ const IssueHistory = () => {
     doc.text('Page ' + doc.getCurrentPageInfo().pageNumber, 105, footerY, { align: 'center' });
     doc.text('© Successmore Being Cambodia', 185, footerY, { align: 'right' });
 
-    // -------------------- OPEN AS BLOB --------------------
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, '_blank');
   };
 
-
-
-
-
-
-
-
-
   const exportToExcel = () => {
-    const excelData = history.map(transaction => ({
-      'Transaction #': transaction.transactionNumber,
-      'Date/Time': format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss'),
-      'Issue Type': transaction.type,
-      'User': transaction.userId.username,
-      'Total Qty': transaction.lots.reduce((sum, l) => sum + l.quantity, 0),
-      'Warehouse': transaction.warehouseId.name,
-      'Status': transaction.status,
-      'Cancel By': transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : 'N/A',
-      'Canceled Date': transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy, HH:mm:ss') : 'N/A'
-    }));
+    const excelData = history.flatMap(transaction => 
+      transaction.lots.map(lot => ({
+        'Date/Time': format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss'),
+        'Transaction #': transaction.transactionNumber,
+        'Issue Type': transaction.type,
+        'Product Code': lot.productCode,
+        'Product': lot.productName,
+        'Lot Code': lot.lotCode,
+        'User': transaction.userId.username,
+        'Qty': lot.quantity,
+        'Warehouse': transaction.warehouseId.name,
+        'Status': transaction.status,
+        'Cancel By': transaction.cancelledBy ? transaction.cancelledBy.username || 'Unknown' : 'N/A',
+        'Canceled Date': transaction.cancelledDate ? format(new Date(transaction.cancelledDate), 'dd/MM/yyyy, HH:mm:ss') : 'N/A'
+      }))
+    );
 
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
@@ -450,7 +423,6 @@ const IssueHistory = () => {
     setStartDate(newStartDate);
     setEndDate(newEndDate);
 
-    // Fetch with reset values immediately
     setIsLoading(true);
     try {
       const { data } = await axios.get('http://localhost:3000/api/issue-history', {
@@ -470,8 +442,8 @@ const IssueHistory = () => {
             const dbLot = response.data;
             return {
               ...lot,
-              productCode: dbLot.productCode || 'N/A',
-              productName: dbLot.productName || 'N/A',
+              productCode: dbLot.productId?.productCode || 'N/A',
+              productName: dbLot.productId?.name || 'N/A',
               lotCode: dbLot.lotCode || 'N/A',
               productionDate: dbLot.productionDate || null,
               expDate: dbLot.expDate || null
@@ -715,69 +687,66 @@ const IssueHistory = () => {
           {/* Pagination */}
           {filteredHistory.length > itemsPerPage && (
             <div className="mt-4 flex justify-between items-center">
-              <div className="text-sm text-gray-500 flex ">
-                <span> Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredHistory.length)} of {filteredHistory.length} results </span>
+              <div className="text-sm text-gray-500">
+                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredHistory.length)} of {filteredHistory.length} results
               </div>
-              <div>
-                <Pagination >
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                      >
-                        Previous
-                      </PaginationPrevious>
-                    </PaginationItem>
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </PaginationPrevious>
+                  </PaginationItem>
 
-                    {Array.from({ length: totalPages }, (_, i) => {
-                      const pageNum = i + 1;
-                      if (totalPages > 5) {
-                        if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)) {
-                          return (
-                            <PaginationItem key={pageNum}>
-                              <PaginationLink
-                                isActive={currentPage === pageNum}
-                                onClick={() => setCurrentPage(pageNum)}
-                              >
-                                {pageNum === currentPage - 1 && currentPage > 2 ? '...' : ''}
-                                {pageNum}
-                                {pageNum === currentPage + 1 && currentPage < totalPages - 1 ? '...' : ''}
-                              </PaginationLink>
-                            </PaginationItem>
-                          );
-                        }
-                        return null;
+                  {Array.from({ length: totalPages }, (_, i) => {
+                    const pageNum = i + 1;
+                    if (totalPages > 5) {
+                      if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)) {
+                        return (
+                          <PaginationItem key={pageNum}>
+                            <PaginationLink
+                              isActive={currentPage === pageNum}
+                              onClick={() => setCurrentPage(pageNum)}
+                            >
+                              {pageNum === currentPage - 1 && currentPage > 2 ? '...' : ''}
+                              {pageNum}
+                              {pageNum === currentPage + 1 && currentPage < totalPages - 1 ? '...' : ''}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
                       }
-                      return (
-                        <PaginationItem key={pageNum}>
-                          <PaginationLink
-                            isActive={currentPage === pageNum}
-                            onClick={() => setCurrentPage(pageNum)}
-                          >
-                            {pageNum}
-                          </PaginationLink>
-                        </PaginationItem>
-                      );
-                    })}
+                      return null;
+                    }
+                    return (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink
+                          isActive={currentPage === pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
 
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                      >
-                        Next
-                      </PaginationNext>
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </PaginationNext>
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           )}
         </div>
       )}
-
-      {/* Cancel Confirmation Modal */}
+    
       {confirmCancel && (
         <Dialog open={true} onOpenChange={closeModal}>
           <DialogContent className="sm:max-w-[425px]">
