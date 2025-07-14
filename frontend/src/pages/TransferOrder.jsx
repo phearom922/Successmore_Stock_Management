@@ -158,13 +158,24 @@ const TransferOrder = () => {
         note: ''
       };
       console.log('Transferring with payload:', JSON.stringify(payload, null, 2));
-      const response = await axios.post('http://localhost:3000/api/transfer', payload, {
+      const { data } = await axios.post('http://localhost:3000/api/transfer', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(response.data.message);
-      console.log('Transfer Number:', response.data.transferNumber);
+      toast.success(data.message);
+      console.log('Transfer Number:', data.transferNumber);
 
+      // Store transfer details for PDF generation if needed
+      const transferDetails = {
+        transferNumber: data.transferNumber,
+        sourceWarehouse: data.sourceWarehouse,
+        destinationWarehouse: data.destinationWarehouse,
+        items: addedItems
+      };
+
+      // Clear the form
       setAddedItems([]);
+      setSelectedProduct('');
+      setCurrentItem({ lotId: '', quantity: '' });
     } catch (error) {
       console.error('Transfer error:', error.response?.data || error);
       toast.error(error.response?.data?.message || 'Failed to transfer stock');
