@@ -1,7 +1,23 @@
 const mongoose = require('mongoose');
 
+const lotTransactionSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  reason: { type: String, required: true },
+  quantityAdjusted: { type: Number, required: true },
+  beforeQty: { type: Number, required: true },
+  afterQty: { type: Number, required: true },
+  transactionType: {
+    type: String,
+    enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities'],
+    required: true
+  },
+  warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
+  destinationWarehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' }
+});
+
 const lotSchema = new mongoose.Schema({
-  lotCode: { type: String, required: true, unique: true },
+  lotCode: { type: String, required: true },
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   productionDate: { type: Date, required: true },
   expDate: { type: Date, required: true },
@@ -14,21 +30,14 @@ const lotSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
   qtyOnHand: { type: Number, default: 0 },
   damaged: { type: Number, default: 0 },
-
-  transactions: [{
-    timestamp: { type: Date, default: Date.now },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    reason: String,
-    quantityAdjusted: Number,
-    beforeQty: Number,
-    afterQty: Number,
-    transactionType: {
-      type: String,
-      enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities']
-    },
-    warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' },
-    destinationWarehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse' } // เพิ่มสำหรับ Transfer
-  }]
+  transactions: [lotTransactionSchema]
+}, {
+  timestamps: true
 });
+
+// เปลี่ยน Unique Index เป็นคู่ lotCode และ warehouse
+lotSchema.index({ lotCode: 1, warehouse: 1 }, { unique: true }); // Unique ตาม lotCode และ warehouse
+lotSchema.index({ warehouse: 1, productId: 1, expDate: 1 });
+lotSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Lot', lotSchema);

@@ -23,7 +23,7 @@ const Setting = require('../models/Settings');
 const { updateUserSchema } = require('../models/User');
 const IssueTransaction = require('../models/IssueTransaction');
 const Counter = require('../models/Counter');
-const TransferTransaction = require('../models/TransferTransaction')
+const TransferTransaction = require('../models/TransferTransaction');
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -2327,6 +2327,14 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       { new: true, upsert: true, session }
     );
     const transferNumber = `TRF-${sourceWarehouse.warehouseCode}-${String(counter.sequence).padStart(5, '0')}`;
+    console.log('Generated transferNumber:', transferNumber);
+
+    // Check for duplicate transferNumber
+    const existingTransaction = await TransferTransaction.findOne({ transferNumber }).session(session);
+    if (existingTransaction) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Duplicate transfer number detected', transferNumber });
+    }
 
     // Prepare Transfer Transaction
     const transferTransaction = new TransferTransaction({
@@ -2341,7 +2349,7 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       note: note || ''
     });
 
-    // Update Lots (Reduce from Source, Add to Destination)
+    // Update Lots
     for (const lot of lots) {
       const sourceLot = await Lot.findOne({ _id: lot.lotId, warehouse: sourceWarehouseId }).session(session);
       if (!sourceLot || sourceLot.qtyOnHand < lot.quantity) {
@@ -2362,28 +2370,10 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       });
       await sourceLot.save({ session });
 
-      // Add to Destination (สมมติว่า Lot ใหม่จะถูกสร้างหรืออัปเดต)
+      // Check or update Lot in Destination Warehouse
       let destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: destinationWarehouseId }).session(session);
-      if (!destLot) {
-        destLot = new Lot({
-          lotCode: sourceLot.lotCode,
-          productId: sourceLot.productId,
-          warehouse: destinationWarehouseId,
-          qtyOnHand: lot.quantity,
-          productionDate: sourceLot.productionDate,
-          expDate: sourceLot.expDate,
-          transactions: [{
-            timestamp: new Date(),
-            userId: new mongoose.Types.ObjectId(user._id),
-            reason: `Transferred from ${sourceWarehouseId}`,
-            quantityAdjusted: lot.quantity,
-            beforeQty: 0,
-            afterQty: lot.quantity,
-            transactionType: 'TransferIn',
-            warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
-          }]
-        });
-      } else {
+      if (destLot) {
+        // Update existing Lot
         destLot.qtyOnHand += lot.quantity;
         destLot.transactions.push({
           timestamp: new Date(),
@@ -2395,6 +2385,35 @@ router.post('/transfer', authMiddleware, async (req, res) => {
           transactionType: 'TransferIn',
           warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
         });
+        console.log(`Updated existing destLot with lotCode: ${sourceLot.lotCode}, new qtyOnHand: ${destLot.qtyOnHand}`);
+      } else {
+        // Create new Lot with all required fields
+        destLot = new Lot({
+          lotCode: sourceLot.lotCode,
+          productId: sourceLot.productId,
+          productionDate: sourceLot.productionDate,
+          expDate: sourceLot.expDate,
+          transactionNumber: sourceLot.transactionNumber,
+          supplierId: sourceLot.supplierId,
+          qtyPerBox: sourceLot.qtyPerBox,
+          boxCount: sourceLot.boxCount,
+          quantity: sourceLot.quantity,
+          warehouse: new mongoose.Types.ObjectId(destinationWarehouseId),
+          qtyOnHand: lot.quantity,
+          damaged: 0,
+          status: sourceLot.status,
+          transactions: [{
+            timestamp: new Date(),
+            userId: new mongoose.Types.ObjectId(user._id),
+            reason: `Transferred from ${sourceWarehouseId}`,
+            quantityAdjusted: lot.quantity,
+            beforeQty: 0,
+            afterQty: lot.quantity,
+            transactionType: 'TransferIn',
+            warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
+          }]
+        });
+        console.log(`Created new destLot with lotCode: ${sourceLot.lotCode}, qtyOnHand: ${lot.quantity}`);
       }
       await destLot.save({ session });
     }
@@ -2410,10 +2429,13 @@ router.post('/transfer', authMiddleware, async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    logger.error('Error transferring stock:', error);
-    res.status(500).json({ message: 'Error transferring stock', error: error.message });
+    logger.error('Error transferring stock:', {
+      message: error.message,
+      stack: error.stack,
+      details: error.toString()
+    });
+    res.status(500).json({ message: 'Error transferring stock', error: error.message, details: error.toString() });
   }
 });
-
 
 module.exports = router;

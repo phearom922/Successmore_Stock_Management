@@ -1,0 +1,122 @@
+2025-07-15 10:07:45 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-15 10:07:45 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-15 10:07:56 [error]: Error during login:
+MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout.<anonymous> (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:187:23)
+    at listOnTimeout (node:internal/timers:581:17)
+    at process.processTimers (node:internal/timers:519:7)
+2025-07-15 10:07:58 [error]: Connection error:
+MongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
+    at _handleConnectionErrors (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\connection.js:1165:11)
+    at NativeConnection.openUri (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\connection.js:1096:11)
+2025-07-15 10:12:33 [error]: Error transferring stock: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+ValidationError: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 10:26:05 [error]: Error transferring stock: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+ValidationError: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 10:30:44 [error]: Error transferring stock: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+ValidationError: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 10:55:49 [error]: Error transferring stock: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+ValidationError: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 10:59:21 [error]: Error transferring stock: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+ValidationError: Lot validation failed: transactionNumber: Path `transactionNumber` is required., supplierId: Path `supplierId` is required., qtyPerBox: Path `qtyPerBox` is required., boxCount: Path `boxCount` is required., quantity: Path `quantity` is required.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 11:04:28 [error]: Error transferring stock: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+MongoServerError: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
+2025-07-15 11:11:47 [error]: Error transferring stock: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+MongoServerError: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
+2025-07-15 11:14:11 [error]: Error transferring stock: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+MongoServerError: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
+2025-07-15 11:15:31 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-15 11:15:31 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-15 11:16:24 [error]: Error transferring stock: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "1247777" }
+MongoServerError: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "1247777" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
+2025-07-15 11:26:43 [error]: Error transferring stock: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+MongoServerError: E11000 duplicate key error collection: stock-management.lots index: lotCode_1 dup key: { lotCode: "201444" }
+    at InsertOneOperation.execute (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\insert.js:51:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
