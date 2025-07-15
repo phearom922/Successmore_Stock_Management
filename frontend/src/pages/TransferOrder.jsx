@@ -3,8 +3,14 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import * as Select from '@radix-ui/react-select';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import { CheckIcon, ChevronDownIcon } from 'lucide-react'; // ใช้ไอคอนจาก lucide-react แทน
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -19,6 +25,13 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import jsPDF from 'jspdf';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const TransferOrder = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -45,13 +58,14 @@ const TransferOrder = () => {
     startDate: startOfDay(new Date()),
     endDate: endOfDay(new Date())
   });
+  const [activeTab, setActiveTab] = useState('newTransfer');
+
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
-  const userWarehouseId = user.warehouse?.toString() || (user.role === 'admin' ? filters.warehouse : null); // อนุญาต Admin เลือก Warehouse
+  const userWarehouseId = user.warehouse?.toString() || (user.role === 'admin' ? filters.warehouse : null);
 
-  // กำหนด Base URL สำหรับ API
-  const API_BASE_URL = 'http://localhost:3000'; // ปรับตาม Environment
+  const API_BASE_URL = 'http://localhost:3000';
 
   useEffect(() => {
     if (!token) {
@@ -65,16 +79,21 @@ const TransferOrder = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
+      console.log('Fetching initial data...');
       const [warehousesRes, productsRes, categoriesRes] = await Promise.all([
         axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
+      console.log('Warehouses:', warehousesRes.data);
+      console.log('Products:', productsRes.data);
+      console.log('Categories:', categoriesRes.data);
       setWarehouses(warehousesRes.data);
       setProducts(productsRes.data.map(p => ({ ...p, _id: p._id.toString() })));
       setCategories(categoriesRes.data);
 
-      const defaultWarehouse = user.role !== 'admin' ? user.warehouse : warehousesRes.data[0]?._id;
+      const defaultWarehouse = user.role !== 'admin' ? user.warehouse?.toString() : warehousesRes.data[0]?._id?.toString();
+      console.log('Default Warehouse:', defaultWarehouse);
       if (!defaultWarehouse) {
         toast.error('No warehouse assigned or available');
         return;
@@ -82,6 +101,7 @@ const TransferOrder = () => {
       setSourceWarehouse(defaultWarehouse);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to load data');
+      console.error('Fetch data error:', error);
       if (error.response?.status === 401) navigate('/login');
     } finally {
       setIsLoading(false);
@@ -91,23 +111,27 @@ const TransferOrder = () => {
   const fetchLots = async (productId) => {
     if (!productId || !sourceWarehouse) return;
     try {
+      console.log('Fetching lots for product:', productId, 'warehouse:', sourceWarehouse);
       const { data } = await axios.get(`${API_BASE_URL}/api/lots`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { productId, warehouse: sourceWarehouse }
       });
+      console.log('Fetched lots:', data);
       const filteredLots = data.filter(lot => lot.warehouse.toString() === sourceWarehouse && lot.qtyOnHand > 0);
       const sortedLots = filteredLots.sort((a, b) => new Date(a.expDate) - new Date(b.expDate));
       setLots(sortedLots);
       if (!isManualSelection && sortedLots.length > 0) {
-        setCurrentItem(prev => ({ ...prev, lotId: sortedLots[0]._id }));
+        setCurrentItem(prev => ({ ...prev, lotId: sortedLots[0]._id.toString() }));
       }
     } catch (error) {
       toast.error('Failed to load lots');
+      console.error('Fetch lots error:', error);
     }
   };
 
   const fetchTransferHistory = async () => {
     try {
+      console.log('Fetching transfer history with filters:', filters);
       const params = {
         status: filters.status !== 'all' ? filters.status : undefined,
         warehouse: filters.warehouse !== 'all' ? filters.warehouse : undefined,
@@ -118,6 +142,7 @@ const TransferOrder = () => {
         headers: { Authorization: `Bearer ${token}` },
         params
       });
+      console.log('Transfer history data:', data);
       setTransferHistory(data);
     } catch (error) {
       toast.error('Failed to load transfer history');
@@ -153,7 +178,7 @@ const TransferOrder = () => {
       const product = products.find(p => p._id === productId);
 
       selectedLots.push({
-        lotId: lot._id,
+        lotId: lot._id.toString(),
         quantity: qtyToTake,
         productName: product?.name || 'Unknown',
         productCode: product?.productCode || 'N/A',
@@ -163,7 +188,7 @@ const TransferOrder = () => {
       });
 
       remainingQuantity -= qtyToTake;
-      currentLots = currentLots.filter(l => l._id.toString() !== lot._id);
+      currentLots = currentLots.filter(l => l._id.toString() !== lot._id.toString());
     }
 
     if (remainingQuantity > 0) {
@@ -291,483 +316,437 @@ const TransferOrder = () => {
 
   const filteredProducts = selectedCategory === 'All'
     ? products
-    : products.filter(p => p.category && p.category._id === selectedCategory);
+    : products.filter(p => p.category && p.category._id.toString() === selectedCategory);
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'Pending':
+        return <Badge variant="secondary" className="bg-yellow-500 text-white">{status}</Badge>;
+      case 'Confirmed':
+        return <Badge variant="success" className="bg-green-600 text-white">{status}</Badge>;
+      case 'Rejected':
+        return <Badge variant="destructive">{status}</Badge>;
+      default:
+        return <Badge>{status}</Badge>;
+    }
+  };
 
   return (
-    <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Transfer Order</h2>
-        <div className="flex space-x-3">
-          <Button
-            onClick={handleTransfer}
-            disabled={isLoading || addedItems.length === 0}
-            className={`px-4 py-2 text-sm font-medium rounded-lg shadow-sm ${isLoading ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'}`}
-          >
-            {isLoading ? 'Processing...' : 'Transfer Stock'}
-          </Button>
-        </div>
+    <div className="p-4 md:p-6 mx-auto bg-gray-50 min-h-screen">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Transfer Order Management</h1>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full md:w-auto">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="newTransfer">New Transfer</TabsTrigger>
+            <TabsTrigger value="history">Transfer History</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {isLoading && !products.length ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        <div className="space-y-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-64 w-full" />
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="mb-6">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full p-2 border rounded"
-              >
-                <option value="All">All Products</option>
-                {categories.map(category => (
-                  <option key={category._id} value={category._id}>{category.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Source Warehouse</label>
-                <Select.Root
-                  value={sourceWarehouse}
-                  onValueChange={setSourceWarehouse}
-                  disabled={user.role !== 'admin' || isLoading}
-                >
-                  <Select.Trigger
-                    className={`${user.role === 'user' ? 'bg-gray-200 text-gray-500' : 'bg-white'} mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none hover:bg-gray-100 transition-colors duration-200`}
-                  >
-                    <Select.Value placeholder="Select source warehouse" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronUpIcon />
-                    </Select.ScrollUpButton>
-                    <Select.Viewport>
-                      <Select.Group>
-                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Warehouses</Select.Label>
-                        {warehouses.map(w => (
-                          <Select.Item
-                            key={w._id}
-                            value={w._id}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
-                            disabled={user.role !== 'admin' && w._id !== user.warehouse}
-                          >
-                            <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                              <CheckIcon />
-                            </Select.ItemIndicator>
-                          </Select.Item>
-                        ))}
-                      </Select.Group>
-                    </Select.Viewport>
-                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronDownIcon />
-                    </Select.ScrollDownButton>
-                  </Select.Content>
-                </Select.Root>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Destination Warehouse</label>
-                <Select.Root
-                  value={destinationWarehouse}
-                  onValueChange={setDestinationWarehouse}
-                  disabled={user.role !== 'admin' || isLoading || !sourceWarehouse}
-                >
-                  <Select.Trigger
-                    className={`${!sourceWarehouse ? 'bg-gray-200 text-gray-500' : 'bg-white'} mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none hover:bg-gray-100 transition-colors duration-200`}
-                  >
-                    <Select.Value placeholder="Select destination warehouse" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronUpIcon />
-                    </Select.ScrollUpButton>
-                    <Select.Viewport>
-                      <Select.Group>
-                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Warehouses</Select.Label>
-                        {warehouses
-                          .filter(w => w._id !== sourceWarehouse)
-                          .map(w => (
-                            <Select.Item
-                              key={w._id}
-                              value={w._id}
-                              className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
-                              disabled={user.role !== 'admin' && w._id !== user.warehouse}
-                            >
-                              <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
-                              <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                                <CheckIcon />
-                              </Select.ItemIndicator>
-                            </Select.Item>
-                          ))}
-                      </Select.Group>
-                    </Select.Viewport>
-                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronDownIcon />
-                    </Select.ScrollDownButton>
-                  </Select.Content>
-                </Select.Root>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Product</label>
-                <Select.Root
-                  value={selectedProduct}
-                  onValueChange={(value) => {
-                    setSelectedProduct(value);
-                    fetchLots(value);
-                  }}
-                  disabled={isLoading || !sourceWarehouse}
-                >
-                  <Select.Trigger
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <Select.Value placeholder="Select product" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronUpIcon />
-                    </Select.ScrollUpButton>
-                    <Select.Viewport>
-                      <Select.Group>
-                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Products</Select.Label>
-                        {filteredProducts.map(product => (
-                          <Select.Item
-                            key={product._id}
-                            value={product._id}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
-                          >
-                            <Select.ItemText>{product.name} ({product.productCode})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                              <CheckIcon />
-                            </Select.ItemIndicator>
-                          </Select.Item>
-                        ))}
-                      </Select.Group>
-                    </Select.Viewport>
-                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronDownIcon />
-                    </Select.ScrollDownButton>
-                  </Select.Content>
-                </Select.Root>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Manual Lot Selection</label>
-                <input
-                  type="checkbox"
-                  checked={isManualSelection}
-                  onChange={(e) => {
-                    setIsManualSelection(e.target.checked);
-                    if (!e.target.checked && lots.length > 0) {
-                      setCurrentItem(prev => ({ ...prev, lotId: lots[0]._id }));
-                    } else {
-                      setCurrentItem(prev => ({ ...prev, lotId: '' }));
-                    }
-                  }}
-                  className="mr-2 leading-tight"
-                />
-                <span>Select Lot Manually</span>
-              </div>
-              {!isManualSelection && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Selected Lot (FEFO)</label>
-                  <input
-                    type="text"
-                    value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
-                    readOnly
-                    className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-gray-100"
-                  />
-                </div>
-              )}
-              {isManualSelection && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Lot</label>
-                  <Select.Root
-                    value={currentItem.lotId}
-                    onValueChange={(value) => setCurrentItem(prev => ({ ...prev, lotId: value }))}
-                    disabled={isLoading || !selectedProduct}
-                  >
-                    <Select.Trigger
-                      className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
-                    >
-                      <Select.Value placeholder="Select lot" />
-                      <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <ChevronDownIcon />
-                      </Select.Icon>
-                    </Select.Trigger>
-                    <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                      <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                        <ChevronUpIcon />
-                      </Select.ScrollUpButton>
-                      <Select.Viewport>
-                        <Select.Group>
-                          <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Lots</Select.Label>
-                          {lots.map(lot => (
-                            <Select.Item
-                              key={lot._id}
-                              value={lot._id}
-                              className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
-                            >
-                              <Select.ItemText>{lot.lotCode} (Qty: {lot.qtyOnHand}, Exp: {new Date(lot.expDate).toLocaleDateString()})</Select.ItemText>
-                              <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                                <CheckIcon />
-                              </Select.ItemIndicator>
-                            </Select.Item>
-                          ))}
-                        </Select.Group>
-                      </Select.Viewport>
-                      <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                        <ChevronDownIcon />
-                      </Select.ScrollDownButton>
-                    </Select.Content>
-                  </Select.Root>
-                </div>
-              )}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                <input
-                  type="number"
-                  value={currentItem.quantity}
-                  onChange={e => setCurrentItem(prev => ({ ...prev, quantity: e.target.value }))}
-                  placeholder="Enter quantity"
-                  className="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  min="1"
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end space-x-4">
-              <Button
-                onClick={addItem}
-                disabled={isLoading || !currentItem.quantity || (isManualSelection && !currentItem.lotId)}
-                className="px-4 py-2 text-sm font-medium rounded-lg shadow-sm bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-              >
-                Add Item
-              </Button>
-            </div>
-          </div>
+          {activeTab === 'newTransfer' && (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Create New Transfer</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="sourceWarehouse" className="mb-2">Source Warehouse</Label>
+                        <Select
+                          value={sourceWarehouse || ''}
+                          onValueChange={val => {
+                            console.log('Selected source warehouse:', val);
+                            setSourceWarehouse(val);
+                          }}
+                          disabled={user.role !== 'admin' || isLoading}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select source warehouse" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {warehouses.map(w => (
+                              <SelectItem
+                                key={w._id}
+                                value={w._id.toString()}
+                                disabled={user.role !== 'admin' && w._id.toString() !== user.warehouse?.toString()}
+                              >
+                                {w.name} ({w.warehouseCode})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-          {addedItems.length > 0 && (
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Items to Transfer ({addedItems.length})</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ProductCode</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ProductName</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lot Code</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prod Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exp Date</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {addedItems.map((item, index) => {
-                      const lotInTable = addedItems.find(i => i.lotCode === item.lotCode);
-                      const lot = lots.find(l => l._id.toString() === item.lotId) || lotInTable;
-                      console.log('Mapping item:', item, 'Lot found:', lot);
-                      const productId = lot?.productId?._id?.toString() || lot?.productId?.toString();
-                      const product = productId ? products.find(p => p._id === productId) : null;
-                      return (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product?.productCode || lotInTable?.productCode || 'N/A'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product?.name || lotInTable?.productName || 'Unknown'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.lotCode}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lot ? new Date(lot.prodDate || lot.productionDate).toLocaleDateString() : '-'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lot ? new Date(lot.expDate).toLocaleDateString() : '-'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button
-                              onClick={() => removeItem(index)}
-                              className="text-red-600 hover:text-red-900 mr-4"
-                              disabled={isLoading}
-                            >
-                              Remove
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                      <div >
+                        <Label htmlFor="category" className="mb-2">Category</Label>
+                        <Select
+                          value={selectedCategory}
+                          onValueChange={setSelectedCategory}
+                          disabled={isLoading}
+
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="All">All Products</SelectItem>
+                            {categories.map(category => (
+                              <SelectItem key={category._id} value={category._id.toString()}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="product" className="mb-2">Product</Label>
+                        <Select
+                          value={selectedProduct || ''}
+                          onValueChange={val => {
+                            console.log('Selected product:', val);
+                            setSelectedProduct(val);
+                            fetchLots(val);
+                          }}
+                          disabled={isLoading || !sourceWarehouse}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select product" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {filteredProducts.map(product => (
+                              <SelectItem key={product._id} value={product._id.toString()}>
+                                {product.name} ({product.productCode})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="destinationWarehouse" className="mb-2">Destination Warehouse</Label>
+                        <Select
+                          value={destinationWarehouse || ''}
+                          onValueChange={val => {
+                            console.log('Selected destination warehouse:', val);
+                            setDestinationWarehouse(val);
+                          }}
+                          disabled={user.role !== 'admin' || isLoading || !sourceWarehouse}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select destination warehouse" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {warehouses
+                              .filter(w => w._id.toString() !== sourceWarehouse)
+                              .map(w => (
+                                <SelectItem
+                                  key={w._id}
+                                  value={w._id.toString()}
+                                  disabled={user.role !== 'admin' && w._id.toString() !== user.warehouse?.toString()}
+                                >
+                                  {w.name} ({w.warehouseCode})
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="manualSelection"
+                          checked={isManualSelection}
+                          onChange={(e) => {
+                            setIsManualSelection(e.target.checked);
+                            if (!e.target.checked && lots.length > 0) {
+                              setCurrentItem(prev => ({ ...prev, lotId: lots[0]._id.toString() }));
+                            } else {
+                              setCurrentItem(prev => ({ ...prev, lotId: '' }));
+                            }
+                          }}
+                          className="h-4 w-4"
+                        />
+                        <Label htmlFor="manualSelection">Manual Lot Selection</Label>
+                        
+                      </div>
+
+                      {!isManualSelection && (
+                        <div>
+                          <Label>Selected Lot (FEFO)</Label>
+                          <Input
+                            value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
+                            readOnly
+                          />
+                        </div>
+                      )}
+
+                      {isManualSelection && (
+                        <div>
+                          <Label htmlFor="lot">Lot</Label>
+                          <Select
+                            value={currentItem.lotId || ''}
+                            onValueChange={val => {
+                              console.log('Selected lot:', val);
+                              setCurrentItem(prev => ({ ...prev, lotId: val }));
+                            }}
+                            disabled={isLoading || !selectedProduct}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select lot" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {lots.map(lot => (
+                                <SelectItem key={lot._id} value={lot._id.toString()}>
+                                  {lot.lotCode} (Qty: {lot.qtyOnHand}, Exp: {new Date(lot.expDate).toLocaleDateString()})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+
+                      <div>
+                        <Label htmlFor="quantity">Quantity</Label>
+                        <Input
+                          type="number"
+                          id="quantity"
+                          value={currentItem.quantity}
+                          onChange={e => setCurrentItem(prev => ({ ...prev, quantity: e.target.value }))}
+                          placeholder="Enter quantity"
+                          min="1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                  <Button
+                    onClick={addItem}
+                    disabled={isLoading || !currentItem.quantity || (isManualSelection && !currentItem.lotId)}
+                    className="w-full md:w-auto"
+                  >
+                    Add Item
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              {addedItems.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center">
+                      <span>Items to Transfer</span>
+                      <Badge variant="outline">{addedItems.length} items</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ScrollArea className="h-[300px] rounded-md border">
+                      <Table>
+                        <TableHeader className="sticky top-0 bg-background">
+                          <TableRow>
+                            <TableHead>Product Code</TableHead>
+                            <TableHead>Product Name</TableHead>
+                            <TableHead>Lot Code</TableHead>
+                            <TableHead>Quantity</TableHead>
+                            <TableHead>Prod Date</TableHead>
+                            <TableHead>Exp Date</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {addedItems.map((item, index) => {
+                            const lotInTable = addedItems.find(i => i.lotCode === item.lotCode);
+                            const lot = lots.find(l => l._id.toString() === item.lotId) || lotInTable;
+                            const productId = lot?.productId?._id?.toString() || lot?.productId?.toString();
+                            const product = productId ? products.find(p => p._id === productId) : null;
+                            return (
+                              <TableRow key={index}>
+                                <TableCell>{product?.productCode || lotInTable?.productCode || 'N/A'}</TableCell>
+                                <TableCell>{product?.name || lotInTable?.productName || 'Unknown'}</TableCell>
+                                <TableCell>{item.lotCode}</TableCell>
+                                <TableCell>{item.quantity}</TableCell>
+                                <TableCell>{lot ? format(new Date(lot.prodDate || lot.productionDate), 'dd/MM/yyyy') : '-'}</TableCell>
+                                <TableCell>{lot ? format(new Date(lot.expDate), 'dd/MM/yyyy') : '-'}</TableCell>
+                                <TableCell className="text-right">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeItem(index)}
+                                    className="text-red-600 hover:text-red-900"
+                                    disabled={isLoading}
+                                  >
+                                    Remove
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  </CardContent>
+                  <CardFooter className="flex justify-end">
+                    <Button
+                      onClick={handleTransfer}
+                      disabled={isLoading || addedItems.length === 0}
+                      className="w-full md:w-auto"
+                    >
+                      {isLoading ? 'Processing...' : 'Transfer Stock'}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              )}
+            </>
           )}
 
-          <div className="bg-white p-6 mt-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Transfer History</h3>
-              <div className="space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setFilters(prev => ({ ...prev, status: 'Pending' }))}
-                >
-                  Pending
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setFilters(prev => ({ ...prev, status: 'Confirmed' }))}
-                >
-                  Confirmed
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setFilters(prev => ({ ...prev, status: 'Rejected' }))}
-                >
-                  Rejected
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => setFilters(prev => ({ ...prev, status: 'all' }))}
-                >
-                  All
-                </Button>
-              </div>
-            </div>
-            <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
-                <Select.Root
-                  value={filters.warehouse}
-                  onValueChange={(value) => setFilters(prev => ({ ...prev, warehouse: value }))}
-                >
-                  <Select.Trigger className="w-full">
-                    <Select.Value placeholder="All Warehouses" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.Item value="all">All Warehouses</Select.Item>
-                    {warehouses.map(w => (
-                      <Select.Item key={w._id} value={w._id}>
-                        {w.name}
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Root>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                <Select.Root
-                  value={filters.type}
-                  onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}
-                >
-                  <Select.Trigger className="w-full">
-                    <Select.Value placeholder="All Types" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.Item value="all">All Types</Select.Item>
-                    <Select.Item value="Transfer">Transfer</Select.Item>
-                  </Select.Content>
-                </Select.Root>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                <DatePicker
-                  selected={filters.startDate}
-                  onChange={(date) => setFilters(prev => ({ ...prev, startDate: startOfDay(date) }))}
-                  selectsStart
-                  startDate={filters.startDate}
-                  endDate={filters.endDate}
-                  dateFormat="dd/MM/yyyy"
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                <DatePicker
-                  selected={filters.endDate}
-                  onChange={(date) => setFilters(prev => ({ ...prev, endDate: endOfDay(date) }))}
-                  selectsEnd
-                  startDate={filters.startDate}
-                  endDate={filters.endDate}
-                  minDate={filters.startDate}
-                  dateFormat="dd/MM/yyyy"
-                  className="w-full p-2 border rounded-md"
-                />
-              </div>
-            </div>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Transfer #</TableHead>
-                    <TableHead>Source Warehouse</TableHead>
-                    <TableHead>Destination Warehouse</TableHead>
-                    <TableHead>Product Code</TableHead>
-                    <TableHead>Product Name</TableHead>
-                    <TableHead>Lot Code</TableHead>
-                    <TableHead>Total Qty</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date/Time</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {transferHistory.map((transfer) => {
-                    const isDestination = user.role === 'admin' || (transfer.destinationWarehouseId.toString() === userWarehouseId && userWarehouseId);
-                    const totalQty = transfer.lots.reduce((sum, l) => sum + l.quantity, 0);
-                    return (
-                      <TableRow key={transfer._id}>
-                        <TableCell className="font-medium">{transfer.transferNumber}</TableCell>
-                        <TableCell>{transfer.sourceWarehouseId?.name || 'N/A'}</TableCell>
-                        <TableCell>{transfer.destinationWarehouseId?.name || 'N/A'}</TableCell>
-                        <TableCell>{transfer.lots.map(l => l.lotId?.productId?.productCode || 'N/A').join(', ') || 'N/A'}</TableCell>
-                        <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell>
-                        <TableCell>{transfer.lots.map(l => l.lotId?.lotCode || 'N/A').join(', ') || 'N/A'}</TableCell>
-                        <TableCell>{totalQty}</TableCell>
-                        <TableCell>{transfer.status}</TableCell>
-                        <TableCell>{format(new Date(transfer.createdAt), 'dd-MM-yyyy, HH:mm:ss')}</TableCell>
-                        <TableCell className="text-right space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => generatePDF(transfer)}
-                          >
-                            View PDF
-                          </Button>
-                          {isDestination && transfer.status === 'Pending' && (
-                            <>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleConfirmTransfer(transfer._id)}
-                                className="bg-green-600 text-white hover:bg-green-700"
-                              >
-                                Confirm
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => handleRejectTransfer(transfer._id)}
-                              >
-                                Reject
-                              </Button>
-                            </>
-                          )}
-                        </TableCell>
+          {activeTab === 'history' && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Transfer History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <div>
+                    <Label>Status</Label>
+                    <Select
+                      value={filters.status}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="Pending">Pending</SelectItem>
+                        <SelectItem value="Confirmed">Confirmed</SelectItem>
+                        <SelectItem value="Rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Warehouse</Label>
+                    <Select
+                      value={filters.warehouse}
+                      onValueChange={(value) => setFilters(prev => ({ ...prev, warehouse: value }))}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="All Warehouses" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Warehouses</SelectItem>
+                        {warehouses.map(w => (
+                          <SelectItem key={w._id} value={w._id.toString()}>
+                            {w.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Start Date</Label>
+                    <DatePicker
+                      selected={filters.startDate}
+                      onChange={(date) => setFilters(prev => ({ ...prev, startDate: startOfDay(date) }))}
+                      selectsStart
+                      startDate={filters.startDate}
+                      endDate={filters.endDate}
+                      dateFormat="dd/MM/yyyy"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+                  <div>
+                    <Label>End Date</Label>
+                    <DatePicker
+                      selected={filters.endDate}
+                      onValueChange={(date) => setFilters(prev => ({ ...prev, endDate: endOfDay(date) }))}
+                      selectsEnd
+                      startDate={filters.startDate}
+                      endDate={filters.endDate}
+                      minDate={filters.startDate}
+                      dateFormat="dd/MM/yyyy"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                  </div>
+                </div>
+
+                <ScrollArea className="h-[600px] rounded-md border">
+                  <Table>
+                    <TableHeader className="sticky top-0 bg-background">
+                      <TableRow>
+                        <TableHead>Transfer #</TableHead>
+                        <TableHead>Source</TableHead>
+                        <TableHead>Destination</TableHead>
+                        <TableHead>Product Code</TableHead>
+                        <TableHead>Product Name</TableHead>
+                        <TableHead>Total Qty</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Date/Time</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+                    </TableHeader>
+                    <TableBody>
+                      {transferHistory.map((transfer) => {
+                        const isDestination = user.role === 'admin' || (transfer.destinationWarehouseId.toString() === userWarehouseId && userWarehouseId);
+                        const totalQty = transfer.lots.reduce((sum, l) => sum + l.quantity, 0);
+                        return (
+                          <TableRow key={transfer._id}>
+                            <TableCell className="font-medium">{transfer.transferNumber}</TableCell>
+                            <TableCell>{transfer.sourceWarehouseId?.name || 'N/A'}</TableCell>
+                            <TableCell>{transfer.destinationWarehouseId?.name || 'N/A'}</TableCell>
+                            <TableCell>{transfer.lots.map(l => l.lotId?.productId?.productCode || 'N/A').join(', ') || 'N/A'}</TableCell>
+                            <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell>
+                            <TableCell>{totalQty}</TableCell>
+                            <TableCell>{getStatusBadge(transfer.status)}</TableCell>
+                            <TableCell>{format(new Date(transfer.createdAt), 'dd-MM-yyyy, HH:mm')}</TableCell>
+                            <TableCell className="text-right space-x-2">
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => generatePDF(transfer)}
+                                className="bg-gray-800 text-white hover:bg-gray-700"
+                              >
+                                View PDF
+                              </Button>
+                              {isDestination && transfer.status === 'Pending' && (
+                                <>
+                                  <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={() => handleConfirmTransfer(transfer._id)}
+                                    className="bg-green-600 text-white hover:bg-green-700"
+                                  >
+                                    Confirm
+                                  </Button>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleRejectTransfer(transfer._id)}
+                                  >
+                                    Reject
+                                  </Button>
+                                </>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+          )}
 
           <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
             <DialogContent className="sm:max-w-[425px]">
@@ -775,9 +754,22 @@ const TransferOrder = () => {
                 <DialogTitle>Confirm Stock Transfer</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <p><strong>Total Items:</strong> {addedItems.length}</p>
-                <p><strong>Total Quantity:</strong> {addedItems.reduce((sum, item) => sum + Number(item.quantity), 0)}</p>
-                <p><strong>Source Warehouse:</strong> {warehouses.find(w => w._id.toString() === sourceWarehouse)?.name || 'N/A'}</p>
+                <div className="space-y-2">
+                  <Label>Total Items</Label>
+                  <p className="font-medium">{addedItems.length}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Total Quantity</Label>
+                  <p className="font-medium">{addedItems.reduce((sum, item) => sum + Number(item.quantity), 0)}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Source Warehouse</Label>
+                  <p className="font-medium">{warehouses.find(w => w._id.toString() === sourceWarehouse)?.name || 'N/A'}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Destination Warehouse</Label>
+                  <p className="font-medium">{warehouses.find(w => w._id.toString() === destinationWarehouse)?.name || 'N/A'}</p>
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={cancelTransfer} disabled={isLoading}>
