@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,9 +35,13 @@ const ReceiveStock = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [productSearch, setProductSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showProductDropdown, setShowProductDropdown] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
+  const productInputRef = useRef(null);
 
   useEffect(() => {
     if (!token) {
@@ -111,18 +115,6 @@ const ReceiveStock = () => {
 
     fetchData();
   }, [token, navigate, user.role, user.warehouse]);
-
-
-
-
-
-
-
-
-
-
-
-
 
   const updateCurrentLot = (field, value) => {
     const updatedLot = { ...currentLot, [field]: value };
@@ -288,6 +280,36 @@ const ReceiveStock = () => {
     ? products
     : products.filter(p => p.category && p.category._id === selectedCategory);
 
+  const handleProductSearch = (e) => {
+    const value = e.target.value;
+    setProductSearch(value);
+    let results = [];
+    if (value.trim() === '') {
+      results = filteredProducts;
+    } else {
+      const search = value.toLowerCase();
+      results = filteredProducts.filter(product =>
+        product.productCode?.toLowerCase().includes(search) ||
+        product.name?.toLowerCase().includes(search)
+      );
+    }
+    setSearchResults(results);
+    setShowProductDropdown(true);
+  };
+
+  const handleProductSelect = (productId) => {
+    setCurrentLot(prev => ({ ...prev, productId }));
+    const selected = filteredProducts.find(p => p._id === productId);
+    setProductSearch(selected ? `${selected.name} (${selected.productCode})` : '');
+    setShowProductDropdown(false);
+    if (productInputRef && productInputRef.current) productInputRef.current.blur();
+  };
+
+  const handleAddLot = () => {
+    addLot();
+    setProductSearch('');
+  };
+
   if (!token) return null;
 
   return (
@@ -435,45 +457,34 @@ const ReceiveStock = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Product <span className="text-red-500">*</span></label>
                   <div className="relative">
-                    <Select.Root
-                      value={currentLot.productId}
-                      onValueChange={(value) => updateCurrentLot('productId', value)}
+                    <input
+                      ref={productInputRef}
+                      type="text"
+                      placeholder="Search by product code or name..."
+                      className="mb-2 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      value={productSearch}
+                      onChange={handleProductSearch}
+                      onFocus={() => {
+                        setShowProductDropdown(true);
+                        setSearchResults(filteredProducts);
+                      }}
+                      onBlur={() => setTimeout(() => setShowProductDropdown(false), 150)}
                       disabled={isLoading}
-                    >
-                      <Select.Trigger
-                        className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
-                      >
-                        <Select.Value placeholder="Select product" />
-                        <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <ChevronDownIcon />
-                        </Select.Icon>
-                      </Select.Trigger>
-                      <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                        <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                          <ChevronUpIcon />
-                        </Select.ScrollUpButton>
-                        <Select.Viewport>
-                          <Select.Group>
-                            <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Products</Select.Label>
-                            {filteredProducts.map(product => (
-                              <Select.Item
-                                key={product._id}
-                                value={product._id}
-                                className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-blue-100 m-2 rounded-sm focus:outline-none"
-                              >
-                                <Select.ItemText>{product.name} ({product.productCode})</Select.ItemText>
-                                <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                                  <CheckIcon />
-                                </Select.ItemIndicator>
-                              </Select.Item>
-                            ))}
-                          </Select.Group>
-                        </Select.Viewport>
-                        <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                          <ChevronDownIcon />
-                        </Select.ScrollDownButton>
-                      </Select.Content>
-                    </Select.Root>
+                      autoComplete="off"
+                    />
+                    {showProductDropdown && searchResults.length > 0 && (
+                      <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                        {searchResults.map(product => (
+                          <li
+                            key={product._id}
+                            className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-100 ${currentLot.productId === product._id ? 'bg-blue-600 text-white' : 'text-gray-700'}`}
+                            onMouseDown={() => handleProductSelect(product._id)}
+                          >
+                            {product.name} ({product.productCode})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
 
@@ -575,7 +586,7 @@ const ReceiveStock = () => {
               <div className="mt-6 flex justify-end">
                 <button
                   type="button"
-                  onClick={addLot}
+                  onClick={handleAddLot}
                   className="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                   disabled={isLoading || !currentLot.productId || !currentLot.lotCode || !currentLot.boxCount || !currentLot.qtyPerBox || !currentLot.productionDate || !currentLot.expDate}
                 >
