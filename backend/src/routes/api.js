@@ -2319,7 +2319,6 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Warehouse not found' });
     }
 
-    // Generate Transfer Number with Counter
     let counter = await Counter.findOneAndUpdate(
       { warehouseId: new mongoose.Types.ObjectId(sourceWarehouseId) },
       { $inc: { sequence: 1 } },
@@ -2328,7 +2327,6 @@ router.post('/transfer', authMiddleware, async (req, res) => {
     const transferNumber = `TRF-${sourceWarehouse.warehouseCode}-${String(counter.sequence).padStart(5, '0')}`;
     console.log('Generated transferNumber:', transferNumber);
 
-    // Prepare Transfer Transaction with trackingNumber
     const transferTransaction = new TransferTransaction({
       transferNumber,
       sourceWarehouseId: new mongoose.Types.ObjectId(sourceWarehouseId),
@@ -2339,10 +2337,9 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       })),
       userId: new mongoose.Types.ObjectId(user._id),
       note: note || '',
-      trackingNumber: uuidv4() // สร้าง Tracking Number ที่ไม่ซ้ำกัน
+      trackingNumber: uuidv4()
     });
 
-    // Update Lots
     for (const lot of lots) {
       const sourceLot = await Lot.findOne({ _id: lot.lotId, warehouse: sourceWarehouseId }).session(session);
       if (!sourceLot || sourceLot.qtyOnHand < lot.quantity) {
@@ -2350,7 +2347,6 @@ router.post('/transfer', authMiddleware, async (req, res) => {
         return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId} in source warehouse` });
       }
 
-      // ลด qtyOnHand ของ Source ทันที
       sourceLot.qtyOnHand -= lot.quantity;
       sourceLot.transactions.push({
         timestamp: new Date(),
@@ -2364,10 +2360,8 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       });
       await sourceLot.save({ session });
 
-      // สร้างหรืออัปเดต destLot ในสถานะ Pending
       let destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: destinationWarehouseId }).session(session);
       if (destLot) {
-        // ถ้ามีอยู่แล้ว เพิ่ม Transaction Pending
         destLot.transactions.push({
           timestamp: new Date(),
           userId: new mongoose.Types.ObjectId(user._id),
@@ -2380,7 +2374,6 @@ router.post('/transfer', authMiddleware, async (req, res) => {
         });
         console.log(`Added pending transfer to existing destLot with lotCode: ${sourceLot.lotCode}`);
       } else {
-        // สร้าง destLot ใหม่ แต่ไม่เพิ่ม qtyOnHand จนกว่าจะ Confirm
         destLot = new Lot({
           lotCode: sourceLot.lotCode,
           productId: sourceLot.productId,
@@ -2411,7 +2404,6 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       await destLot.save({ session });
     }
 
-    // Save Transfer Transaction
     await transferTransaction.save({ session });
 
     await session.commitTransaction();
@@ -2431,7 +2423,6 @@ router.post('/transfer', authMiddleware, async (req, res) => {
   }
 });
 
-// Endpoint สำหรับการ Confirm
 router.patch('/transfer/:transferId/confirm', authMiddleware, async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -2485,7 +2476,6 @@ router.patch('/transfer/:transferId/confirm', authMiddleware, async (req, res) =
   }
 });
 
-// Endpoint สำหรับการ Reject
 router.patch('/transfer/:transferId/reject', authMiddleware, async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -2506,7 +2496,7 @@ router.patch('/transfer/:transferId/reject', authMiddleware, async (req, res) =>
       const destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: transfer.destinationWarehouseId }).session(session);
 
       if (sourceLot) {
-        sourceLot.qtyOnHand += lot.quantity;
+        sourceLot.qtyOnHand += lot.quantity; // คืน qtyOnHand ให้ Source
         sourceLot.transactions.push({
           timestamp: new Date(),
           userId: new mongoose.Types.ObjectId(user._id),
@@ -2514,14 +2504,14 @@ router.patch('/transfer/:transferId/reject', authMiddleware, async (req, res) =>
           quantityAdjusted: lot.quantity,
           beforeQty: sourceLot.qtyOnHand - lot.quantity,
           afterQty: sourceLot.qtyOnHand,
-          transactionType: 'TransferInRejected',
+          transactionType: 'TransferInRejected', // ใช้ TransferInRejected
           warehouseId: new mongoose.Types.ObjectId(transfer.sourceWarehouseId)
         });
         await sourceLot.save({ session });
       }
 
       if (destLot) {
-        await Lot.deleteOne({ _id: destLot._id }).session(session);
+        await Lot.deleteOne({ _id: destLot._id }).session(session); // ลบ destLot ถ้ามี
       }
     }
 
@@ -2542,8 +2532,6 @@ router.patch('/transfer/:transferId/reject', authMiddleware, async (req, res) =>
   }
 });
 
-
-// transfer history
 router.get('/transfer-history', authMiddleware, async (req, res) => {
   try {
     const { status, warehouse, startDate, endDate } = req.query;
@@ -2587,7 +2575,7 @@ router.get('/transfer-history', authMiddleware, async (req, res) => {
         select: 'lotCode productId productionDate expDate',
         populate: {
           path: 'productId',
-          select: 'name productCode' // ตรวจสอบว่า productId มีข้อมูลเหล่านี้
+          select: 'name productCode'
         }
       })
       .lean();

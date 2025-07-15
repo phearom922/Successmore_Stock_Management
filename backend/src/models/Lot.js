@@ -9,7 +9,7 @@ const lotTransactionSchema = new mongoose.Schema({
   afterQty: { type: Number, required: true },
   transactionType: {
     type: String,
-    enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities', 'TransferInPending'], // เพิ่ม TransferInPending
+    enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities', 'TransferInPending', 'TransferInRejected'], // เพิ่ม TransferInRejected
     required: true
   },
   warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
@@ -27,7 +27,7 @@ const lotSchema = new mongoose.Schema({
   warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
   supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier', required: true },
   transactionNumber: { type: String, required: true },
-  status: { type: String, enum: ['active', 'damaged', 'expired', 'pending'], default: 'active' }, // เพิ่ม pending
+  status: { type: String, enum: ['active', 'damaged', 'expired', 'pending'], default: 'active' },
   qtyOnHand: { type: Number, default: 0 },
   damaged: { type: Number, default: 0 },
   transactions: [lotTransactionSchema]

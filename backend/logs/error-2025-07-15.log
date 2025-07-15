@@ -185,3 +185,80 @@ MongoServerError: E11000 duplicate key error collection: stock-management.transf
     at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:207:20)
     at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
     at async Collection.insertOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:157:16)
+2025-07-15 15:05:45 [error]: Error rejecting transfer: Lot validation failed: transactions.1.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.1.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:26:01 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:26:07 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:26:28 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:26:41 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:27:24 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:27:35 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:27:46 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:28:14 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:28:45 [error]: Error rejecting transfer: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.8.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
+2025-07-15 15:39:00 [error]: Error rejecting transfer: Lot validation failed: transactions.11.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+ValidationError: Lot validation failed: transactions.11.transactionType: `TransferInRejected` is not a valid enum value for path `transactionType`.
+    at Document.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3352:32)
+    at Subdocument.invalidate (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\types\subdocument.js:229:12)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\document.js:3113:17
+    at E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\schemaType.js:1407:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)
