@@ -59,6 +59,10 @@ const TransferOrder = () => {
     endDate: endOfDay(new Date())
   });
   const [activeTab, setActiveTab] = useState('newTransfer');
+  const [productSearch, setProductSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const productInputRef = React.useRef(null);
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -331,6 +335,38 @@ const TransferOrder = () => {
     }
   };
 
+  const handleProductSearch = (e) => {
+    const value = e.target.value;
+    setProductSearch(value);
+    let results = [];
+    if (value.trim() === '') {
+      results = filteredProducts;
+    } else {
+      const search = value.toLowerCase();
+      results = filteredProducts.filter(product =>
+        product.productCode?.toLowerCase().includes(search) ||
+        product.name?.toLowerCase().includes(search)
+      );
+    }
+    setSearchResults(results);
+    setShowProductDropdown(true);
+  };
+
+  const handleProductSelect = (productId) => {
+    setSelectedProduct(productId);
+    const selected = filteredProducts.find(p => p._id === productId);
+    setProductSearch(selected ? `${selected.name} (${selected.productCode})` : '');
+    fetchLots(productId);
+    setShowProductDropdown(false);
+    if (productInputRef.current) productInputRef.current.blur();
+  };
+
+  const handleAddItem = () => {
+    addItem();
+    setProductSearch('');
+    setSelectedProduct('');
+  };
+
   return (
     <div className="p-4 md:p-6 mx-auto bg-gray-50 min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
@@ -386,50 +422,61 @@ const TransferOrder = () => {
                         </Select>
                       </div>
 
-                      <div >
+                      <div>
                         <Label htmlFor="category" className="mb-2">Category</Label>
-                        <Select
-                          value={selectedCategory}
-                          onValueChange={setSelectedCategory}
-                          disabled={isLoading}
-
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="All">All Products</SelectItem>
-                            {categories.map(category => (
-                              <SelectItem key={category._id} value={category._id.toString()}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          <button
+                            type="button"
+                            className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                            onClick={() => setSelectedCategory('All')}
+                          >
+                            All Products
+                          </button>
+                          {categories.map(category => (
+                            <button
+                              key={category._id}
+                              type="button"
+                              className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                              onClick={() => setSelectedCategory(category._id.toString())}
+                            >
+                              {category.name}
+                            </button>
+                          ))}
+                        </div>
                       </div>
 
                       <div>
                         <Label htmlFor="product" className="mb-2">Product</Label>
-                        <Select
-                          value={selectedProduct || ''}
-                          onValueChange={val => {
-                            console.log('Selected product:', val);
-                            setSelectedProduct(val);
-                            fetchLots(val);
-                          }}
-                          disabled={isLoading || !sourceWarehouse}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select product" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {filteredProducts.map(product => (
-                              <SelectItem key={product._id} value={product._id.toString()}>
-                                {product.name} ({product.productCode})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="relative">
+                          <Input
+                            ref={productInputRef}
+                            type="text"
+                            placeholder="Search by product code or name..."
+                            className="mb-2 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            value={productSearch}
+                            onChange={handleProductSearch}
+                            onFocus={() => {
+                              setShowProductDropdown(true);
+                              setSearchResults(filteredProducts);
+                            }}
+                            onBlur={() => setTimeout(() => setShowProductDropdown(false), 150)}
+                            disabled={isLoading || !sourceWarehouse}
+                            autoComplete="off"
+                          />
+                          {showProductDropdown && searchResults.length > 0 && (
+                            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                              {searchResults.map(product => (
+                                <li
+                                  key={product._id}
+                                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-100 ${selectedProduct === product._id ? 'bg-blue-600 text-white' : 'text-gray-700'}`}
+                                  onMouseDown={() => handleProductSelect(product._id)}
+                                >
+                                  {product.name} ({product.productCode})
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -533,7 +580,7 @@ const TransferOrder = () => {
                 </CardContent>
                 <CardFooter className="flex justify-end">
                   <Button
-                    onClick={addItem}
+                    onClick={handleAddItem}
                     disabled={isLoading || !currentItem.quantity || (isManualSelection && !currentItem.lotId)}
                     className="w-full md:w-auto"
                   >

@@ -25,6 +25,10 @@ const IssueStock = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isManualSelection, setIsManualSelection] = useState(false);
+  const [productSearch, setProductSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const productInputRef = React.useRef(null);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
@@ -210,6 +214,33 @@ const IssueStock = () => {
     ? products
     : products.filter(p => p.category && p.category._id === selectedCategory);
 
+  const handleProductSearch = (e) => {
+    const value = e.target.value;
+    setProductSearch(value);
+    let results = [];
+    if (value.trim() === '') {
+      // Show all products if input is empty
+      results = filteredProducts;
+    } else {
+      const search = value.toLowerCase();
+      results = filteredProducts.filter(product =>
+        product.productCode?.toLowerCase().includes(search) ||
+        product.name?.toLowerCase().includes(search)
+      );
+    }
+    setSearchResults(results);
+    setShowProductDropdown(true);
+  };
+
+  const handleProductSelect = (productId) => {
+    setSelectedProduct(productId);
+    const selected = filteredProducts.find(p => p._id === productId);
+    setProductSearch(selected ? `${selected.name} (${selected.productCode})` : '');
+    fetchLots(productId);
+    setShowProductDropdown(false);
+    if (productInputRef.current) productInputRef.current.blur();
+  };
+
   return (
     <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
       <div className="flex items-center justify-between mb-8">
@@ -233,16 +264,25 @@ const IssueStock = () => {
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="mb-6">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full p-2 border rounded"
-              >
-                <option value="All">All Products</option>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-red-100`}
+                  onClick={() => setSelectedCategory('All')}
+                >
+                  All Products
+                </button>
                 {categories.map(category => (
-                  <option key={category._id} value={category._id}>{category.name}</option>
+                  <button
+                    key={category._id}
+                    type="button"
+                    className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === category._id ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-red-100`}
+                    onClick={() => setSelectedCategory(category._id)}
+                  >
+                    {category.name}
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -290,48 +330,36 @@ const IssueStock = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Product</label>
-                <Select.Root
-                  value={selectedProduct}
-                  onValueChange={(value) => {
-                    setSelectedProduct(value);
-                    fetchLots(value);
-                  }}
-                  disabled={isLoading || !selectedWarehouse}
-                >
-                  <Select.Trigger
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <Select.Value placeholder="Select product" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
-                    <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronUpIcon />
-                    </Select.ScrollUpButton>
-                    <Select.Viewport>
-                      <Select.Group>
-                        <Select.Label className="px-3 py-1.5 text-sm text-gray-500">Products</Select.Label>
-                        {filteredProducts.map(product => (
-                          <Select.Item
-                            key={product._id}
-                            value={product._id}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
-                          >
-                            <Select.ItemText>{product.name} ({product.productCode})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
-                              <CheckIcon />
-                            </Select.ItemIndicator>
-                          </Select.Item>
-                        ))}
-                      </Select.Group>
-                    </Select.Viewport>
-                    <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
-                      <ChevronDownIcon />
-                    </Select.ScrollDownButton>
-                  </Select.Content>
-                </Select.Root>
+                <div className="relative">
+                  <input
+                    ref={productInputRef}
+                    type="text"
+                    placeholder="Search by product code or name..."
+                    className="mb-2 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                    value={productSearch}
+                    onChange={handleProductSearch}
+                    onFocus={() => {
+                      setShowProductDropdown(true);
+                      setSearchResults(filteredProducts); // Show all products on focus
+                    }}
+                    onBlur={() => setTimeout(() => setShowProductDropdown(false), 150)}
+                    disabled={isLoading || !selectedWarehouse}
+                    autoComplete="off"
+                  />
+                  {showProductDropdown && searchResults.length > 0 && (
+                    <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {searchResults.map(product => (
+                        <li
+                          key={product._id}
+                          className={`px-3 py-2 text-sm cursor-pointer hover:bg-red-100 ${selectedProduct === product._id ? 'bg-red-600 text-white' : 'text-gray-700'}`}
+                          onMouseDown={() => handleProductSelect(product._id)}
+                        >
+                          {product.name} ({product.productCode})
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Manual Lot Selection</label>

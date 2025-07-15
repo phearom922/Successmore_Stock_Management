@@ -8447,3 +8447,55 @@ JsonWebTokenError: jwt malformed
 MongooseServerSelectionError: Server selection timed out after 30000 ms
     at _handleConnectionErrors (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\connection.js:1165:11)
     at NativeConnection.openUri (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\connection.js:1096:11)
+2025-07-15 22:16:55 [info]: Logger initialized successfully
+2025-07-15 22:16:56 [info]: Server running on port 3000
+2025-07-15 22:16:56 [info]: Connected to MongoDB
+2025-07-15 22:17:09 [info]: Received POST request to /api/login
+2025-07-15 22:17:09 [info]: Login attempt:
+2025-07-15 22:17:09 [info]: Login successful:
+2025-07-15 22:17:09 [info]: Received GET request to /api/notifications
+2025-07-15 22:17:09 [info]: Received GET request to /api/notifications
+2025-07-15 22:17:09 [info]: Received GET request to /api/lots
+2025-07-15 22:17:09 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:09 [info]: Received GET request to /api/products
+2025-07-15 22:17:10 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:10 [info]: Received GET request to /api/lots
+2025-07-15 22:17:10 [info]: Received GET request to /api/products
+2025-07-15 22:17:16 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:16 [info]: Received GET request to /api/manage-damage/history?startDate=2025-07-14T17:00:00.000Z&endDate=2025-07-15T16:59:59.999Z
+2025-07-15 22:17:16 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:16 [info]: Received GET request to /api/manage-damage/history?startDate=2025-07-14T17:00:00.000Z&endDate=2025-07-15T16:59:59.999Z
+2025-07-15 22:17:17 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:17 [info]: Received GET request to /api/lot-management/expiring?warehouse=
+2025-07-15 22:17:17 [info]: Fetching expiring lots
+2025-07-15 22:17:17 [info]: Received GET request to /api/settings
+2025-07-15 22:17:17 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-15 22:17:17 [info]: Fetching lot management data
+2025-07-15 22:17:17 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:17 [info]: Fetched settings
+2025-07-15 22:17:17 [info]: Received GET request to /api/settings
+2025-07-15 22:17:17 [info]: Expiring lots found:
+2025-07-15 22:17:17 [info]: Fetched settings
+2025-07-15 22:17:17 [info]: Received GET request to /api/lot-management/expiring?warehouse=
+2025-07-15 22:17:17 [info]: Fetching expiring lots
+2025-07-15 22:17:17 [info]: Expiring lots found:
+2025-07-15 22:17:17 [info]: Received GET request to /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-15 22:17:17 [info]: Fetching lot management data
+2025-07-15 22:17:20 [info]: Received GET request to /api/products
+2025-07-15 22:17:20 [info]: Received GET request to /api/categories
+2025-07-15 22:17:20 [info]: Received GET request to /api/categories
+2025-07-15 22:17:20 [info]: Received GET request to /api/products
+2025-07-15 22:17:21 [info]: Received GET request to /api/categories
+2025-07-15 22:17:21 [info]: Received GET request to /api/products
+2025-07-15 22:17:21 [info]: Received GET request to /api/categories
+2025-07-15 22:17:21 [info]: Received GET request to /api/products
+2025-07-15 22:17:24 [info]: Received GET request to /api/categories
+2025-07-15 22:17:24 [info]: Received GET request to /api/products
+2025-07-15 22:17:24 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:24 [info]: Received GET request to /api/categories
+2025-07-15 22:17:24 [info]: Received GET request to /api/transfer-history?status=Pending&startDate=2025-07-14T17:00:00.000Z&endDate=2025-07-15T16:59:59.999Z
+2025-07-15 22:17:24 [info]: Received GET request to /api/warehouses
+2025-07-15 22:17:24 [info]: Received GET request to /api/products
+2025-07-15 22:17:24 [info]: Received GET request to /api/transfer-history?status=Pending&startDate=2025-07-14T17:00:00.000Z&endDate=2025-07-15T16:59:59.999Z
+2025-07-15 22:17:39 [info]: Received GET request to /api/notifications
+2025-07-15 22:18:09 [info]: Received GET request to /api/notifications
