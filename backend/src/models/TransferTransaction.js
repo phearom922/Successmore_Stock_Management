@@ -10,15 +10,17 @@ const transferTransactionSchema = new mongoose.Schema({
   }],
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   note: { type: String, default: '' },
-  status: { type: String, enum: ['Pending', 'Completed', 'Cancelled'], default: 'Pending' },
+  status: { type: String, enum: ['Pending', 'Confirmed', 'Rejected'], default: 'Pending' },
   createdAt: { type: Date, default: Date.now },
-  completedAt: { type: Date }
+  completedAt: { type: Date },
+  trackingNumber: { type: String }
 }, {
-  timestamps: true // เพิ่ม createdAt และ updatedAt อัตโนมัติ
+  timestamps: true
 });
 
-// Index สำหรับการค้นหา (ลบการกำหนด transferNumber ออก เพราะมี unique: true อยู่แล้ว)
 transferTransactionSchema.index({ sourceWarehouseId: 1, createdAt: -1 });
 transferTransactionSchema.index({ destinationWarehouseId: 1, createdAt: -1 });
 
-module.exports = mongoose.model('TransferTransaction', transferTransactionSchema);
+const TransferTransaction = mongoose.model('TransferTransaction', transferTransactionSchema);
+
+module.exports = TransferTransaction;

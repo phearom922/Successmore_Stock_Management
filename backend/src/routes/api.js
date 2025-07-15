@@ -24,6 +24,8 @@ const { updateUserSchema } = require('../models/User');
 const IssueTransaction = require('../models/IssueTransaction');
 const Counter = require('../models/Counter');
 const TransferTransaction = require('../models/TransferTransaction');
+const { v4: uuidv4 } = require('uuid');
+
 
 // Validation Schemas
 const receiveSchema = z.object({
@@ -1613,8 +1615,6 @@ router.get('/receive-history', authMiddleware, async (req, res) => {
   }
 });
 
-
-
 // Manage Damage
 router.post('/manage-damage', authMiddleware, async (req, res) => {
   const session = await mongoose.startSession();
@@ -1732,7 +1732,6 @@ router.get('/manage-damage/history', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching damage history', error: error.message });
   }
 });
-
 
 
 // Configurable expiration warning days (default to 15 days)
@@ -2329,14 +2328,7 @@ router.post('/transfer', authMiddleware, async (req, res) => {
     const transferNumber = `TRF-${sourceWarehouse.warehouseCode}-${String(counter.sequence).padStart(5, '0')}`;
     console.log('Generated transferNumber:', transferNumber);
 
-    // Check for duplicate transferNumber
-    const existingTransaction = await TransferTransaction.findOne({ transferNumber }).session(session);
-    if (existingTransaction) {
-      await session.abortTransaction();
-      return res.status(400).json({ message: 'Duplicate transfer number detected', transferNumber });
-    }
-
-    // Prepare Transfer Transaction
+    // Prepare Transfer Transaction with trackingNumber
     const transferTransaction = new TransferTransaction({
       transferNumber,
       sourceWarehouseId: new mongoose.Types.ObjectId(sourceWarehouseId),
@@ -2346,7 +2338,8 @@ router.post('/transfer', authMiddleware, async (req, res) => {
         quantity: lot.quantity
       })),
       userId: new mongoose.Types.ObjectId(user._id),
-      note: note || ''
+      note: note || '',
+      trackingNumber: uuidv4() // สร้าง Tracking Number ที่ไม่ซ้ำกัน
     });
 
     // Update Lots
@@ -2357,11 +2350,12 @@ router.post('/transfer', authMiddleware, async (req, res) => {
         return res.status(400).json({ message: `Insufficient stock for lot ${lot.lotId} in source warehouse` });
       }
 
+      // ลด qtyOnHand ของ Source ทันที
       sourceLot.qtyOnHand -= lot.quantity;
       sourceLot.transactions.push({
         timestamp: new Date(),
         userId: new mongoose.Types.ObjectId(user._id),
-        reason: `Transferred to ${destinationWarehouseId}`,
+        reason: `Transferred to ${destinationWarehouseId} (Pending)`,
         quantityAdjusted: -lot.quantity,
         beforeQty: sourceLot.qtyOnHand + lot.quantity,
         afterQty: sourceLot.qtyOnHand,
@@ -2370,24 +2364,23 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       });
       await sourceLot.save({ session });
 
-      // Check or update Lot in Destination Warehouse
+      // สร้างหรืออัปเดต destLot ในสถานะ Pending
       let destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: destinationWarehouseId }).session(session);
       if (destLot) {
-        // Update existing Lot
-        destLot.qtyOnHand += lot.quantity;
+        // ถ้ามีอยู่แล้ว เพิ่ม Transaction Pending
         destLot.transactions.push({
           timestamp: new Date(),
           userId: new mongoose.Types.ObjectId(user._id),
-          reason: `Transferred from ${sourceWarehouseId}`,
+          reason: `Pending transfer from ${sourceWarehouseId}`,
           quantityAdjusted: lot.quantity,
-          beforeQty: destLot.qtyOnHand - lot.quantity,
+          beforeQty: destLot.qtyOnHand,
           afterQty: destLot.qtyOnHand,
-          transactionType: 'TransferIn',
+          transactionType: 'TransferInPending',
           warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
         });
-        console.log(`Updated existing destLot with lotCode: ${sourceLot.lotCode}, new qtyOnHand: ${destLot.qtyOnHand}`);
+        console.log(`Added pending transfer to existing destLot with lotCode: ${sourceLot.lotCode}`);
       } else {
-        // Create new Lot with all required fields
+        // สร้าง destLot ใหม่ แต่ไม่เพิ่ม qtyOnHand จนกว่าจะ Confirm
         destLot = new Lot({
           lotCode: sourceLot.lotCode,
           productId: sourceLot.productId,
@@ -2399,21 +2392,21 @@ router.post('/transfer', authMiddleware, async (req, res) => {
           boxCount: sourceLot.boxCount,
           quantity: sourceLot.quantity,
           warehouse: new mongoose.Types.ObjectId(destinationWarehouseId),
-          qtyOnHand: lot.quantity,
+          qtyOnHand: 0,
           damaged: 0,
-          status: sourceLot.status,
+          status: 'pending',
           transactions: [{
             timestamp: new Date(),
             userId: new mongoose.Types.ObjectId(user._id),
-            reason: `Transferred from ${sourceWarehouseId}`,
+            reason: `Pending transfer from ${sourceWarehouseId}`,
             quantityAdjusted: lot.quantity,
             beforeQty: 0,
-            afterQty: lot.quantity,
-            transactionType: 'TransferIn',
+            afterQty: 0,
+            transactionType: 'TransferInPending',
             warehouseId: new mongoose.Types.ObjectId(destinationWarehouseId)
           }]
         });
-        console.log(`Created new destLot with lotCode: ${sourceLot.lotCode}, qtyOnHand: ${lot.quantity}`);
+        console.log(`Created new pending destLot with lotCode: ${sourceLot.lotCode}, qtyOnHand: 0`);
       }
       await destLot.save({ session });
     }
@@ -2424,8 +2417,8 @@ router.post('/transfer', authMiddleware, async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    logger.info('Transfer transaction created', { transferNumber });
-    res.json({ message: 'Stock transferred successfully', transferNumber });
+    logger.info('Transfer transaction created', { transferNumber, trackingNumber: transferTransaction.trackingNumber });
+    res.json({ message: 'Stock transfer initiated (Pending confirmation)', transferNumber, trackingNumber: transferTransaction.trackingNumber });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -2435,6 +2428,174 @@ router.post('/transfer', authMiddleware, async (req, res) => {
       details: error.toString()
     });
     res.status(500).json({ message: 'Error transferring stock', error: error.message, details: error.toString() });
+  }
+});
+
+// Endpoint สำหรับการ Confirm
+router.patch('/transfer/:transferId/confirm', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { transferId } = req.params;
+    const user = req.user;
+    const warehouseId = user.warehouse ? user.warehouse.toString() : null;
+
+    const transfer = await TransferTransaction.findById(transferId).session(session);
+    if (!transfer || transfer.status !== 'Pending' || transfer.destinationWarehouseId.toString() !== warehouseId) {
+      await session.abortTransaction();
+      return res.status(403).json({ message: 'Unauthorized or invalid transfer status' });
+    }
+
+    for (const lot of transfer.lots) {
+      const sourceLot = await Lot.findOne({ _id: lot.lotId, warehouse: transfer.sourceWarehouseId }).session(session);
+      const destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: transfer.destinationWarehouseId }).session(session);
+
+      if (destLot) {
+        destLot.qtyOnHand += lot.quantity;
+        destLot.status = 'active';
+        destLot.transactions.push({
+          timestamp: new Date(),
+          userId: new mongoose.Types.ObjectId(user._id),
+          reason: 'Transfer confirmed',
+          quantityAdjusted: lot.quantity,
+          beforeQty: destLot.qtyOnHand - lot.quantity,
+          afterQty: destLot.qtyOnHand,
+          transactionType: 'TransferIn',
+          warehouseId: new mongoose.Types.ObjectId(warehouseId)
+        });
+        await destLot.save({ session });
+      }
+    }
+
+    transfer.status = 'Confirmed';
+    transfer.completedAt = new Date();
+    await transfer.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    logger.info('Transfer confirmed', { transferId });
+    res.json({ message: 'Transfer confirmed successfully' });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    logger.error('Error confirming transfer:', error);
+    res.status(500).json({ message: 'Error confirming transfer', error: error.message });
+  }
+});
+
+// Endpoint สำหรับการ Reject
+router.patch('/transfer/:transferId/reject', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { transferId } = req.params;
+    const user = req.user;
+    const warehouseId = user.warehouse ? user.warehouse.toString() : null;
+
+    const transfer = await TransferTransaction.findById(transferId).session(session);
+    if (!transfer || transfer.status !== 'Pending' || transfer.destinationWarehouseId.toString() !== warehouseId) {
+      await session.abortTransaction();
+      return res.status(403).json({ message: 'Unauthorized or invalid transfer status' });
+    }
+
+    for (const lot of transfer.lots) {
+      const sourceLot = await Lot.findOne({ _id: lot.lotId, warehouse: transfer.sourceWarehouseId }).session(session);
+      const destLot = await Lot.findOne({ lotCode: sourceLot.lotCode, warehouse: transfer.destinationWarehouseId }).session(session);
+
+      if (sourceLot) {
+        sourceLot.qtyOnHand += lot.quantity;
+        sourceLot.transactions.push({
+          timestamp: new Date(),
+          userId: new mongoose.Types.ObjectId(user._id),
+          reason: 'Transfer rejected',
+          quantityAdjusted: lot.quantity,
+          beforeQty: sourceLot.qtyOnHand - lot.quantity,
+          afterQty: sourceLot.qtyOnHand,
+          transactionType: 'TransferInRejected',
+          warehouseId: new mongoose.Types.ObjectId(transfer.sourceWarehouseId)
+        });
+        await sourceLot.save({ session });
+      }
+
+      if (destLot) {
+        await Lot.deleteOne({ _id: destLot._id }).session(session);
+      }
+    }
+
+    transfer.status = 'Rejected';
+    transfer.completedAt = new Date();
+    await transfer.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    logger.info('Transfer rejected', { transferId });
+    res.json({ message: 'Transfer rejected successfully' });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    logger.error('Error rejecting transfer:', error);
+    res.status(500).json({ message: 'Error rejecting transfer', error: error.message });
+  }
+});
+
+
+// transfer history
+router.get('/transfer-history', authMiddleware, async (req, res) => {
+  try {
+    const { status, warehouse, startDate, endDate } = req.query;
+    const query = {};
+
+    if (req.user.role !== 'admin' && req.user.warehouse) {
+      query.$or = [
+        { sourceWarehouseId: new mongoose.Types.ObjectId(req.user.warehouse) },
+        { destinationWarehouseId: new mongoose.Types.ObjectId(req.user.warehouse) }
+      ];
+    } else if (warehouse && warehouse !== 'all') {
+      query.$or = [
+        { sourceWarehouseId: new mongoose.Types.ObjectId(warehouse) },
+        { destinationWarehouseId: new mongoose.Types.ObjectId(warehouse) }
+      ];
+    }
+
+    if (status && status !== 'all') {
+      query.status = status;
+    }
+
+    if (startDate && endDate) {
+      query.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+
+    const history = await TransferTransaction.find(query)
+      .populate({
+        path: 'sourceWarehouseId',
+        select: 'name warehouseCode'
+      })
+      .populate({
+        path: 'destinationWarehouseId',
+        select: 'name warehouseCode'
+      })
+      .populate('userId', 'username')
+      .populate({
+        path: 'lots.lotId',
+        select: 'lotCode productId productionDate expDate',
+        populate: {
+          path: 'productId',
+          select: 'name productCode' // ตรวจสอบว่า productId มีข้อมูลเหล่านี้
+        }
+      })
+      .lean();
+
+    res.json(history);
+  } catch (error) {
+    logger.error('Error fetching transfer history:', error);
+    res.status(500).json({ message: 'Error fetching transfer history', error: error.message });
   }
 });
 

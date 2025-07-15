@@ -9,7 +9,7 @@ const lotTransactionSchema = new mongoose.Schema({
   afterQty: { type: Number, required: true },
   transactionType: {
     type: String,
-    enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities'],
+    enum: ['Receive', 'Issue', 'TransferOut', 'TransferIn', 'Adjust', 'Cancel', 'Sale', 'Waste', 'Welfares', 'Activities', 'TransferInPending'], // เพิ่ม TransferInPending
     required: true
   },
   warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
@@ -27,7 +27,7 @@ const lotSchema = new mongoose.Schema({
   warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
   supplierId: { type: mongoose.Schema.Types.ObjectId, ref: 'Supplier', required: true },
   transactionNumber: { type: String, required: true },
-  status: { type: String, enum: ['active', 'damaged', 'expired'], default: 'active' },
+  status: { type: String, enum: ['active', 'damaged', 'expired', 'pending'], default: 'active' }, // เพิ่ม pending
   qtyOnHand: { type: Number, default: 0 },
   damaged: { type: Number, default: 0 },
   transactions: [lotTransactionSchema]
@@ -35,8 +35,7 @@ const lotSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// เปลี่ยน Unique Index เป็นคู่ lotCode และ warehouse
-lotSchema.index({ lotCode: 1, warehouse: 1 }, { unique: true }); // Unique ตาม lotCode และ warehouse
+lotSchema.index({ lotCode: 1, warehouse: 1 }, { unique: true });
 lotSchema.index({ warehouse: 1, productId: 1, expDate: 1 });
 lotSchema.index({ status: 1 });
 

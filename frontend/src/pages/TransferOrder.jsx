@@ -7,6 +7,18 @@ import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { startOfDay, endOfDay, format } from 'date-fns';
+import jsPDF from 'jspdf';
 
 const TransferOrder = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -25,9 +37,21 @@ const TransferOrder = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isManualSelection, setIsManualSelection] = useState(false);
+  const [transferHistory, setTransferHistory] = useState([]);
+  const [filters, setFilters] = useState({
+    status: 'Pending',
+    warehouse: 'all',
+    type: 'all',
+    startDate: startOfDay(new Date()),
+    endDate: endOfDay(new Date())
+  });
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
+  const userWarehouseId = user.warehouse?.toString() || (user.role === 'admin' ? filters.warehouse : null); // อนุญาต Admin เลือก Warehouse
+
+  // กำหนด Base URL สำหรับ API
+  const API_BASE_URL = 'http://localhost:3000'; // ปรับตาม Environment
 
   useEffect(() => {
     if (!token) {
@@ -35,15 +59,16 @@ const TransferOrder = () => {
       return;
     }
     fetchData();
-  }, [token, navigate]);
+    fetchTransferHistory();
+  }, [token, navigate, filters]);
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const [warehousesRes, productsRes, categoriesRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:3000/api/products', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:3000/api/categories', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       setWarehouses(warehousesRes.data);
       setProducts(productsRes.data.map(p => ({ ...p, _id: p._id.toString() })));
@@ -66,7 +91,7 @@ const TransferOrder = () => {
   const fetchLots = async (productId) => {
     if (!productId || !sourceWarehouse) return;
     try {
-      const { data } = await axios.get('http://localhost:3000/api/lots', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/lots`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { productId, warehouse: sourceWarehouse }
       });
@@ -78,6 +103,25 @@ const TransferOrder = () => {
       }
     } catch (error) {
       toast.error('Failed to load lots');
+    }
+  };
+
+  const fetchTransferHistory = async () => {
+    try {
+      const params = {
+        status: filters.status !== 'all' ? filters.status : undefined,
+        warehouse: filters.warehouse !== 'all' ? filters.warehouse : undefined,
+        startDate: filters.startDate.toISOString(),
+        endDate: filters.endDate.toISOString()
+      };
+      const { data } = await axios.get(`${API_BASE_URL}/api/transfer-history`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params
+      });
+      setTransferHistory(data);
+    } catch (error) {
+      toast.error('Failed to load transfer history');
+      console.error('Fetch transfer history error:', error.response?.data);
     }
   };
 
@@ -133,7 +177,7 @@ const TransferOrder = () => {
     fetchLots(''); // รีเซ็ต lots
   };
 
-  const removeItem = index => {
+  const removeItem = (index) => {
     setAddedItems(addedItems.filter((_, i) => i !== index));
   };
 
@@ -158,24 +202,13 @@ const TransferOrder = () => {
         note: ''
       };
       console.log('Transferring with payload:', JSON.stringify(payload, null, 2));
-      const { data } = await axios.post('http://localhost:3000/api/transfer', payload, {
+      const response = await axios.post(`${API_BASE_URL}/api/transfer`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(data.message);
-      console.log('Transfer Number:', data.transferNumber);
-
-      // Store transfer details for PDF generation if needed
-      const transferDetails = {
-        transferNumber: data.transferNumber,
-        sourceWarehouse: data.sourceWarehouse,
-        destinationWarehouse: data.destinationWarehouse,
-        items: addedItems
-      };
-
-      // Clear the form
+      toast.success(response.data.message);
+      console.log('Transfer Number:', response.data.transferNumber);
       setAddedItems([]);
-      setSelectedProduct('');
-      setCurrentItem({ lotId: '', quantity: '' });
+      fetchTransferHistory(); // อัปเดตประวัติหลังโอน
     } catch (error) {
       console.error('Transfer error:', error.response?.data || error);
       toast.error(error.response?.data?.message || 'Failed to transfer stock');
@@ -188,17 +221,43 @@ const TransferOrder = () => {
     setShowConfirmModal(false);
   };
 
-  const generatePDF = (transaction) => {
+  const handleConfirmTransfer = async (transferId) => {
+    try {
+      const response = await axios.patch(`${API_BASE_URL}/api/transfer/${transferId}/confirm`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(response.data.message);
+      fetchTransferHistory();
+    } catch (error) {
+      toast.error('Failed to confirm transfer');
+      console.error('Confirm error:', error.response?.data);
+    }
+  };
+
+  const handleRejectTransfer = async (transferId) => {
+    try {
+      const response = await axios.patch(`${API_BASE_URL}/api/transfer/${transferId}/reject`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(response.data.message);
+      fetchTransferHistory();
+    } catch (error) {
+      toast.error('Failed to reject transfer');
+      console.error('Reject error:', error.response?.data);
+    }
+  };
+
+  const generatePDF = (transfer) => {
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text('Transfer Order Request', 80, 20, { align: 'center' });
 
     doc.setFontSize(12);
     doc.text('Transfer Details:', 20, 40);
-    doc.text(`Transfer #: ${transaction.transferNumber || 'N/A'}`, 20, 50);
-    doc.text(`Date: ${format(new Date(), 'dd/MM/yyyy')}`, 20, 60);
-    doc.text(`Source Warehouse: ${warehouses.find(w => w._id === sourceWarehouse)?.name || 'N/A'}`, 20, 70);
-    doc.text(`Destination Warehouse: ${warehouses.find(w => w._id === destinationWarehouse)?.name || 'N/A'}`, 20, 80);
+    doc.text(`Transfer #: ${transfer.transferNumber || 'N/A'}`, 20, 50);
+    doc.text(`Date: ${format(new Date(transfer.createdAt), 'dd/MM/yyyy')}`, 20, 60);
+    doc.text(`Source Warehouse: ${transfer.sourceWarehouseId?.name || 'N/A'}`, 20, 70);
+    doc.text(`Destination Warehouse: ${transfer.destinationWarehouseId?.name || 'N/A'}`, 20, 80);
 
     const startY = 100;
     doc.setFontSize(12);
@@ -213,15 +272,15 @@ const TransferOrder = () => {
     doc.text('Expiration Date', 180, startY + 10);
 
     let y = startY + 20;
-    addedItems.forEach((item, index) => {
-      const product = products.find(p => p._id === (lots.find(l => l._id === item.lotId)?.productId?._id || lots.find(l => l._id === item.lotId)?.productId));
+    transfer.lots.forEach((lot, index) => {
+      const product = lot.lotId?.productId || {};
       doc.text(`${index + 1}.`, 20, y);
-      doc.text(item.productCode || 'N/A', 30, y);
-      doc.text(item.productName || 'N/A', 60, y);
-      doc.text(item.lotCode || 'N/A', 100, y);
-      doc.text(String(item.quantity), 130, y);
-      doc.text(item.prodDate ? format(new Date(item.prodDate), 'dd/MM/yyyy') : 'N/A', 150, y);
-      doc.text(item.expDate ? format(new Date(item.expDate), 'dd/MM/yyyy') : 'N/A', 180, y);
+      doc.text(lot.lotId?.productId?.productCode || product.productCode || 'N/A', 30, y);
+      doc.text(lot.lotId?.productId?.name || product.name || 'N/A', 60, y);
+      doc.text(lot.lotId?.lotCode || 'N/A', 100, y);
+      doc.text(String(lot.quantity), 130, y);
+      doc.text(lot.lotId?.productionDate ? format(new Date(lot.lotId.productionDate), 'dd/MM/yyyy') : 'N/A', 150, y);
+      doc.text(lot.lotId?.expDate ? format(new Date(lot.lotId.expDate), 'dd/MM/yyyy') : 'N/A', 180, y);
       y += 10;
     });
 
@@ -546,6 +605,170 @@ const TransferOrder = () => {
             </div>
           )}
 
+          <div className="bg-white p-6 mt-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Transfer History</h3>
+              <div className="space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setFilters(prev => ({ ...prev, status: 'Pending' }))}
+                >
+                  Pending
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setFilters(prev => ({ ...prev, status: 'Confirmed' }))}
+                >
+                  Confirmed
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setFilters(prev => ({ ...prev, status: 'Rejected' }))}
+                >
+                  Rejected
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setFilters(prev => ({ ...prev, status: 'all' }))}
+                >
+                  All
+                </Button>
+              </div>
+            </div>
+            <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
+                <Select.Root
+                  value={filters.warehouse}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, warehouse: value }))}
+                >
+                  <Select.Trigger className="w-full">
+                    <Select.Value placeholder="All Warehouses" />
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <ChevronDownIcon />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Content>
+                    <Select.Item value="all">All Warehouses</Select.Item>
+                    {warehouses.map(w => (
+                      <Select.Item key={w._id} value={w._id}>
+                        {w.name}
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Root>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <Select.Root
+                  value={filters.type}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}
+                >
+                  <Select.Trigger className="w-full">
+                    <Select.Value placeholder="All Types" />
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <ChevronDownIcon />
+                    </Select.Icon>
+                  </Select.Trigger>
+                  <Select.Content>
+                    <Select.Item value="all">All Types</Select.Item>
+                    <Select.Item value="Transfer">Transfer</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                <DatePicker
+                  selected={filters.startDate}
+                  onChange={(date) => setFilters(prev => ({ ...prev, startDate: startOfDay(date) }))}
+                  selectsStart
+                  startDate={filters.startDate}
+                  endDate={filters.endDate}
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                <DatePicker
+                  selected={filters.endDate}
+                  onChange={(date) => setFilters(prev => ({ ...prev, endDate: endOfDay(date) }))}
+                  selectsEnd
+                  startDate={filters.startDate}
+                  endDate={filters.endDate}
+                  minDate={filters.startDate}
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Transfer #</TableHead>
+                    <TableHead>Source Warehouse</TableHead>
+                    <TableHead>Destination Warehouse</TableHead>
+                    <TableHead>Product Code</TableHead>
+                    <TableHead>Product Name</TableHead>
+                    <TableHead>Lot Code</TableHead>
+                    <TableHead>Total Qty</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Date/Time</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transferHistory.map((transfer) => {
+                    const isDestination = user.role === 'admin' || (transfer.destinationWarehouseId.toString() === userWarehouseId && userWarehouseId);
+                    const totalQty = transfer.lots.reduce((sum, l) => sum + l.quantity, 0);
+                    return (
+                      <TableRow key={transfer._id}>
+                        <TableCell className="font-medium">{transfer.transferNumber}</TableCell>
+                        <TableCell>{transfer.sourceWarehouseId?.name || 'N/A'}</TableCell>
+                        <TableCell>{transfer.destinationWarehouseId?.name || 'N/A'}</TableCell>
+                        <TableCell>{transfer.lots.map(l => l.lotId?.productId?.productCode || 'N/A').join(', ') || 'N/A'}</TableCell>
+                        <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell>
+                        <TableCell>{transfer.lots.map(l => l.lotId?.lotCode || 'N/A').join(', ') || 'N/A'}</TableCell>
+                        <TableCell>{totalQty}</TableCell>
+                        <TableCell>{transfer.status}</TableCell>
+                        <TableCell>{format(new Date(transfer.createdAt), 'dd-MM-yyyy, HH:mm:ss')}</TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => generatePDF(transfer)}
+                          >
+                            View PDF
+                          </Button>
+                          {isDestination && transfer.status === 'Pending' && (
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleConfirmTransfer(transfer._id)}
+                                className="bg-green-600 text-white hover:bg-green-700"
+                              >
+                                Confirm
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleRejectTransfer(transfer._id)}
+                              >
+                                Reject
+                              </Button>
+                            </>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
           <Dialog open={showConfirmModal} onOpenChange={setShowConfirmModal}>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
@@ -554,6 +777,7 @@ const TransferOrder = () => {
               <div className="grid gap-4 py-4">
                 <p><strong>Total Items:</strong> {addedItems.length}</p>
                 <p><strong>Total Quantity:</strong> {addedItems.reduce((sum, item) => sum + Number(item.quantity), 0)}</p>
+                <p><strong>Source Warehouse:</strong> {warehouses.find(w => w._id.toString() === sourceWarehouse)?.name || 'N/A'}</p>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={cancelTransfer} disabled={isLoading}>
