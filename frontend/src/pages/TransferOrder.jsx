@@ -394,7 +394,7 @@ const TransferOrder = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                       <div>
                         <Label htmlFor="sourceWarehouse" className="mb-2">Source Warehouse</Label>
                         <Select
@@ -422,7 +422,7 @@ const TransferOrder = () => {
                         </Select>
                       </div>
 
-                      <div>
+                      <div className=' inline-flex flex-col mt-4'>
                         <Label htmlFor="category" className="mb-2">Category</Label>
                         <div className="flex flex-wrap gap-2 mb-4">
                           <button
@@ -445,7 +445,7 @@ const TransferOrder = () => {
                         </div>
                       </div>
 
-                      <div>
+                      <div >
                         <Label htmlFor="product" className="mb-2">Product</Label>
                         <div className="relative">
                           <Input
@@ -526,22 +526,20 @@ const TransferOrder = () => {
                           className="h-4 w-4"
                         />
                         <Label htmlFor="manualSelection">Manual Lot Selection</Label>
-                        
+                        {!isManualSelection && <Label>| Selected Lot (FEFO)</Label>}
                       </div>
 
                       {!isManualSelection && (
-                        <div>
-                          <Label>Selected Lot (FEFO)</Label>
                           <Input
+                        
                             value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
                             readOnly
                           />
-                        </div>
                       )}
 
                       {isManualSelection && (
                         <div>
-                          <Label htmlFor="lot">Lot</Label>
+
                           <Select
                             value={currentItem.lotId || ''}
                             onValueChange={val => {
@@ -565,7 +563,7 @@ const TransferOrder = () => {
                       )}
 
                       <div>
-                        <Label htmlFor="quantity">Quantity</Label>
+                        <Label htmlFor="quantity" className="mb-2">Quantity</Label>
                         <Input
                           type="number"
                           id="quantity"
