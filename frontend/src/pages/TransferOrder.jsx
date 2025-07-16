@@ -649,7 +649,7 @@ const TransferOrder = () => {
 
                       {isManualSelection && (
                         <div>
-                          <Label htmlFor="lot" className="mb-2">Lot</Label>
+
                           <Select
                             value={currentItem.lotId || ''}
                             onValueChange={val => {
