@@ -10,7 +10,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { CheckIcon, ChevronDownIcon } from 'lucide-react'; // ใช้ไอคอนจาก lucide-react แทน
+import { CheckIcon, ChevronDownIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import {
@@ -489,7 +489,7 @@ const TransferOrder = () => {
                             console.log('Selected destination warehouse:', val);
                             setDestinationWarehouse(val);
                           }}
-                          disabled={user.role !== 'admin' || isLoading || !sourceWarehouse}
+                          disabled={isLoading || !sourceWarehouse}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select destination warehouse" />
@@ -501,7 +501,6 @@ const TransferOrder = () => {
                                 <SelectItem
                                   key={w._id}
                                   value={w._id.toString()}
-                                  disabled={user.role !== 'admin' && w._id.toString() !== user.warehouse?.toString()}
                                 >
                                   {w.name} ({w.warehouseCode})
                                 </SelectItem>
@@ -530,16 +529,15 @@ const TransferOrder = () => {
                       </div>
 
                       {!isManualSelection && (
-                          <Input
-                        
-                            value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
-                            readOnly
-                          />
+                        <Input
+                          value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
+                          readOnly
+                        />
                       )}
 
                       {isManualSelection && (
                         <div>
-
+                          <Label htmlFor="lot" className="mb-2">Lot</Label>
                           <Select
                             value={currentItem.lotId || ''}
                             onValueChange={val => {
@@ -732,8 +730,9 @@ const TransferOrder = () => {
                         <TableHead>Transfer #</TableHead>
                         <TableHead>Source</TableHead>
                         <TableHead>Destination</TableHead>
-                        <TableHead>Product Code</TableHead>
-                        <TableHead>Product Name</TableHead>
+                        <TableHead>Type</TableHead>
+                        {/* <TableHead>Product Code</TableHead>
+                        <TableHead>Product Name</TableHead> */}
                         <TableHead>Total Qty</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Date/Time</TableHead>
@@ -744,13 +743,26 @@ const TransferOrder = () => {
                       {transferHistory.map((transfer) => {
                         const isDestination = user.role === 'admin' || (transfer.destinationWarehouseId.toString() === userWarehouseId && userWarehouseId);
                         const totalQty = transfer.lots.reduce((sum, l) => sum + l.quantity, 0);
+                        // Determine Type: OUT if source warehouse matches user's warehouse, else IN
+                        const userWarehouse = warehouses.find(w => w._id.toString() === userWarehouseId);
+                        const sourceWarehouse = transfer.sourceWarehouseId?.name;
+                        const isOut = userWarehouse?.name === sourceWarehouse;
                         return (
                           <TableRow key={transfer._id}>
                             <TableCell className="font-medium">{transfer.transferNumber}</TableCell>
                             <TableCell>{transfer.sourceWarehouseId?.name || 'N/A'}</TableCell>
                             <TableCell>{transfer.destinationWarehouseId?.name || 'N/A'}</TableCell>
-                            <TableCell>{transfer.lots.map(l => l.lotId?.productId?.productCode || 'N/A').join(', ') || 'N/A'}</TableCell>
-                            <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell>
+                            <TableCell>
+                              {isOut ? (
+                                <span className="px-2 py-1 rounded-full bg-red-500 text-white text-xs font-semibold">OUT</span>
+                              ) : (
+                                <span className="px-2 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">IN</span>
+                              )}
+                            </TableCell>
+
+                            {/* <TableCell>{transfer.lots.map(l => l.lotId?.productId?.productCode || 'N/A').join(', ') || 'N/A'}</TableCell>
+                            <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell> */}
+                            
                             <TableCell>{totalQty}</TableCell>
                             <TableCell>{getStatusBadge(transfer.status)}</TableCell>
                             <TableCell>{format(new Date(transfer.createdAt), 'dd-MM-yyyy, HH:mm')}</TableCell>
@@ -759,27 +771,36 @@ const TransferOrder = () => {
                                 variant="primary"
                                 size="sm"
                                 onClick={() => generatePDF(transfer)}
-                                className="bg-gray-800 text-white hover:bg-gray-700"
+                                className="bg-gray-800 text-white hover:bg-gray-700 text-xs"
                               >
                                 View PDF
                               </Button>
                               {isDestination && transfer.status === 'Pending' && (
                                 <>
-                                  <Button
-                                    variant="primary"
-                                    size="sm"
-                                    onClick={() => handleConfirmTransfer(transfer._id)}
-                                    className="bg-green-600 text-white hover:bg-green-700"
-                                  >
-                                    Confirm
-                                  </Button>
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => handleRejectTransfer(transfer._id)}
-                                  >
-                                    Reject
-                                  </Button>
+                                  {isOut ? (
+                                    ""
+                                  ) : (
+                                    <Button
+                                      variant="primary"
+                                      size="sm"
+                                      onClick={() => handleConfirmTransfer(transfer._id)}
+                                      className="bg-green-600 text-white hover:bg-green-700 text-xs"
+                                    >
+                                      Confirm
+                                    </Button>
+                                  )}
+                                  {isOut ? (
+                                    ""
+                                  ) : (
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() => handleRejectTransfer(transfer._id)}
+                                      className="text-xs"
+                                    >
+                                      Reject
+                                    </Button>
+                                  )}
                                 </>
                               )}
                             </TableCell>
@@ -816,6 +837,7 @@ const TransferOrder = () => {
                   <p className="font-medium">{warehouses.find(w => w._id.toString() === destinationWarehouse)?.name || 'N/A'}</p>
                 </div>
               </div>
+
               <DialogFooter>
                 <Button variant="outline" onClick={cancelTransfer} disabled={isLoading}>
                   Cancel
