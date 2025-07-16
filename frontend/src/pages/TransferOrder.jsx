@@ -277,42 +277,154 @@ const TransferOrder = () => {
   };
 
   const generatePDF = (transfer) => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text('Transfer Order Request', 80, 20, { align: 'center' });
-
-    doc.setFontSize(12);
-    doc.text('Transfer Details:', 20, 40);
-    doc.text(`Transfer #: ${transfer.transferNumber || 'N/A'}`, 20, 50);
-    doc.text(`Date: ${format(new Date(transfer.createdAt), 'dd/MM/yyyy')}`, 20, 60);
-    doc.text(`Source Warehouse: ${transfer.sourceWarehouseId?.name || 'N/A'}`, 20, 70);
-    doc.text(`Destination Warehouse: ${transfer.destinationWarehouseId?.name || 'N/A'}`, 20, 80);
-
-    const startY = 100;
-    doc.setFontSize(12);
-    doc.text('Items List:', 20, startY);
-    doc.setFontSize(10);
-    doc.text('No.', 20, startY + 10);
-    doc.text('Product Code', 30, startY + 10);
-    doc.text('Product Name', 60, startY + 10);
-    doc.text('Lot Code', 100, startY + 10);
-    doc.text('Quantity', 130, startY + 10);
-    doc.text('Production Date', 150, startY + 10);
-    doc.text('Expiration Date', 180, startY + 10);
-
-    let y = startY + 20;
-    transfer.lots.forEach((lot, index) => {
-      const product = lot.lotId?.productId || {};
-      doc.text(`${index + 1}.`, 20, y);
-      doc.text(lot.lotId?.productId?.productCode || product.productCode || 'N/A', 30, y);
-      doc.text(lot.lotId?.productId?.name || product.name || 'N/A', 60, y);
-      doc.text(lot.lotId?.lotCode || 'N/A', 100, y);
-      doc.text(String(lot.quantity), 130, y);
-      doc.text(lot.lotId?.productionDate ? format(new Date(lot.lotId.productionDate), 'dd/MM/yyyy') : 'N/A', 150, y);
-      doc.text(lot.lotId?.expDate ? format(new Date(lot.lotId.expDate), 'dd/MM/yyyy') : 'N/A', 180, y);
-      y += 10;
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
     });
 
+    // -------------------- HEADER --------------------
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TRANSFER ORDER REQUEST', 105, 20, { align: 'center' });
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Transfer Document', 105, 27, { align: 'center' });
+
+    // Add divider line
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.4);
+    doc.line(15, 32, 195, 32);
+
+    // -------------------- TRANSACTION INFO --------------------
+    doc.setFontSize(10);
+    let y = 40;
+
+    // Transaction Number
+    doc.setFont('helvetica', 'bold');
+    doc.text('Transaction #:', 15, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transfer.transferNumber || 'N/A', 45, y);
+
+    // Issue Type
+    doc.setFont('helvetica', 'bold');
+    doc.text('Issue Type:', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Transfer', 140, y);
+
+    y += 7;
+
+    // Source Warehouse
+    doc.setFont('helvetica', 'bold');
+    doc.text('From WH:', 15, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transfer.sourceWarehouseId?.name || 'N/A', 45, y);
+
+    // Destination Warehouse
+    doc.setFont('helvetica', 'bold');
+    doc.text('To WH:', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transfer.destinationWarehouseId?.name || 'N/A', 140, y);
+
+    y += 7;
+
+    // Date
+    doc.setFont('helvetica', 'bold');
+    doc.text('Date:', 15, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(format(new Date(transfer.createdAt), 'dd/MM/yyyy, HH:mm:ss'), 45, y);
+
+    // Transfer By
+    doc.setFont('helvetica', 'bold');
+    doc.text('TRF By:', 110, y);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transfer.userId?.username || 'Unknown', 140, y);
+
+    // Add divider line
+    y += 5;
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.1);
+    doc.line(15, y, 195, y);
+    y += 10;
+
+    // -------------------- ITEMS LIST --------------------
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ITEMS LIST', 20, y);
+    y += 2;
+
+    // -------- Table Header --------
+    doc.setFontSize(8);
+    doc.setFillColor(240, 240, 240);
+    doc.rect(15, y + 5, 180, 8, 'F');  // header background
+    doc.setDrawColor(220, 220, 220);
+    doc.rect(15, y + 5, 180, 8);
+
+    doc.setTextColor(60, 60, 60);
+    doc.setFont('helvetica', 'bold');
+    doc.text('No.', 17, y + 10);
+    doc.text('Product Code', 25, y + 10);
+    doc.text('Product Name', 50, y + 10);
+    doc.text('Lot Code', 100, y + 10);
+    doc.text('Qty', 125, y + 10);
+    doc.text('Production Date', 140, y + 10);
+    doc.text('Exp Date', 170, y + 10);
+
+    y += 15;
+
+    // -------- Table Rows --------
+    doc.setFont('helvetica', 'normal');
+    transfer.lots.forEach((lot, index) => {
+      if (y > 270) {
+        doc.addPage();
+        y = 22;
+
+        doc.setFillColor(240, 240, 240);
+        doc.rect(15, y, 180, 8, 'F');
+        doc.rect(15, y, 180, 8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('No.', 17, y + 5);
+        doc.text('Product Code', 27, y + 5);
+        doc.text('Product Name', 60, y + 5);
+        doc.text('Lot Code', 100, y + 5);
+        doc.text('Qty', 125, y + 5);
+        doc.text('Production Date', 140, y + 5);
+        doc.text('Exp Date', 170, y + 5);
+        y += 10;
+      }
+
+      const product = lot.lotId?.productId || {};
+
+      if (index % 2 === 0) {
+        doc.setFillColor(255, 255, 255);
+      } else {
+        doc.setFillColor(250, 250, 250);
+      }
+      doc.rect(15, y - 2, 180, 7, 'F');
+      doc.rect(15, y - 2, 180, 7);
+
+      doc.setFont('helvetica', 'normal');
+      doc.text(String(index + 1) + '.', 17, y + 3);
+      doc.text(product.productCode || 'N/A', 25, y + 3);
+      doc.text(product.name || 'N/A', 50, y + 3);
+      doc.text(lot.lotId?.lotCode || 'N/A', 100, y + 3);
+      doc.text(String(lot.quantity), 125, y + 3);
+      doc.text(lot.lotId?.productionDate ? format(new Date(lot.lotId.productionDate), 'dd/MM/yyyy') : 'N/A', 140, y + 3);
+      doc.text(lot.lotId?.expDate ? format(new Date(lot.lotId.expDate), 'dd/MM/yyyy') : 'N/A', 170, y + 3);
+
+      y += 7;
+    });
+
+    // -------------------- FOOTER --------------------
+    const footerY = 285;
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Generated on: ' + format(new Date(), 'dd/MM/yyyy HH:mm:ss'), 20, footerY);
+    doc.text('Page ' + doc.getCurrentPageInfo().pageNumber, 105, footerY, { align: 'center' });
+    doc.text('© Successmore Cambodia', 190, footerY, { align: 'right' });
+
+    // Open PDF in new tab
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
     window.open(pdfUrl, '_blank');
@@ -762,7 +874,7 @@ const TransferOrder = () => {
 
                             {/* <TableCell>{transfer.lots.map(l => l.lotId?.productId?.productCode || 'N/A').join(', ') || 'N/A'}</TableCell>
                             <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell> */}
-                            
+
                             <TableCell>{totalQty}</TableCell>
                             <TableCell>{getStatusBadge(transfer.status)}</TableCell>
                             <TableCell>{format(new Date(transfer.createdAt), 'dd-MM-yyyy, HH:mm')}</TableCell>

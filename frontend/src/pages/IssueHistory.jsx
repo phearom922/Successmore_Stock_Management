@@ -222,24 +222,25 @@ const IssueHistory = () => {
       filters: ['ASCIIHexEncode']
     });
 
-    doc.setFontSize(18);
+    // -------------------- HEADER --------------------
+    doc.setFontSize(15);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(40, 40, 40);
-    doc.text('TRANSACTION REQUEST', 105, 25, { align: 'center' });
+    doc.text('TRANSACTION REQUEST', 105, 10, { align: 'center' });
 
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text('Issue Document', 105, 32, { align: 'center' });
+    doc.text('Issue Document', 105, 15, { align: 'center' });
 
     doc.setDrawColor(200, 200, 200);
     doc.setLineWidth(0.3);
-    doc.line(15, 35, 195, 35);
+    doc.line(15, 20, 195, 20);
 
     doc.setFontSize(10);
     const leftX = 20;
     const rightX = 110;
-    let infoY = 45;
+    let infoY = 25;
 
     doc.setTextColor(80, 80, 80);
     doc.setFont('helvetica', 'bold');
@@ -290,7 +291,7 @@ const IssueHistory = () => {
     doc.setTextColor(40, 40, 40);
     doc.text('ITEMS LIST', leftX, y);
 
-    doc.setFontSize(10);
+    doc.setFontSize(8);
     doc.setFillColor(240, 240, 240);
     doc.rect(15, y + 5, 180, 8, 'F');
     doc.setDrawColor(220, 220, 220);
@@ -300,12 +301,12 @@ const IssueHistory = () => {
     doc.setTextColor(60, 60, 60);
     doc.setFont('helvetica', 'bold');
     doc.text('No.', 17, y + 10);
-    doc.text('Product Code', 27, y + 10);
-    doc.text('Product Name', 57, y + 10);
-    doc.text('Lot Code', 97, y + 10);
+    doc.text('Code', 24, y + 10);
+    doc.text('Product Name', 40, y + 10);
+    doc.text('Lot Code', 105, y + 10);
     doc.text('Qty', 127, y + 10);
-    doc.text('Production Date', 137, y + 10);
-    doc.text('Exp Date', 167, y + 10);
+    doc.text('Production Date', 140, y + 10);
+    doc.text('Exp Date', 170, y + 10);
 
     y += 15;
 
@@ -319,12 +320,12 @@ const IssueHistory = () => {
         doc.rect(15, y, 180, 8);
         doc.setFont('helvetica', 'bold');
         doc.text('No.', 17, y + 5);
-        doc.text('Product Code', 27, y + 5);
-        doc.text('Product Name', 57, y + 5);
-        doc.text('Lot Code', 97, y + 5);
+        doc.text('Code', 24, y + 5);
+        doc.text('Product Name', 40, y + 5);
+        doc.text('Lot Code', 105, y + 5);
         doc.text('Qty', 127, y + 5);
-        doc.text('Production Date', 137, y + 5);
-        doc.text('Exp Date', 167, y + 5);
+        doc.text('Production Date', 140, y + 5);
+        doc.text('Exp Date', 170, y + 5);
         y += 10;
       }
 
@@ -339,17 +340,17 @@ const IssueHistory = () => {
       doc.setTextColor(80, 80, 80);
       const centerY = y + 2.5;
       doc.text(String(index + 1), 17, centerY);
-      doc.text(lot.productCode || '-', 27, centerY);
-      doc.text(lot.productName || '-', 57, centerY);
-      doc.text(lot.lotCode || '-', 97, centerY);
+      doc.text(lot.productCode || '-', 24, centerY);
+      doc.text(lot.productName || '-', 40, centerY);
+      doc.text(lot.lotCode || '-', 105, centerY);
       doc.text(String(lot.quantity), 127, centerY);
       doc.text(
         lot.productionDate ? format(new Date(lot.productionDate), 'dd/MM/yyyy') : '-',
-        137, centerY
+        140, centerY
       );
       doc.text(
         lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : '-',
-        167, centerY
+        170, centerY
       );
 
       y += 8;
