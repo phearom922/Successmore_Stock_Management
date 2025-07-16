@@ -36,7 +36,7 @@ const Products = () => {
       navigate('/login');
       return;
     }
-    
+
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -62,14 +62,14 @@ const Products = () => {
 
   useEffect(() => {
     let results = [...products];
-    
+
     // Apply category filter
     if (activeCategory !== 'all') {
-      results = results.filter(product => 
+      results = results.filter(product =>
         product.category && product.category._id === activeCategory
       );
     }
-    
+
     // Apply search filter
     if (searchTerm) {
       results = results.filter(product =>
@@ -78,7 +78,7 @@ const Products = () => {
         (product.category && product.category.name.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-    
+
     setFilteredProducts(results);
   }, [activeCategory, searchTerm, products]);
 
@@ -204,7 +204,10 @@ const Products = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-screen mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Product Management</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Product Management</h1>
+            <p className="text-gray-600">Manage all product information</p>
+          </div>
           <div className="flex space-x-3">
             <label className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
               <FaFileExcel className="mr-2 text-green-600" />
@@ -244,8 +247,8 @@ const Products = () => {
 
           {/* Category Tabs */}
           <div className="px-4 pt-4">
-            <Tabs 
-              value={activeCategory} 
+            <Tabs
+              value={activeCategory}
               onValueChange={setActiveCategory}
               className="w-full"
             >
@@ -254,8 +257,8 @@ const Products = () => {
                   All Categories
                 </TabsTrigger>
                 {categories.map((cat) => (
-                  <TabsTrigger 
-                    key={cat._id} 
+                  <TabsTrigger
+                    key={cat._id}
                     value={cat._id}
                     className="py-2 px-4"
                   >

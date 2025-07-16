@@ -437,11 +437,11 @@ const TransferOrder = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Pending':
-        return <Badge variant="secondary" className="bg-yellow-500 text-white">{status}</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-50 ring-[0.5px]  rounded-full ring-yellow-500 text-yellow-600">{status}</Badge>;
       case 'Confirmed':
-        return <Badge variant="success" className="bg-green-600 text-white">{status}</Badge>;
+        return <Badge variant="success" className="bg-green-50 ring-[0.5px]  rounded-full ring-green-500 text-green-600">{status}</Badge>;
       case 'Rejected':
-        return <Badge variant="destructive">{status}</Badge>;
+        return <Badge variant="secondary" className="bg-red-50 ring-[0.5px]  rounded-full ring-red-500 text-red-600">{status}</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -866,9 +866,9 @@ const TransferOrder = () => {
                             <TableCell>{transfer.destinationWarehouseId?.name || 'N/A'}</TableCell>
                             <TableCell>
                               {isOut ? (
-                                <span className="px-2 py-1 rounded-full bg-red-500 text-white text-xs font-semibold">OUT</span>
+                                <span className="px-2 py-1 rounded bg-red-200  text-red-800 text-xs">OUT</span>
                               ) : (
-                                <span className="px-2 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">IN</span>
+                                <span className="px-2 py-1 rounded bg-green-200 text-green-800 text-xs">IN</span>
                               )}
                             </TableCell>
 
