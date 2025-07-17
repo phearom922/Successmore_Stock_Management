@@ -2567,7 +2567,8 @@ router.post('/adjust-stock', authMiddleware, async (req, res) => {
     const lot = await Lot.findOne({ _id: lotId, warehouse: warehouseId }).session(session);
     if (!lot) {
       await session.abortTransaction();
-      return res.status(400).json({ message: 'Lot not found in specified warehouse' });
+      logger.warn('Lot not found in specified warehouse', { lotId, warehouseId, userId: user._id });
+      return res.status(404).json({ message: `Lot ${lotId} not found in specified warehouse` });
     }
 
     const beforeQty = lot.qtyOnHand;
@@ -2598,7 +2599,11 @@ router.post('/adjust-stock', authMiddleware, async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    logger.error('Error adjusting stock:', error);
+    logger.error('Error adjusting stock:', {
+      error: error.message,
+      stack: error.stack,
+      details: req.body,
+    });
     res.status(500).json({ message: 'Error adjusting stock', error: error.message });
   }
 });
@@ -2608,15 +2613,37 @@ router.post('/stock-count/import', authMiddleware, async (req, res) => {
   session.startTransaction();
 
   try {
-    const { lots } = req.body; // Array of { lotId, countedQuantity, reason, warehouseId }
+    let { lots } = req.body; // Expect { lots: [...] }
     const user = req.user;
+
+    // Check if lots is wrapped in an object
+    if (typeof lots === 'object' && lots.lots) {
+      lots = lots.lots; // Unwrap the lots array
+    } else if (!lots || !Array.isArray(lots) || lots.length === 0) {
+      await session.abortTransaction();
+      logger.warn('Invalid or empty lots data received', { userId: user._id, payload: req.body });
+      return res.status(400).json({ message: 'Invalid or empty lots data', received: req.body });
+    }
 
     for (const item of lots) {
       const { lotId, countedQuantity, reason, warehouseId } = item;
+      if (!mongoose.Types.ObjectId.isValid(lotId) || countedQuantity == null || !mongoose.Types.ObjectId.isValid(warehouseId)) {
+        await session.abortTransaction();
+        logger.warn('Invalid data format in lots', { item, userId: user._id });
+        return res.status(400).json({ message: `Invalid data format in lots: ${JSON.stringify(item)}` });
+      }
+
       const lot = await Lot.findOne({ _id: lotId, warehouse: warehouseId }).session(session);
       if (!lot) {
         await session.abortTransaction();
-        return res.status(400).json({ message: `Lot ${lotId} not found in specified warehouse` });
+        const allLots = await Lot.find().select('_id warehouse lotCode').lean(); // Debug: Log all lots with lotCode
+        logger.warn(`Lot ${lotId} not found in specified warehouse`, { 
+          lotId, 
+          warehouseId, 
+          userId: user._id,
+          allLots: allLots.map(l => ({ _id: l._id, warehouse: l.warehouse, lotCode: l.lotCode }))
+        });
+        return res.status(404).json({ message: `Lot ${lotId} not found in specified warehouse`, details: { warehouseId, allLots } });
       }
 
       const beforeQty = lot.qtyOnHand;
@@ -2638,12 +2665,16 @@ router.post('/stock-count/import', authMiddleware, async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    logger.info('Stock count imported', { count: lots.length });
+    logger.info('Stock count imported', { count: lots.length, userId: user._id });
     res.json({ message: 'Stock count imported successfully' });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    logger.error('Error importing stock count:', error);
+    logger.error('Error importing stock count:', {
+      error: error.message,
+      stack: error.stack,
+      details: req.body,
+    });
     res.status(500).json({ message: 'Error importing stock count', error: error.message });
   }
 });
@@ -2701,6 +2732,47 @@ router.get('/adjust-stock/history', authMiddleware, async (req, res) => {
   } catch (error) {
     logger.error('Error fetching adjustment history:', error);
     res.status(500).json({ message: 'Error fetching adjustment history', error: error.message });
+  }
+});
+
+//lots/lot-code/:lotCode
+router.get('/lots/lot-code/:lotCode', authMiddleware, async (req, res) => {
+  try {
+    const { lotCode } = req.params;
+    const user = req.user;
+    const userWarehouseId = user.warehouse?.toString();
+
+    const lot = await Lot.findOne({ lotCode })
+      .populate('warehouse', 'name _id')
+      .populate('productId', 'productCode name')
+      .lean();
+
+    if (!lot) {
+      logger.warn(`Lot not found for lotCode: ${lotCode}`, { userId: user._id, warehouseId: userWarehouseId });
+      return res.status(404).json({ message: 'Lot not found' });
+    }
+
+    // ตรวจสอบสิทธิ์ Warehouse (ถ้าเป็น User)
+    if (user.role !== 'admin' && lot.warehouse._id.toString() !== userWarehouseId) {
+      logger.warn(`Unauthorized access to lotCode: ${lotCode}`, { userId: user._id, warehouseId: userWarehouseId });
+      return res.status(403).json({ message: 'Unauthorized access to this lot' });
+    }
+
+    logger.info(`Successfully fetched lot for lotCode: ${lotCode}`, { lotId: lot._id });
+    res.json({
+      _id: lot._id,
+      lotCode: lot.lotCode,
+      productId: lot.productId,
+      warehouse: lot.warehouse,
+    });
+  } catch (error) {
+    logger.error('Error fetching lot by lot code:', {
+      error: error.message,
+      stack: error.stack,
+      lotCode: req.params.lotCode,
+      userId: req.user._id,
+    });
+    res.status(500).json({ message: 'Error fetching lot', error: error.message });
   }
 });
 

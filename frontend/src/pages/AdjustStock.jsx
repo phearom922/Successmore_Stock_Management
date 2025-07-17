@@ -171,19 +171,51 @@ const AdjustStock = () => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
-        const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-        const mappedData = await Promise.all(worksheet.map(async row => {
-          const { data: lot } = await axios.get(`${API_BASE_URL}/api/lots/lot-code/${row['Lot Code']}`, {
-            headers: { Authorization: `Bearer ${token}` },
+        const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+        const headers = worksheet[0]; // แถวแรกคือ Header
+        const dataRows = worksheet.slice(1); // ข้อมูลเริ่มแถวที่ 2
+
+        const mappedData = await Promise.all(dataRows.map(async row => {
+          const rowData = {};
+          headers.forEach((header, index) => {
+            rowData[header] = row[index];
           });
-          return {
-            lotId: lot._id.toString(),
-            countedQuantity: Number(row['Counted Quantity']),
-            reason: row['Reason'] || 'Stock Count',
-            warehouseId: row['Warehouse'] ? warehouses.find(w => w.name === row['Warehouse'])?._id.toString() : selectedWarehouse,
-          };
-        }));
-        setImportedData(mappedData);
+
+          if (!rowData['Lot Code'] || rowData['Counted Quantity'] == null) {
+            toast.error(`Invalid data at row ${dataRows.indexOf(row) + 2}: Missing Lot Code or Counted Quantity`);
+            return null;
+          }
+
+          try {
+            const { data: lot } = await axios.get(`${API_BASE_URL}/api/lots/lot-code/${rowData['Lot Code']}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!lot || !lot._id) {
+              toast.error(`Lot not found for Lot Code ${rowData['Lot Code']}`);
+              return null;
+            }
+            return {
+              lotId: lot._id.toString(),
+              lotCode: rowData['Lot Code'] || 'N/A',
+              countedQuantity: parseFloat(rowData['Counted Quantity'].toString().trim()) || 0,
+              productCode: rowData['Product Code'] || (lot.productId?.productCode || 'N/A'),
+              productName: rowData['Product Name'] || (lot.productId?.name || 'N/A'),
+              reason: rowData['Reason'] || 'Stock Count',
+              warehouseId: rowData['Warehouse'] ? warehouses.find(w => w.name === rowData['Warehouse'])?._id.toString() : selectedWarehouse,
+            };
+          } catch (error) {
+            toast.error(`Error fetching lot for Lot Code ${rowData['Lot Code']}: ${error.response?.data?.message || error.message}`);
+            console.error(`Error details for ${rowData['Lot Code']}:`, error.response?.data || error);
+            return null;
+          }
+        }).filter(item => item !== null)); // Filter out null items
+
+        if (mappedData.length === 0) {
+          toast.error('No valid data imported from Excel');
+        } else {
+          setImportedData(mappedData);
+          console.log('Mapped Data:', mappedData); // Debug
+        }
       };
       reader.readAsArrayBuffer(file);
     } else {
@@ -198,22 +230,39 @@ const AdjustStock = () => {
     }
     setIsLoading(true);
     try {
-      const payload = importedData.map(item => ({
-        lotId: item.lotId,
-        countedQuantity: item.countedQuantity,
-        reason: item.reason,
-        warehouseId: item.warehouseId,
-      }));
-      const response = await axios.post(`${API_BASE_URL}/api/stock-count/import`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
+      const payload = importedData.map(item => {
+        if (!item.lotId || item.countedQuantity == null || !item.warehouseId) {
+          toast.error(`Invalid data for Lot ID ${item.lotId || 'N/A'}: Missing required fields`);
+          return null;
+        }
+        return {
+          lotId: item.lotId,
+          countedQuantity: item.countedQuantity,
+          reason: item.reason,
+          warehouseId: item.warehouseId,
+        };
+      }).filter(item => item !== null); // Filter out invalid items
+
+      if (payload.length === 0) {
+        toast.error('No valid data to save after filtering');
+        return;
+      }
+
+      const sendData = { lots: payload }; // Wrap in 'lots' object
+      console.log('Payload sent to API:', JSON.stringify(sendData)); // Debug
+      const response = await axios.post(`${API_BASE_URL}/api/stock-count/import`, sendData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
       toast.success(response.data.message);
       setExcelFile(null);
       setImportedData([]);
       fetchAdjustmentHistory();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to import stock count');
-      console.error('Import stock count error:', error);
+      toast.error(`Failed to import stock count: ${error.response?.status} - ${error.response?.data?.message || error.message}`);
+      console.error('Import stock count error:', error.response?.data || error);
     } finally {
       setIsLoading(false);
     }
@@ -235,8 +284,8 @@ const AdjustStock = () => {
     const warehouseMatch = filters.warehouse === 'all' || record.warehouseId?.toString() === filters.warehouse;
     const dateMatch = new Date(record.timestamp) >= filters.startDate && new Date(record.timestamp) <= filters.endDate;
     const productMatch = record.productCode?.toLowerCase().includes(search) ||
-                        record.productName?.toLowerCase().includes(search) ||
-                        record.userId?.toLowerCase().includes(search);
+      record.productName?.toLowerCase().includes(search) ||
+      record.userId?.toLowerCase().includes(search);
     return warehouseMatch && dateMatch && productMatch;
   });
 
@@ -293,7 +342,7 @@ const AdjustStock = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="col-span-1 md:col-span-2 bg-white rounded-lg shadow-sm p-4 border mb-2">
-                      <h2 className="text-lg font-semibold mb-4 text-blue-700">เลือกข้อมูลสินค้า</h2>
+                      <h2 className="text-lg font-semibold mb-4 text-blue-700">Select Products</h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="warehouse">Warehouse</Label>
@@ -370,7 +419,7 @@ const AdjustStock = () => {
                               <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                 {searchResults.map(product => (
                                   <li
-                                    key={product._id}
+                                    key={product._id} // Use unique _id
                                     className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-100"
                                     onMouseDown={() => handleProductSelect(product._id)}
                                   >
@@ -403,7 +452,7 @@ const AdjustStock = () => {
                       </div>
                     </div>
                     <div className="col-span-1 bg-gray-50 rounded-lg shadow-sm p-4 border flex flex-col justify-center">
-                      <h2 className="text-lg font-semibold mb-4 text-green-700">ปรับจำนวนสินค้า</h2>
+                      <h2 className="text-lg font-semibold mb-4 text-green-700">Adjust Product Quantity</h2>
                       <div className="space-y-4">
                         <div>
                           <Label htmlFor="quantity">Quantity Adjustment</Label>
@@ -473,6 +522,8 @@ const AdjustStock = () => {
                             <TableHeader>
                               <TableRow>
                                 <TableHead>Lot Code</TableHead>
+                                <TableHead>Product Code</TableHead>
+                                <TableHead>Product Name</TableHead>
                                 <TableHead>Counted Quantity</TableHead>
                                 <TableHead>Reason</TableHead>
                                 <TableHead>Warehouse</TableHead>
@@ -480,10 +531,12 @@ const AdjustStock = () => {
                             </TableHeader>
                             <TableBody>
                               {importedData.map((item, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>{item.lotCode}</TableCell>
-                                  <TableCell>{item.countedQuantity}</TableCell>
-                                  <TableCell>{item.reason}</TableCell>
+                                <TableRow key={`${item.lotId}-${index}`}> {/* Unique key with index */}
+                                  <TableCell>{item.lotCode || 'N/A'}</TableCell>
+                                  <TableCell>{item.productCode || 'N/A'}</TableCell>
+                                  <TableCell>{item.productName || 'N/A'}</TableCell>
+                                  <TableCell>{item.countedQuantity || 'N/A'}</TableCell>
+                                  <TableCell>{item.reason || 'N/A'}</TableCell>
                                   <TableCell>{warehouses.find(w => w._id.toString() === item.warehouseId)?.name || 'N/A'}</TableCell>
                                 </TableRow>
                               ))}
@@ -585,7 +638,7 @@ const AdjustStock = () => {
                   </TableHeader>
                   <TableBody>
                     {currentItems.map((record) => (
-                      <TableRow key={record._id}>
+                      <TableRow key={record._id || record.lotCode}> {/* Use _id or lotCode as key */}
                         <TableCell>{record.lotCode}</TableCell>
                         <TableCell>{record.productCode}</TableCell>
                         <TableCell>{record.productName}</TableCell>
