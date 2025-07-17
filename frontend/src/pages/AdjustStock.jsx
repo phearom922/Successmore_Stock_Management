@@ -30,7 +30,6 @@ import * as XLSX from 'xlsx';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 
-
 const AdjustStock = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
@@ -122,7 +121,6 @@ const AdjustStock = () => {
       const { data } = await axios.get(`${API_BASE_URL}/api/adjust-stock/history`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Remove filtering by today, let UI filter by date range
       const sortedHistory = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       setAdjustmentHistory(sortedHistory);
     } catch (error) {
@@ -268,6 +266,7 @@ const AdjustStock = () => {
     setSelectedProduct(productId);
     setProductSearch(selected ? `${selected.name} (${selected.productCode})` : '');
     fetchLots(selectedWarehouse, productId);
+    setSearchResults([]); // Close dropdown immediately after selection
   };
 
   return (
@@ -292,9 +291,7 @@ const AdjustStock = () => {
                   <CardTitle>Adjust Stock</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* Improved Layout: Group selection and adjustment sections */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Selection Section */}
                     <div className="col-span-1 md:col-span-2 bg-white rounded-lg shadow-sm p-4 border mb-2">
                       <h2 className="text-lg font-semibold mb-4 text-blue-700">เลือกข้อมูลสินค้า</h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -405,7 +402,6 @@ const AdjustStock = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Adjustment Section */}
                     <div className="col-span-1 bg-gray-50 rounded-lg shadow-sm p-4 border flex flex-col justify-center">
                       <h2 className="text-lg font-semibold mb-4 text-green-700">ปรับจำนวนสินค้า</h2>
                       <div className="space-y-4">
@@ -450,7 +446,6 @@ const AdjustStock = () => {
                     </div>
                   </div>
                 </CardContent>
-                
               </Card>
             </TabsContent>
             <TabsContent value="count">
@@ -579,6 +574,7 @@ const AdjustStock = () => {
                       <TableHead>Lot Code</TableHead>
                       <TableHead>Product Code</TableHead>
                       <TableHead>Product Name</TableHead>
+                      <TableHead>Warehouse</TableHead>
                       <TableHead>Before Qty</TableHead>
                       <TableHead>After Qty</TableHead>
                       <TableHead>Adjustment</TableHead>
@@ -593,6 +589,7 @@ const AdjustStock = () => {
                         <TableCell>{record.lotCode}</TableCell>
                         <TableCell>{record.productCode}</TableCell>
                         <TableCell>{record.productName}</TableCell>
+                        <TableCell>{record.warehouseName || 'N/A'}</TableCell>
                         <TableCell>{record.beforeQty}</TableCell>
                         <TableCell>{record.afterQty}</TableCell>
                         <TableCell>{record.quantityAdjusted}</TableCell>

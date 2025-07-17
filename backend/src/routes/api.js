@@ -2674,10 +2674,20 @@ router.get('/adjust-stock/history', authMiddleware, async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: 'warehouses',
+          localField: 'warehouse',
+          foreignField: '_id',
+          as: 'warehouse',
+        },
+      },
+      {
         $project: {
           lotCode: 1,
           productCode: { $arrayElemAt: ['$product.productCode', 0] },
           productName: { $arrayElemAt: ['$product.name', 0] },
+          warehouseId: '$warehouse._id',
+          warehouseName: { $arrayElemAt: ['$warehouse.name', 0] },
           beforeQty: '$transactions.beforeQty',
           afterQty: '$transactions.afterQty',
           quantityAdjusted: '$transactions.quantityAdjusted',
