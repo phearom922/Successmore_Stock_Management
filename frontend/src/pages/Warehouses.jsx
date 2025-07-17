@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaPlus, FaSearch, FaWarehouse, FaUserAlt, FaTrash } from 'react-icons/fa';
+import { FaRegEdit, FaPlus, FaSearch, FaRegTrashAlt, FaUserAlt, FaTrash } from 'react-icons/fa';
 import { HiStatusOnline, HiStatusOffline } from 'react-icons/hi';
 
 const Warehouses = () => {
@@ -341,21 +341,21 @@ const Warehouses = () => {
                           'None'
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                         <button
                           onClick={() => handleEditWarehouse(warehouse)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
+                          className="text-blue-800 hover:text-blue-900 p-2 bg-blue-50 rounded border border-blue-200 hover:border-blue-300"
                           title="Edit"
                         >
-                          <FaEdit />
+                          <FaRegEdit />
                         </button>
                         <button
                           onClick={() => handleDeleteWarehouse(warehouse._id)}
-                          className={`text-red-600 hover:text-red-900 ${warehouse.assignedUsers.length > 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                          className={`text-red-600 hover:text-red-900 p-2 rounded border border-red-200 hover:border-blue-300" ${warehouse.assignedUsers.length > 0 ? 'cursor-not-allowed opacity-50' : ''}`}
                           title={warehouse.assignedUsers.length > 0 ? 'Cannot delete warehouse with assigned users' : 'Delete'}
                           disabled={warehouse.assignedUsers.length > 0}
                         >
-                          <FaTrash />
+                          <FaRegTrashAlt />
                         </button>
                       </td>
                     </tr>

@@ -66,6 +66,13 @@ const IssueHistory = () => {
     searchTransaction: ''
   });
 
+  // เมื่อ user ถูก set แล้ว ถ้าไม่ใช่ admin ให้ set warehouse filter เป็น warehouseId ของ user
+  useEffect(() => {
+    if (user && user.role !== 'admin' && user.warehouse) {
+      setFilters(prev => ({ ...prev, warehouse: user.warehouse }));
+    }
+  }, [user]);
+
   // Initialize user and fetch data
   const initializeUser = () => {
     if (!token) {
@@ -519,24 +526,33 @@ const IssueHistory = () => {
               </Select>
             </div>
 
+            {/* Warehouse filter: admin เท่านั้นที่เลือกได้ */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse</label>
-              <Select
-                value={filters.warehouse}
-                onValueChange={value => setFilters({ ...filters, warehouse: value })}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All Warehouses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Warehouses</SelectItem>
-                  {warehouses.map(w => (
-                    <SelectItem key={w._id} value={w._id}>
-                      {w.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {user && user.role === 'admin' ? (
+                <Select
+                  value={filters.warehouse}
+                  onValueChange={value => setFilters({ ...filters, warehouse: value })}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Warehouses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Warehouses</SelectItem>
+                    {warehouses.map(w => (
+                      <SelectItem key={w._id} value={w._id}>
+                        {w.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  value={warehouses.find(w => w._id === filters.warehouse)?.name || ''}
+                  disabled
+                  className="w-full bg-gray-100"
+                />
+              )}
             </div>
 
             <div>

@@ -105,7 +105,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/issue-stock" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueStock /></ProtectedRoute>} />
           <Route path="/issue-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueHistory /></ProtectedRoute>} />
           <Route path="/transfer-order" element={<ProtectedRoute requiredRoles={['admin', 'user']}><TransferOrder /></ProtectedRoute>} />
-          <Route path="/adjust-stock" element={<ProtectedRoute requiredRoles={['admin', 'user']}><AdjustStock /></ProtectedRoute>} />
+          <Route path="/adjust-stock" element={<ProtectedRoute requiredRoles={['admin']}><AdjustStock /></ProtectedRoute>} />
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />

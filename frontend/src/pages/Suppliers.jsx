@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaSearch, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaRegEdit, FaSearch, FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
@@ -209,18 +209,18 @@ const Suppliers = () => {
                     <td className="px-6 py-4 text-sm text-gray-500">{supplier.address || '-'}</td>
                     <td className="px-6 py-4 text-sm text-gray-500">{supplier.phone || '-'}</td>
                     <td className="px-6 py-4 text-sm text-gray-500">{new Date(supplier.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-right text-sm font-medium">
+                    <td className="px-6 py-4 text-right text-sm font-medium space-x-2">
                       <button
                         onClick={() => handleEditSupplier(supplier)}
-                        className="text-blue-500 hover:text-blue-700 mr-3"
+                        className="text-blue-600 hover:text-blue-900 p-2 rounded border border-blue-200 hover:border-blue-300"
                       >
-                        <FaEdit />
+                        <FaRegEdit />
                       </button>
                       <button
                         onClick={() => handleDeleteSupplier(supplier._id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-600 hover:text-red-900 p-2 rounded border border-red-200 hover:border-blue-300"
                       >
-                        <FaTrash />
+                        <FaRegTrashAlt />
                       </button>
                     </td>
                   </tr>

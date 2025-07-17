@@ -54,9 +54,12 @@ const IssueStock = () => {
       setCategories(categoriesRes.data);
       console.log('Fetched Products:', productsRes.data);
 
-      const defaultWarehouse = user.role !== 'admin' ? user.warehouse : warehousesRes.data[0]?._id;
+      let defaultWarehouse = '';
+      if (user.warehouse) {
+        defaultWarehouse = user.warehouse.toString();
+      }
       if (!defaultWarehouse) {
-        toast.error('No warehouse assigned or available');
+        toast.error('No warehouse assigned');
         return;
       }
       setSelectedWarehouse(defaultWarehouse);
@@ -203,6 +206,7 @@ const IssueStock = () => {
       toast.error(error.response?.data?.message || 'Failed to issue stock');
     } finally {
       setIsLoading(false);
+      navigate('/issue-history');
     }
   };
 

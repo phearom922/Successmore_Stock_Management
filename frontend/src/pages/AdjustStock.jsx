@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaFileExcel } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import {
   Select,
@@ -66,10 +67,15 @@ const AdjustStock = () => {
 
   const API_BASE_URL = 'http://localhost:3000';
 
-  // โหลดข้อมูลหลัก (warehouse, products, categories) เฉพาะตอน mount
+  // โหลดข้อมูลหลัก (warehouse, products, categories) เฉพาะตอน mount และตรวจสอบ role
   useEffect(() => {
     if (!token) {
       navigate('/login');
+      return;
+    }
+    if (user.role !== 'admin') {
+      toast.error('Access denied: Admins only');
+      navigate('/');
       return;
     }
     fetchInitialData();
@@ -350,7 +356,7 @@ const AdjustStock = () => {
                     <div className="col-span-1 md:col-span-2 bg-white rounded-lg shadow-sm p-4 border mb-2">
                       <h2 className="text-lg font-semibold mb-4 text-blue-700">Select Products</h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
+                        <div className=' space-y-2'>
                           <Label htmlFor="warehouse">Warehouse</Label>
                           <Select
                             value={selectedWarehouse || ''}
@@ -379,7 +385,7 @@ const AdjustStock = () => {
                           <div className="flex flex-wrap gap-2 mb-2">
                             <button
                               type="button"
-                              className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                              className={`px-3 py-2 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100 cursor-pointer`}
                               onClick={() => {
                                 setSelectedCategory('All');
                                 setSearchResults(products);
@@ -391,7 +397,7 @@ const AdjustStock = () => {
                               <button
                                 key={category._id}
                                 type="button"
-                                className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                                className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100 cursor-pointer`}
                                 onClick={() => {
                                   setSelectedCategory(category._id.toString());
                                   setSearchResults(products.filter(p => p.category && p.category._id.toString() === category._id.toString()));
@@ -402,7 +408,7 @@ const AdjustStock = () => {
                             ))}
                           </div>
                         </div>
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 space-y-2">
                           <Label htmlFor="product">Product</Label>
                           <div className="relative">
                             <Input
@@ -436,7 +442,7 @@ const AdjustStock = () => {
                             )}
                           </div>
                         </div>
-                        <div>
+                        <div className="space-y-2">
                           <Label htmlFor="lot">Lot</Label>
                           <Select
                             value={selectedLot || ''}
@@ -460,7 +466,7 @@ const AdjustStock = () => {
                     <div className="col-span-1 bg-gray-50 rounded-lg shadow-sm p-4 border flex flex-col justify-center">
                       <h2 className="text-lg font-semibold mb-4 text-green-700">Adjust Product Quantity</h2>
                       <div className="space-y-4">
-                        <div>
+                        <div className="space-y-2">
                           <Label htmlFor="quantity">Quantity Adjustment</Label>
                           <Input
                             type="number"
@@ -472,7 +478,7 @@ const AdjustStock = () => {
                             max="9999"
                           />
                         </div>
-                        <div>
+                        <div className="space-y-2">
                           <Label htmlFor="reason">Reason</Label>
                           <Select
                             value={reason}
@@ -510,15 +516,36 @@ const AdjustStock = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="excelFile">Import Excel File</Label>
-                      <Input
-                        type="file"
-                        id="excelFile"
-                        accept=".xls,.xlsx"
-                        onChange={handleFileUpload}
-                        disabled={isLoading}
-                      />
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="excelFile" className="mb-1 flex items-center gap-2">
+                        <FaFileExcel className="text-green-600" />
+                        Import Excel File
+                        <span className="ml-2 text-xs text-gray-500">(.xls, .xlsx supported)</span>
+                      </Label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="file"
+                          id="excelFile"
+                          accept=".xls,.xlsx"
+                          onChange={handleFileUpload}
+                          disabled={isLoading}
+                          className="hidden"
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => document.getElementById('excelFile').click()}
+                          disabled={isLoading}
+                          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          </svg>
+                          Choose Excel File
+                        </Button>
+                        <span className="text-sm text-gray-700">
+                          {excelFile ? excelFile.name : 'No file selected'}
+                        </span>
+                      </div>
                     </div>
                     {importedData.length > 0 && (
                       <div>
@@ -572,7 +599,7 @@ const AdjustStock = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div>
+                <div className='space-y-1'>
                   <Label>Start Date</Label>
                   <DatePicker
                     selected={filters.startDate}
@@ -584,7 +611,7 @@ const AdjustStock = () => {
                     className="w-full p-2 border rounded-md"
                   />
                 </div>
-                <div>
+                <div className='space-y-1'>
                   <Label>End Date</Label>
                   <DatePicker
                     selected={filters.endDate}
@@ -597,7 +624,7 @@ const AdjustStock = () => {
                     className="w-full p-2 border rounded-md"
                   />
                 </div>
-                <div>
+                <div className='space-y-1'>
                   <Label>Warehouse</Label>
                   <Select
                     value={filters.warehouse}
@@ -616,7 +643,7 @@ const AdjustStock = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className='space-y-1'>
                   <Label>Search</Label>
                   <Input
                     value={filters.search}

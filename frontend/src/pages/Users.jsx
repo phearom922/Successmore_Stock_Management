@@ -9,7 +9,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { FaPlus, FaRegTrashAlt, FaEdit, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { FaPlus, FaRegTrashAlt, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
 
 
 

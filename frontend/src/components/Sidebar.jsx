@@ -176,7 +176,8 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
                 {isOpen && <span className='text-sm'>Issue Stock</span>}
               </Link>
             )}
-            {(userRole === 'admin' || userRole === 'user') && ( // ยังคงใช้ userRole สำหรับเมนูทั่วไป
+
+            {userRole === 'admin' && (
               <Link
                 to="/adjust-stock"
                 className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/adjust-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
@@ -185,6 +186,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
                 {isOpen && <span className='text-sm'>Adjust Stock</span>}
               </Link>
             )}
+
           </div>
         </div>
 
@@ -196,6 +198,8 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
           ) : (
             <div className="border-t border-gray-700 mx-2 my-2"></div>
           )}
+
+
           <div className="mt-1 space-y-1">
             {(userRole === 'admin' || userRole === 'user') && (
               <Link
@@ -206,6 +210,8 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
                 {isOpen && <span className='text-sm'>Receive History</span>}
               </Link>
             )}
+
+
             {(userRole === 'admin' || userRole === 'user') && (
               <Link
                 to="/issue-history"

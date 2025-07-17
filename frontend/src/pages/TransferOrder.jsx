@@ -96,10 +96,14 @@ const TransferOrder = () => {
       setProducts(productsRes.data.map(p => ({ ...p, _id: p._id.toString() })));
       setCategories(categoriesRes.data);
 
-      const defaultWarehouse = user.role !== 'admin' ? user.warehouse?.toString() : warehousesRes.data[0]?._id?.toString();
+      // กำหนดค่าเริ่มต้น sourceWarehouse เป็น warehouse ที่ถูก assigned ให้กับ user
+      let defaultWarehouse = '';
+      if (user.warehouse) {
+        defaultWarehouse = user.warehouse.toString();
+      }
       console.log('Default Warehouse:', defaultWarehouse);
       if (!defaultWarehouse) {
-        toast.error('No warehouse assigned or available');
+        toast.error('No warehouse assigned');
         return;
       }
       setSourceWarehouse(defaultWarehouse);

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { format } from 'date-fns';
 import {
   FaSearch,
   FaChevronLeft,
   FaChevronRight,
-  FaTrash,
-  FaEdit,
-  FaPlus,
   FaFilter,
   FaTimes,
   FaExclamationTriangle
@@ -222,26 +220,26 @@ const LotManagement = () => {
 
 
 
-const handleExport = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:3000/api/lot-management/export', {
-      headers: { Authorization: `Bearer ${token}` },
-      params: { searchQuery, warehouse: isAdmin ? warehouse : user.warehouse || '' },
-      responseType: 'blob'
-    });
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `lot-management-${new Date().toISOString().split('T')[0]}.xlsx`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    console.error('Error exporting data:', error);
-    setSettingsError('Failed to export data');
-  }
-};
+  const handleExport = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:3000/api/lot-management/export', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { searchQuery, warehouse: isAdmin ? warehouse : user.warehouse || '' },
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `lot-management-${new Date().toISOString().split('T')[0]}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      setSettingsError('Failed to export data');
+    }
+  };
 
 
 
@@ -529,44 +527,19 @@ const handleExport = async () => {
                               {lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : 'N/A'}
                             </td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <input
-                                type="number"
-                                value={lot.totalQty || 0}
-                                onChange={(e) => {
-                                  if (isAdmin) {
-                                    const newValue = Number(e.target.value);
-                                    setLots(prev => prev.map(l => l._id === lot._id ? {
-                                      ...l,
-                                      totalQty: newValue,
-                                      availableQty: newValue - (l.damaged || 0)
-                                    } : l));
-                                  }
-                                }}
-                                className={`w-20 p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
-                                disabled={!isAdmin}
-                              />
+                              {lot.totalQty || 0}
                             </td>
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <input
-                                type="number"
-                                value={lot.damaged || 0}
-                                onChange={(e) => {
-                                  if (isAdmin) {
-                                    const newValue = Number(e.target.value) >= 0 ? Number(e.target.value) : 0;
-                                    setLots(prev => prev.map(l => l._id === lot._id ? {
-                                      ...l,
-                                      damaged: newValue,
-                                      availableQty: l.totalQty - newValue
-                                    } : l));
-                                  }
-                                }}
-                                className={`w-20 p-1 border rounded ${!isAdmin ? 'bg-gray-100' : 'bg-white focus:ring-blue-500'}`}
-                                disabled={!isAdmin}
-                              />
+
+                              {lot.damaged || 0}
+
                             </td>
+
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                               {lot.qtyOnHand || 0}
                             </td>
+
+
                             <td className="px-4 py-4 whitespace-nowrap">
                               <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${isExpired(lot.expDate) ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
                                 }`}>
@@ -577,20 +550,12 @@ const handleExport = async () => {
                               <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div className="flex justify-end gap-2">
                                   <button
-                                    onClick={() => handleEdit(lot)}
-                                    className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
-                                    disabled={isLoading}
-                                    title="Edit"
-                                  >
-                                    <FaEdit />
-                                  </button>
-                                  <button
                                     onClick={() => handleDelete(lot._id)}
-                                    className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                                    className="text-red-600 hover:text-red-900 p-1.5 bg-red-50 rounded border border-red-200 hover:border-red-300 cursor-pointer transition-colors"
                                     disabled={isLoading || !isExpired(lot.expDate)}
                                     title="Delete"
                                   >
-                                    <FaTrash />
+                                    <FaRegTrashAlt />
                                   </button>
                                 </div>
                               </td>
