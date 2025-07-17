@@ -27,7 +27,7 @@ const StockReports = () => {
   const userData = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const isAdmin = userData.role === 'admin';
   const userWarehouseId = userData.warehouse ? userData.warehouse.toString() : '';
-  console.log('User data from token:', { userWarehouseId, isAdmin, rawWarehouse: userData.warehouse }); 
+  console.log('User data from token:', { userWarehouseId, isAdmin, rawWarehouse: userData.warehouse });
 
   useEffect(() => {
     fetchWarehouses();
@@ -152,7 +152,10 @@ const StockReports = () => {
       <Card className="shadow-sm">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="text-2xl font-bold">Stock Reports</CardTitle>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Stock Reports</h1>
+              <p className="text-gray-600">Stock data and analysis</p>
+            </div>
             <div className="flex space-x-2">
               <Button
                 onClick={() => handleExport(currentTab)}

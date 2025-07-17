@@ -315,7 +315,10 @@ const ReceiveStock = () => {
   return (
     <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Receive Stock</h2>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Receive Stock</h1>
+          <p className="text-gray-600">Record stock receive and create new lots</p>
+        </div>
         <div className="flex space-x-3">
           <button
             type="button"

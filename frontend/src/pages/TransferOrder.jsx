@@ -482,7 +482,10 @@ const TransferOrder = () => {
   return (
     <div className="p-4 md:p-6 mx-auto bg-gray-50 min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Transfer Order Management</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Transfer Order Management</h1>
+          <p className="text-gray-600">Issue, Transfer, and Reserve stock with FEFO system</p>
+        </div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full md:w-auto">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="newTransfer">New Transfer</TabsTrigger>

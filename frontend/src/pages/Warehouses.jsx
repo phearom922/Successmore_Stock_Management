@@ -130,7 +130,7 @@ const Warehouses = () => {
     }
   };
 
-  const filteredWarehouses = warehouses.filter(warehouse => 
+  const filteredWarehouses = warehouses.filter(warehouse =>
     warehouse.warehouseCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
     warehouse.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     warehouse.branch.toLowerCase().includes(searchTerm.toLowerCase())
@@ -143,10 +143,13 @@ const Warehouses = () => {
       <div className="max-w-screen mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div className="flex items-center mb-4 md:mb-0">
-            <FaWarehouse className="text-indigo-600 text-3xl mr-3" />
-            <h1 className="text-2xl font-bold text-gray-800">Warehouse Management</h1>
+
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Warehouse Management</h1>
+              <p className="text-gray-600">Manage all warehouse information</p>
+            </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
             <div className="relative flex-grow">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -158,7 +161,7 @@ const Warehouses = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            
+
             <button
               onClick={() => setIsModalOpen(true)}
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center justify-center transition-colors duration-200"
@@ -176,7 +179,7 @@ const Warehouses = () => {
               <div className="bg-indigo-600 p-4 text-white">
                 <h3 className="text-lg font-bold">{editingId ? 'Edit Warehouse' : 'Create New Warehouse'}</h3>
               </div>
-              
+
               <form onSubmit={handleCreateOrUpdateWarehouse} className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse Code</label>
@@ -189,7 +192,7 @@ const Warehouses = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Warehouse Name</label>
                   <input
@@ -201,7 +204,7 @@ const Warehouses = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
                   <input
@@ -213,7 +216,7 @@ const Warehouses = () => {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <select
@@ -225,7 +228,7 @@ const Warehouses = () => {
                     <option value="Inactive">Inactive</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Users</label>
                   <select
@@ -244,7 +247,7 @@ const Warehouses = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="flex justify-end gap-3 pt-4">
                   <button
                     type="button"
@@ -306,11 +309,10 @@ const Warehouses = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => handleToggleStatus(warehouse)}
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                            warehouse.status === 'Active'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${warehouse.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                            }`}
                         >
                           {warehouse.status === 'Active' ? (
                             <HiStatusOnline className="mr-1" />

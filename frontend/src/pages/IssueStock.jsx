@@ -74,7 +74,7 @@ const IssueStock = () => {
     try {
       const { data } = await axios.get('http://localhost:3000/api/lots', {
         headers: { Authorization: `Bearer ${token}` },
-        params: { 
+        params: {
           productId,
           warehouse: selectedWarehouse,
           damagedOnly: currentItem.transactionType === 'Waste'
@@ -244,7 +244,10 @@ const IssueStock = () => {
   return (
     <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Issue Stock</h2>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Issue Stock</h1>
+          <p className="text-gray-600">Select warehouse, product type, and items to issue</p>
+        </div>
         <div className="flex space-x-3">
           <Button
             onClick={handleIssue}
