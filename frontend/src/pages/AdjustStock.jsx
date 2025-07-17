@@ -292,123 +292,165 @@ const AdjustStock = () => {
                   <CardTitle>Adjust Stock</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="warehouse">Warehouse</Label>
-                        <Select
-                          value={selectedWarehouse || ''}
-                          onValueChange={val => {
-                            setSelectedWarehouse(val);
-                            setSelectedProduct('');
-                            setSelectedLot('');
-                            fetchLots(val, selectedProduct);
-                          }}
-                          disabled={isLoading}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select warehouse" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {warehouses.map(w => (
-                              <SelectItem key={w._id} value={w._id.toString()}>
-                                {w.name} ({w.warehouseCode})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="product">Product</Label>
-                        <div className="relative">
-                          <Input
-                            ref={productInputRef}
-                            type="text"
-                            placeholder="Search product by name or code..."
-                            value={productSearch}
-                            onChange={handleProductSearch}
-                            onFocus={() => setSearchResults(products)}
-                            onBlur={() => setTimeout(() => setSearchResults([]), 150)}
-                            disabled={!selectedWarehouse || isLoading}
-                          />
-                          {searchResults.length > 0 && (
-                            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                              {searchResults.map(product => (
-                                <li
-                                  key={product._id}
-                                  className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-100"
-                                  onMouseDown={() => handleProductSelect(product._id)}
-                                >
-                                  {product.name} ({product.productCode})
-                                </li>
+                  {/* Improved Layout: Group selection and adjustment sections */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Selection Section */}
+                    <div className="col-span-1 md:col-span-2 bg-white rounded-lg shadow-sm p-4 border mb-2">
+                      <h2 className="text-lg font-semibold mb-4 text-blue-700">เลือกข้อมูลสินค้า</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="warehouse">Warehouse</Label>
+                          <Select
+                            value={selectedWarehouse || ''}
+                            onValueChange={val => {
+                              setSelectedWarehouse(val);
+                              setSelectedProduct('');
+                              setSelectedLot('');
+                              fetchLots(val, selectedProduct);
+                            }}
+                            disabled={isLoading}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select warehouse" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {warehouses.map(w => (
+                                <SelectItem key={w._id} value={w._id.toString()}>
+                                  {w.name} ({w.warehouseCode})
+                                </SelectItem>
                               ))}
-                            </ul>
-                          )}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="category" className="mb-2">Category</Label>
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            <button
+                              type="button"
+                              className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                              onClick={() => {
+                                setSelectedCategory('All');
+                                setSearchResults(products);
+                              }}
+                            >
+                              All Products
+                            </button>
+                            {categories.map(category => (
+                              <button
+                                key={category._id}
+                                type="button"
+                                className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                                onClick={() => {
+                                  setSelectedCategory(category._id.toString());
+                                  setSearchResults(products.filter(p => p.category && p.category._id.toString() === category._id.toString()));
+                                }}
+                              >
+                                {category.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:col-span-2">
+                          <Label htmlFor="product">Product</Label>
+                          <div className="relative">
+                            <Input
+                              ref={productInputRef}
+                              type="text"
+                              placeholder="Search product by name or code..."
+                              value={productSearch}
+                              onChange={handleProductSearch}
+                              onFocus={() => {
+                                if (selectedCategory === 'All') {
+                                  setSearchResults(products);
+                                } else {
+                                  setSearchResults(products.filter(p => p.category && p.category._id.toString() === selectedCategory));
+                                }
+                              }}
+                              onBlur={() => setTimeout(() => setSearchResults([]), 150)}
+                              disabled={!selectedWarehouse || isLoading}
+                            />
+                            {searchResults.length > 0 && (
+                              <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                {searchResults.map(product => (
+                                  <li
+                                    key={product._id}
+                                    className="px-3 py-2 text-sm cursor-pointer hover:bg-blue-100"
+                                    onMouseDown={() => handleProductSelect(product._id)}
+                                  >
+                                    {product.name} ({product.productCode})
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="lot">Lot</Label>
+                          <Select
+                            value={selectedLot || ''}
+                            onValueChange={setSelectedLot}
+                            disabled={!selectedProduct || isLoading}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select lot" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {lots.map(lot => (
+                                <SelectItem key={lot._id} value={lot._id.toString()}>
+                                  {lot.lotCode} (Qty: {lot.qtyOnHand})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
-                      <div>
-                        <Label htmlFor="lot">Lot</Label>
-                        <Select
-                          value={selectedLot || ''}
-                          onValueChange={setSelectedLot}
-                          disabled={!selectedProduct || isLoading}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select lot" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {lots.map(lot => (
-                              <SelectItem key={lot._id} value={lot._id.toString()}>
-                                {lot.lotCode} (Qty: {lot.qtyOnHand})
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
                     </div>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="quantity">Quantity Adjustment</Label>
-                        <Input
-                          type="number"
-                          id="quantity"
-                          value={quantityAdjustment}
-                          onChange={e => setQuantityAdjustment(e.target.value)}
-                          placeholder="Enter adjustment (positive or negative)"
-                          min="-9999"
-                          max="9999"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="reason">Reason</Label>
-                        <Select
-                          value={reason}
-                          onValueChange={setReason}
-                          disabled={isLoading}
+                    {/* Adjustment Section */}
+                    <div className="col-span-1 bg-gray-50 rounded-lg shadow-sm p-4 border flex flex-col justify-center">
+                      <h2 className="text-lg font-semibold mb-4 text-green-700">ปรับจำนวนสินค้า</h2>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="quantity">Quantity Adjustment</Label>
+                          <Input
+                            type="number"
+                            id="quantity"
+                            value={quantityAdjustment}
+                            onChange={e => setQuantityAdjustment(e.target.value)}
+                            placeholder="Enter adjustment (positive or negative)"
+                            min="-9999"
+                            max="9999"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="reason">Reason</Label>
+                          <Select
+                            value={reason}
+                            onValueChange={setReason}
+                            disabled={isLoading}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select reason" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Manual Adjustment">Manual Adjustment</SelectItem>
+                              <SelectItem value="Damage">Damage</SelectItem>
+                              <SelectItem value="Received">Received</SelectItem>
+                              <SelectItem value="Lost">Lost</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Button
+                          onClick={handleAdjustStock}
+                          disabled={!selectedLot || !quantityAdjustment || isLoading}
+                          className="w-full mt-6"
                         >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select reason" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Manual Adjustment">Manual Adjustment</SelectItem>
-                            <SelectItem value="Damage">Damage</SelectItem>
-                            <SelectItem value="Received">Received</SelectItem>
-                            <SelectItem value="Lost">Lost</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          Adjust Stock
+                        </Button>
                       </div>
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="flex justify-end">
-                  <Button
-                    onClick={handleAdjustStock}
-                    disabled={!selectedLot || !quantityAdjustment || isLoading}
-                    className="w-full md:w-auto"
-                  >
-                    Adjust Stock
-                  </Button>
-                </CardFooter>
+                
               </Card>
             </TabsContent>
             <TabsContent value="count">
