@@ -587,7 +587,7 @@ const handleExport = async () => {
                                   <button
                                     onClick={() => handleDelete(lot._id)}
                                     className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
-                                    disabled={isLoading}
+                                    disabled={isLoading || !isExpired(lot.expDate)}
                                     title="Delete"
                                   >
                                     <FaTrash />

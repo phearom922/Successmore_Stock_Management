@@ -66,14 +66,20 @@ const AdjustStock = () => {
 
   const API_BASE_URL = 'http://localhost:3000';
 
+  // โหลดข้อมูลหลัก (warehouse, products, categories) เฉพาะตอน mount
   useEffect(() => {
     if (!token) {
       navigate('/login');
       return;
     }
     fetchInitialData();
+  }, [token, navigate]);
+
+  // โหลด adjustment history เฉพาะเมื่อ filter ที่เกี่ยวข้องเปลี่ยน (ยกเว้น search)
+  useEffect(() => {
+    if (!token) return;
     fetchAdjustmentHistory();
-  }, [token, navigate, filters]);
+  }, [token, filters.startDate, filters.endDate, filters.warehouse]);
 
   const fetchInitialData = async () => {
     setIsLoading(true);

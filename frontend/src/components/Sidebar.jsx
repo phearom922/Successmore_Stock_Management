@@ -3,13 +3,13 @@ import {
   FiHome,
   FiUpload,
   FiPackage,
-  FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiClipboard, FiDatabase, FiUsers,
+  FiLayers, FiTruck, FiChevronLeft, FiChevronRight, FiBox, FiDatabase, FiUsers,
   FiArrowDownCircle, FiArrowUpCircle
 } from 'react-icons/fi';
-import { FaBuilding, FaCubes } from "react-icons/fa";
+import { FaBuilding, FaCubes, FaRegChartBar } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import { GiBrokenPottery } from "react-icons/gi";
 import { IoSettingsOutline } from "react-icons/io5";
-import { HiOutlineDocumentReport } from "react-icons/hi";
 import { TbTransfer } from "react-icons/tb";
 
 const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRole กลับคืนมา
@@ -181,7 +181,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
                 to="/adjust-stock"
                 className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/adjust-stock') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
               >
-                <FiArrowUpCircle className={`${isOpen ? 'mr-3' : ''} text-md`} />
+                <FiEdit className={`${isOpen ? 'mr-3' : ''} text-md`} />
                 {isOpen && <span className='text-sm'>Adjust Stock</span>}
               </Link>
             )}
@@ -220,7 +220,7 @@ const Sidebar = ({ isOpen, setIsOpen, userRole }) => { // เพิ่ม userRo
                 to="/stock-reports"
                 className={`flex items-center ${isOpen ? 'px-4 py-2 mx-2 pl-8' : 'px-2 py-3 mx-2 justify-center'} rounded-sm transition-colors ${isActive('/stock-reports') ? 'bg-blue-200 text-blue-700' : 'hover:bg-gray-200 text-gray-900'}`}
               >
-                <HiOutlineDocumentReport className={`${isOpen ? 'mr-3' : ''} text-md`} />
+                <FaRegChartBar className={`${isOpen ? 'mr-3' : ''} text-md`} />
                 {isOpen && <span className='text-sm'>Stock Reports</span>}
               </Link>
             )}
