@@ -11,7 +11,7 @@ const stockTransactionSchema = new mongoose.Schema({
   qtyPerBox: { type: Number, required: true },
   productionDate: { type: Date, required: true },
   expDate: { type: Date, required: true },
-  warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true }, // เปลี่ยนเป็น ObjectId
+  warehouse: { type: mongoose.Schema.Types.ObjectId, ref: 'Warehouse', required: true },
   type: { type: String, enum: ['receive', 'issue', 'adjust'], required: true },
   auditTrail: { type: mongoose.Schema.Types.ObjectId, ref: 'UserTransaction' },
   timestamp: { type: Date, default: Date.now },

@@ -2263,39 +2263,6 @@ router.get('/lots/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Adjust Stock
-router.post('/adjust-stock', authMiddleware, async (req, res) => {
-  try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Only admin can adjust stock' });
-    }
-    const { lotId, quantity, reason } = req.body;
-    const lot = await Lot.findById(lotId);
-    if (!lot) return res.status(404).json({ message: 'Lot not found' });
-
-    const beforeQty = lot.qtyOnHand;
-    lot.qtyOnHand += Number(quantity);
-    const afterQty = lot.qtyOnHand;
-
-    lot.transactions.push({
-      userId: req.user._id,
-      reason,
-      quantityAdjusted: quantity,
-      beforeQty,
-      afterQty,
-      transactionType: 'Adjust',
-      warehouseId: lot.warehouse
-    });
-
-    await lot.save();
-    logger.info('Stock adjusted', { lotId, quantity, reason });
-    res.json({ message: 'Stock adjusted successfully', newQtyOnHand: afterQty });
-  } catch (error) {
-    logger.error('Error adjusting stock:', error);
-    res.status(500).json({ message: 'Error adjusting stock', error: error.message });
-  }
-});
-
 ///////////////////Transfer Order Management///////////////////
 
 // Transfer Order
@@ -2586,5 +2553,146 @@ router.get('/transfer-history', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching transfer history', error: error.message });
   }
 });
+
+/////////////////////Adjust Stock Management/////////////////////
+
+router.post('/adjust-stock', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { lotId, quantityAdjustment, reason, warehouseId } = req.body;
+    const user = req.user;
+
+    const lot = await Lot.findOne({ _id: lotId, warehouse: warehouseId }).session(session);
+    if (!lot) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Lot not found in specified warehouse' });
+    }
+
+    const beforeQty = lot.qtyOnHand;
+    const afterQty = beforeQty + quantityAdjustment;
+    if (afterQty < 0) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: 'Adjustment would result in negative stock' });
+    }
+
+    lot.qtyOnHand = afterQty;
+    lot.transactions.push({
+      timestamp: new Date(),
+      userId: user._id,
+      reason,
+      quantityAdjusted: quantityAdjustment,
+      beforeQty,
+      afterQty,
+      transactionType: 'Adjust',
+      warehouseId: new mongoose.Types.ObjectId(warehouseId),
+    });
+    await lot.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    logger.info('Stock adjusted', { lotId, quantityAdjustment, reason });
+    res.json({ message: 'Stock adjusted successfully', lotId, beforeQty, afterQty });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    logger.error('Error adjusting stock:', error);
+    res.status(500).json({ message: 'Error adjusting stock', error: error.message });
+  }
+});
+
+router.post('/stock-count/import', authMiddleware, async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { lots } = req.body; // Array of { lotId, countedQuantity, reason, warehouseId }
+    const user = req.user;
+
+    for (const item of lots) {
+      const { lotId, countedQuantity, reason, warehouseId } = item;
+      const lot = await Lot.findOne({ _id: lotId, warehouse: warehouseId }).session(session);
+      if (!lot) {
+        await session.abortTransaction();
+        return res.status(400).json({ message: `Lot ${lotId} not found in specified warehouse` });
+      }
+
+      const beforeQty = lot.qtyOnHand;
+      const quantityAdjustment = countedQuantity - beforeQty;
+      lot.qtyOnHand = countedQuantity;
+      lot.transactions.push({
+        timestamp: new Date(),
+        userId: user._id,
+        reason: reason || 'Stock Count',
+        quantityAdjusted: quantityAdjustment,
+        beforeQty,
+        afterQty: countedQuantity,
+        transactionType: 'StockCount',
+        warehouseId: new mongoose.Types.ObjectId(warehouseId),
+      });
+      await lot.save({ session });
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    logger.info('Stock count imported', { count: lots.length });
+    res.json({ message: 'Stock count imported successfully' });
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    logger.error('Error importing stock count:', error);
+    res.status(500).json({ message: 'Error importing stock count', error: error.message });
+  }
+});
+
+router.get('/adjust-stock/history', authMiddleware, async (req, res) => {
+  try {
+    const history = await Lot.aggregate([
+      { $unwind: '$transactions' },
+      {
+        $match: {
+          'transactions.transactionType': { $in: ['Adjust', 'StockCount'] },
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'transactions.userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'productId',
+          foreignField: '_id',
+          as: 'product',
+        },
+      },
+      {
+        $project: {
+          lotCode: 1,
+          productCode: { $arrayElemAt: ['$product.productCode', 0] },
+          productName: { $arrayElemAt: ['$product.name', 0] },
+          beforeQty: '$transactions.beforeQty',
+          afterQty: '$transactions.afterQty',
+          quantityAdjusted: '$transactions.quantityAdjusted',
+          reason: '$transactions.reason',
+          timestamp: '$transactions.timestamp',
+          userId: { $arrayElemAt: ['$user.username', 0] },
+        },
+      },
+    ]).exec();
+    res.json(history);
+  } catch (error) {
+    logger.error('Error fetching adjustment history:', error);
+    res.status(500).json({ message: 'Error fetching adjustment history', error: error.message });
+  }
+});
+
 
 module.exports = router;
