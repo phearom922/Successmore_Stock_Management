@@ -142,6 +142,43 @@ const StockReports = () => {
   const paginatedData = sortedData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
+  // Summary data: group by warehouse + productCode
+  const summaryRows = [];
+  if (data && data.length > 0) {
+    // { [warehouse]: { [productCode]: { productName, damaged, qtyOnHand, total } } }
+    const summaryMap = {};
+    data.forEach(lot => {
+      const warehouse = lot.warehouse || 'N/A';
+      const productCode = lot.productId?.productCode || lot.productCode || 'N/A';
+      const productName = lot.productId?.name || lot.productName || 'N/A';
+      if (!summaryMap[warehouse]) summaryMap[warehouse] = {};
+      if (!summaryMap[warehouse][productCode]) {
+        summaryMap[warehouse][productCode] = {
+          productName,
+          damaged: 0,
+          qtyOnHand: 0,
+          total: 0
+        };
+      }
+      summaryMap[warehouse][productCode].damaged += lot.damaged || 0;
+      summaryMap[warehouse][productCode].qtyOnHand += lot.qtyOnHand || 0;
+      summaryMap[warehouse][productCode].total += (lot.qtyOnHand || 0) + (lot.damaged || 0);
+    });
+    // Flatten to array for table
+    Object.entries(summaryMap).forEach(([warehouse, products]) => {
+      Object.entries(products).forEach(([productCode, info]) => {
+        summaryRows.push({
+          warehouse,
+          productCode,
+          productName: info.productName,
+          damaged: info.damaged,
+          qtyOnHand: info.qtyOnHand,
+          total: info.total
+        });
+      });
+    });
+  }
+
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -222,6 +259,7 @@ const StockReports = () => {
               <TabsTrigger value="low-stock">Low Stock</TabsTrigger>
               <TabsTrigger value="expiring-soon">Expiring Soon</TabsTrigger>
               <TabsTrigger value="damaged">Damaged</TabsTrigger>
+              <TabsTrigger value="summary">Summary</TabsTrigger>
             </TabsList>
 
             {/* All Stock Tab */}
@@ -297,6 +335,48 @@ const StockReports = () => {
                   totalPages={totalPages}
                   isDamaged
                 />
+              )}
+            </TabsContent>
+
+            {/* Summary Tab */}
+            <TabsContent value="summary">
+              {isLoading ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Code</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Damaged</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">qtyOnHand</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {summaryRows.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="text-center py-8 text-gray-400">No summary data found</td>
+                        </tr>
+                      ) : (
+                        summaryRows.map((row, idx) => (
+                          <tr key={row.warehouse + '-' + row.productCode + '-' + idx}>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.warehouse}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.productCode}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.productName}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.damaged}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.qtyOnHand}</td>
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.total}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </TabsContent>
           </Tabs>
