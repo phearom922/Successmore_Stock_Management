@@ -28,6 +28,8 @@ const Dashboard = () => {
     lowStockThreshold: 10
   });
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [lowStockLotCount, setLowStockLotCount] = useState(0);
+  const [expiringLotCount, setExpiringLotCount] = useState(0);
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : null;
@@ -175,9 +177,9 @@ const Dashboard = () => {
       });
 
       setRecentDamages(
-        (userRole !== 'admin' && user?.warehouse)
-          ? damagesRes.data.filter(damage => damage.lotId?.warehouse === user.warehouse).slice(0, 5)
-          : damagesRes.data.slice(0, 5)
+        Array.isArray(damagesRes.data) && damagesRes.data.length > 0
+          ? damagesRes.data.slice(0, 5)
+          : []
       );
       setTopProducts(summaryRows.slice(0, 5));
     } catch (error) {
@@ -273,69 +275,72 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <div className={`grid grid-cols-1 ${userRole === "admin" ? "lg:grid-cols-5" : "lg:grid-cols-4"} md:grid-cols-2  gap-6 mb-8`}>
               {/* Total Products */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="bg-blue-50 p-6 rounded-xl border border-blue-300 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Total Products</p>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalProducts}</p>
+                    <p className="text-sm font-medium text-blue-800">Total Products</p>
+                    <p className="text-3xl font-bold text-blue-800 mt-2">{stats.totalProducts}</p>
                   </div>
-                  <div className="p-3 rounded-full bg-blue-50 text-blue-600">
+                  <div className="p-3 rounded-full bg-blue-100 text-blue-600">
                     <FaBoxes size={24} />
                   </div>
                 </div>
               </div>
 
               {/* Total Warehouses */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Total Warehouses</p>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalWarehouses}</p>
+              {userRole === 'admin' && (
+                <div className="bg-green-50 p-6 rounded-xl border border-green-300 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-green-800">Total Warehouses</p>
+                      <p className="text-3xl font-bold text-green-800 mt-2">{stats.totalWarehouses}</p>
+                    </div>
+                    <div className="p-3 rounded-full bg-green-100 text-green-600">
+                      <FaWarehouse size={24} />
+                    </div>
                   </div>
-                  <div className="p-3 rounded-full bg-purple-50 text-purple-600">
-                    <FaWarehouse size={24} />
-                  </div>
-                </div>
-              </div>
+                </div>)}
 
               {/* Low Stock Alert */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="bg-yellow-50 p-6 rounded-xl  border border-yellow-300 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Low Stock Alert</p>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">{stats.lowStockAlerts}</p>
-                    <p className="text-xs text-gray-500 mt-1">Threshold: {settings.lowStockThreshold}</p>
+                    <p className="text-sm font-medium text-yellow-800">Low Stock Alert</p>
+                    <p className="text-3xl font-bold text-yellow-800 mt-2">{stats.lowStockAlerts}</p>
+                    <p className="text-xs text-yellow-800 mt-1">Threshold: {settings.lowStockThreshold}</p>
+                    <p className="text-xs text-yellow-800 mt-1">Lots: {lowStockLotCount}</p>
                   </div>
-                  <div className="p-3 rounded-full bg-yellow-50 text-yellow-600">
+                  <div className="p-3 rounded-full bg-yellow-100 text-yellow-600">
                     <FaExclamationTriangle size={24} />
                   </div>
                 </div>
               </div>
 
               {/* Expiring Soon */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="bg-red-50 p-6 rounded-xl  border border-red-300 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Expiring Soon</p>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">{stats.expiringSoon}</p>
-                    <p className="text-xs text-gray-500 mt-1">Within {settings.expirationWarningDays} days</p>
+                    <p className="text-sm font-medium text-red-800">Expiring Soon</p>
+                    <p className="text-3xl font-bold text-red-800 mt-2">{stats.expiringSoon}</p>
+                    <p className="text-xs text-red-800 mt-1">Within {settings.expirationWarningDays} days</p>
+                    <p className="text-xs text-red-800 mt-1">Lots: {expiringLotCount}</p>
                   </div>
-                  <div className="p-3 rounded-full bg-red-50 text-red-600">
+                  <div className="p-3 rounded-full bg-red-100 text-red-600">
                     <FaCalendarTimes size={24} />
                   </div>
                 </div>
               </div>
 
               {/* Total Lots */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="bg-green-50 p-6 rounded-xl  border border-green-300 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Total Lots</p>
-                    <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalLots}</p>
+                    <p className="text-sm font-medium text-green-800">Total Lots</p>
+                    <p className="text-3xl font-bold text-green-700 mt-2">{stats.totalLots}</p>
                   </div>
-                  <div className="p-3 rounded-full bg-green-50 text-green-600">
+                  <div className="p-3 rounded-full bg-green-100 text-green-600">
                     <FaLayerGroup size={24} />
                   </div>
                 </div>
@@ -359,7 +364,7 @@ const Dashboard = () => {
                     recentDamages.map((damage, index) => (
                       <div
                         key={index}
-                        className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg shadow-sm"
+                        className="flex justify-between items-center bg-red-50 border border-red-200 hover:bg-gray-100 px-4 py-3 rounded-lg"
                       >
                         {/* Left Side: Product and Lot */}
                         <div className="flex flex-col">
