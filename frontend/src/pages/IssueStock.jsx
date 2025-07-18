@@ -300,10 +300,10 @@ const IssueStock = () => {
                   disabled={user.role !== 'admin' || isLoading}
                 >
                   <Select.Trigger
-                    className={`${user.role === 'user' ? 'bg-gray-200 text-gray-500' : 'bg-white'} mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none hover:bg-gray-100 transition-colors duration-200`}
+                    className={`${user.role === 'user' ? 'bg-gray-200 text-gray-500' : 'bg-white'} mt-1 relative block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none hover:bg-gray-100 transition-colors duration-200`}
                   >
                     <Select.Value placeholder="Select warehouse" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-3  top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
@@ -318,11 +318,11 @@ const IssueStock = () => {
                           <Select.Item
                             key={w._id}
                             value={w._id}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
+                            className="px-3 py-2  text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
                             disabled={user.role !== 'admin' && w._id !== user.warehouse}
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                            <Select.ItemIndicator className="absolute right-2  inline-flex items-center">
                               <CheckIcon />
                             </Select.ItemIndicator>
                           </Select.Item>
@@ -462,13 +462,15 @@ const IssueStock = () => {
                   disabled={isLoading}
                 >
                   <Select.Trigger
-                    className="mt-1 block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                    className="mt-1 relative block w-full pl-3 pr-10  py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
                   >
                     <Select.Value placeholder="Select type" />
-                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-2  top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
+
+
                   <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
                     <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
                       <ChevronUpIcon />
@@ -483,7 +485,7 @@ const IssueStock = () => {
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
                           >
                             <Select.ItemText>{type}</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
+                            <Select.ItemIndicator className="absolute  right-2 inline-flex items-center">
                               <CheckIcon />
                             </Select.ItemIndicator>
                           </Select.Item>

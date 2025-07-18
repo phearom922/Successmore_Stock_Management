@@ -12,6 +12,8 @@ import StockTable from '../components/StockTable';
 import { FaSearch, FaTimes, FaDownload } from 'react-icons/fa';
 
 const StockReports = () => {
+  // Sorting for summary tab
+  const [summarySort, setSummarySort] = useState({ key: null, direction: 'ascending' });
   const [data, setData] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [selectedWarehouse, setSelectedWarehouse] = useState('all');
@@ -160,9 +162,8 @@ const StockReports = () => {
   const totalPages = Math.ceil(sortedData.length / itemsPerPage);
 
   // Summary data: group by warehouse + productCode
-  const summaryRows = [];
+  let summaryRows = [];
   if (data && data.length > 0) {
-    // { [warehouse]: { [productCode]: { productName, damaged, qtyOnHand, total } } }
     const summaryMap = {};
     data.forEach(lot => {
       const warehouse = lot.warehouse || 'N/A';
@@ -181,7 +182,6 @@ const StockReports = () => {
       summaryMap[warehouse][productCode].qtyOnHand += lot.qtyOnHand || 0;
       summaryMap[warehouse][productCode].total += (lot.qtyOnHand || 0) + (lot.damaged || 0);
     });
-    // Flatten to array for table
     Object.entries(summaryMap).forEach(([warehouse, products]) => {
       Object.entries(products).forEach(([productCode, info]) => {
         summaryRows.push({
@@ -194,6 +194,16 @@ const StockReports = () => {
         });
       });
     });
+    // Sort summaryRows if needed
+    if (summarySort.key) {
+      summaryRows.sort((a, b) => {
+        const aValue = a[summarySort.key];
+        const bValue = b[summarySort.key];
+        if (aValue < bValue) return summarySort.direction === 'ascending' ? -1 : 1;
+        if (aValue > bValue) return summarySort.direction === 'ascending' ? 1 : -1;
+        return 0;
+      });
+    }
   }
 
   const handlePageChange = (newPage) => {
@@ -362,16 +372,28 @@ const StockReports = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                <div className="overflow-x-auto rounded-md border">
+                  <table className="min-w-full divide-y divide-gray-200 ">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warehouse</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Code</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Damaged</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">qtyOnHand</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider cursor-pointer" onClick={() => {
+                          setSummarySort(s => ({ key: 'warehouse', direction: s.key === 'warehouse' && s.direction === 'ascending' ? 'descending' : 'ascending' }));
+                        }}>Warehouse {summarySort.key === 'warehouse' ? (summarySort.direction === 'ascending' ? '▲' : '▼') : ''}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider cursor-pointer" onClick={() => {
+                          setSummarySort(s => ({ key: 'productCode', direction: s.key === 'productCode' && s.direction === 'ascending' ? 'descending' : 'ascending' }));
+                        }}>Product Code {summarySort.key === 'productCode' ? (summarySort.direction === 'ascending' ? '▲' : '▼') : ''}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider cursor-pointer" onClick={() => {
+                          setSummarySort(s => ({ key: 'productName', direction: s.key === 'productName' && s.direction === 'ascending' ? 'descending' : 'ascending' }));
+                        }}>Product Name {summarySort.key === 'productName' ? (summarySort.direction === 'ascending' ? '▲' : '▼') : ''}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider cursor-pointer" onClick={() => {
+                          setSummarySort(s => ({ key: 'damaged', direction: s.key === 'damaged' && s.direction === 'ascending' ? 'descending' : 'ascending' }));
+                        }}>Damaged {summarySort.key === 'damaged' ? (summarySort.direction === 'ascending' ? '▲' : '▼') : ''}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider cursor-pointer" onClick={() => {
+                          setSummarySort(s => ({ key: 'qtyOnHand', direction: s.key === 'qtyOnHand' && s.direction === 'ascending' ? 'descending' : 'ascending' }));
+                        }}>qtyOnHand {summarySort.key === 'qtyOnHand' ? (summarySort.direction === 'ascending' ? '▲' : '▼') : ''}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider cursor-pointer" onClick={() => {
+                          setSummarySort(s => ({ key: 'total', direction: s.key === 'total' && s.direction === 'ascending' ? 'descending' : 'ascending' }));
+                        }}>Total {summarySort.key === 'total' ? (summarySort.direction === 'ascending' ? '▲' : '▼') : ''}</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -382,12 +404,12 @@ const StockReports = () => {
                       ) : (
                         summaryRows.map((row, idx) => (
                           <tr key={row.warehouse + '-' + row.productCode + '-' + idx}>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.warehouse}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.productCode}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.productName}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.damaged}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.qtyOnHand}</td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{row.total}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{row.warehouse}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{row.productCode}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{row.productName}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{row.damaged}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{row.qtyOnHand}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{row.total}</td>
                           </tr>
                         ))
                       )}
