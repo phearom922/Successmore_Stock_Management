@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaRegTrashAlt } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
 import { format } from 'date-fns';
 import {
   FaSearch,
@@ -277,23 +278,35 @@ const LotManagement = () => {
     }
   };
 
-  const handleDelete = async (lotId) => {
+  // Confirm modal state
+  const [confirmDeleteLot, setConfirmDeleteLot] = useState(null);
+
+  // Show confirm modal instead of delete directly
+  const handleDelete = (lotId) => {
     if (!isAdmin) return;
-    if (window.confirm('Are you sure you want to delete this lot?')) {
-      setIsLoading(true);
-      try {
-        await axios.delete(`http://localhost:3000/api/lot-management/${lotId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        toast.success('Lot deleted successfully');
-        fetchLots();
-        checkExpiringLots();
-      } catch (error) {
-        console.error('Error deleting lot:', error);
-        setSettingsError('Failed to delete lot');
-      } finally {
-        setIsLoading(false);
-      }
+    const lot = lots.find(l => l._id === lotId);
+    if (!lot) return;
+    setConfirmDeleteLot(lot);
+  };
+
+  // Confirm delete action (just show toast, not delete)
+  const confirmDelete = async () => {
+    if (!confirmDeleteLot) return;
+    setIsLoading(true);
+    let success = false;
+    try {
+      await axios.delete(`http://localhost:3000/api/lot-management/${confirmDeleteLot._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(`Lot ${confirmDeleteLot.lotCode} deleted successfully`);
+      success = true;
+    } catch (error) {
+      toast.error(`Failed to delete lot: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setConfirmDeleteLot(null); // Always close modal
+      fetchLots();
+      checkExpiringLots();
+      setIsLoading(false);
     }
   };
 
@@ -337,6 +350,39 @@ const LotManagement = () => {
       )}
 
       <div className="max-w-screen-2xl mx-auto">
+        {/* Confirm Delete Modal */}
+        {confirmDeleteLot && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgb(0,0,0)]/50 bg-opacity-50">
+            <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6 border border-red-200">
+
+              <div className="text-lg flex font-bold justify-between text-red-700 mb-4"><span>Confirm Delete Lot</span><span className='bg-red-50 border border-red-700 rounded-md px-3'>{confirmDeleteLot.lotCode}</span></div>
+
+              <div className="space-y-2 mb-4">
+                <div><span className="font-medium text-gray-800">Lot Code:</span> {confirmDeleteLot.lotCode}</div>
+                <div><span className="font-medium text-gray-800">Product:</span> {confirmDeleteLot.productId?.name || 'Unknown'}</div>
+                <div><span className="font-medium text-gray-800">Warehouse:</span> {warehouses.find(w => w._id === confirmDeleteLot.warehouse)?.name || 'N/A'}</div>
+                <div><span className="font-medium text-gray-800">Production Date:</span> {confirmDeleteLot.productionDate ? format(new Date(confirmDeleteLot.productionDate), 'dd/MM/yyyy') : 'N/A'}</div>
+                <div><span className="font-medium text-gray-800">Expiration Date:</span> {confirmDeleteLot.expDate ? format(new Date(confirmDeleteLot.expDate), 'dd/MM/yyyy') : 'N/A'}</div>
+                <div><span className="font-medium text-gray-800">qtyOnHand:</span> {confirmDeleteLot.qtyOnHand || 0}</div>
+                <div><span className="font-medium text-gray-800">Damaged:</span> {confirmDeleteLot.damaged || 0}</div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setConfirmDeleteLot(null)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Confirm Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
@@ -552,7 +598,7 @@ const LotManagement = () => {
                                   <button
                                     onClick={() => handleDelete(lot._id)}
                                     className="text-red-600 hover:text-red-900 p-1.5 bg-red-50 rounded border border-red-200 hover:border-red-300 cursor-pointer transition-colors"
-                                    disabled={isLoading || !isExpired(lot.expDate)}
+                                    disabled={isLoading || !(isExpired(lot.expDate) || lot.qtyOnHand === 0)}
                                     title="Delete"
                                   >
                                     <FaRegTrashAlt />
@@ -612,6 +658,7 @@ const LotManagement = () => {
           </div>
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 };

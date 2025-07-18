@@ -20,8 +20,8 @@ const StockTable = ({
   let columns = [
     { key: 'lotCode', label: 'Lot Code' },
     { key: 'productId.name', label: 'Product Name' },
-    { key: 'warehouse', label: 'Warehouse' },
     { key: 'productId.productCode', label: 'Product Code' },
+    { key: 'warehouse', label: 'Warehouse' },
   ];
   if (isAllStock) {
     columns.push(

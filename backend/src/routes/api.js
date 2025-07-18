@@ -1974,8 +1974,8 @@ router.get('/stock-reports/export', authMiddleware, async (req, res) => {
     const worksheetData = reportData.map(lot => ({
       'Lot Code': lot.lotCode || 'N/A',
       'Product Name': lot.productId?.name || 'N/A',
-      'Warehouse': lot.warehouse?.name || 'N/A', // ใช้ lot.warehouse.name
       'Product Code': lot.productId?.productCode || 'N/A',
+      'Warehouse': lot.warehouse?.name || 'N/A', // ใช้ lot.warehouse.name
       'qtyOnHand': lot.qtyOnHand || 0,
       'Damaged': lot.damaged || 0,
       'Expiration Date': lot.expDate ? format(new Date(lot.expDate), 'dd-MM-yyyy') : 'N/A'

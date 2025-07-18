@@ -546,7 +546,7 @@ const TransferOrder = () => {
                         <div className="flex flex-wrap gap-2 mb-4">
                           <button
                             type="button"
-                            className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                            className={`px-3 py-1 rounded-lg border cursor-pointer text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
                             onClick={() => setSelectedCategory('All')}
                           >
                             All Products
@@ -555,7 +555,7 @@ const TransferOrder = () => {
                             <button
                               key={category._id}
                               type="button"
-                              className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
+                              className={`px-3 py-1 rounded-lg cursor-pointer border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
                               onClick={() => setSelectedCategory(category._id.toString())}
                             >
                               {category.name}
@@ -641,7 +641,7 @@ const TransferOrder = () => {
                               setCurrentItem(prev => ({ ...prev, lotId: '' }));
                             }
                           }}
-                          className="h-4 w-4"
+                          className="h-5 w-5 cursor-pointer"
                         />
                         <Label htmlFor="manualSelection">Manual Lot Selection</Label>
                         {!isManualSelection && <Label>| Selected Lot (FEFO)</Label>}
