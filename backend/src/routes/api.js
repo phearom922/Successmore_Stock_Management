@@ -409,14 +409,14 @@ router.get('/products', authMiddleware, async (req, res) => {
       products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
 
       // Admin สามารถดู Product ทั้งหมดได้ 
-      // } else if (req.user.role !== 'admin' && req.user.warehouse) { // เปลี่ยนจาก assignedWarehouse
-      //   const warehouseId = new mongoose.Types.ObjectId(req.user.warehouse);
-      //   const lots = await Lot.find({ warehouse: warehouseId }).select('productId').lean();
-      //   const productIds = [...new Set(lots.map(l => l.productId?.toString()).filter(Boolean))];
-      //   if (productIds.length === 0) {
-      //     return res.status(200).json([]); // ไม่มี Product ใน Warehouse นี้
-      //   }
-      //   products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
+      } else if (req.user.role !== 'admin' && req.user.warehouse) { // เปลี่ยนจาก assignedWarehouse
+        const warehouseId = new mongoose.Types.ObjectId(req.user.warehouse);
+        const lots = await Lot.find({ warehouse: warehouseId }).select('productId').lean();
+        const productIds = [...new Set(lots.map(l => l.productId?.toString()).filter(Boolean))];
+        if (productIds.length === 0) {
+          return res.status(200).json([]); // ไม่มี Product ใน Warehouse นี้
+        }
+        products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name description').lean();
 
 
     } else {

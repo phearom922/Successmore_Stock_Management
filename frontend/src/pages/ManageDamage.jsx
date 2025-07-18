@@ -68,7 +68,9 @@ const ManageDamage = () => {
   const filteredHistory = damageHistory.filter(record => {
     const startDateMatch = !filters.startDate || new Date(record.timestamp) >= filters.startDate;
     const endDateMatch = !filters.endDate || new Date(record.timestamp) <= filters.endDate;
-    const warehouseMatch = filters.warehouse === 'all' || record.lotId?.warehouseId?._id?.toString() === filters.warehouse;
+    // Fix warehouse filter: support both warehouse and warehouseId
+    const warehouseId = record.lotId?.warehouse?._id || record.lotId?.warehouseId?._id;
+    const warehouseMatch = filters.warehouse === 'all' || (warehouseId && warehouseId.toString() === filters.warehouse);
     const userMatch = !filters.user || (record.userId?.username?.toLowerCase()?.includes(filters.user.toLowerCase()) || false);
     const transactionMatch = !filters.transaction || record.transactionNumber?.toLowerCase()?.includes(filters.transaction.toLowerCase());
     return startDateMatch && endDateMatch && warehouseMatch && userMatch && transactionMatch;
