@@ -58,6 +58,7 @@ const StockReports = () => {
       const warehouseVal = customWarehouse !== null ? customWarehouse : selectedWarehouse;
       const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseId : warehouseVal; // ใช้ _id
       console.log('Fetching data with warehouse:', effectiveWarehouse); // Debug
+      // Send only 'search' param, let backend handle matching Lot Code or Product Code
       const { data } = await axios.get('http://localhost:3000/api/stock-reports', {
         headers: { Authorization: `Bearer ${token}` },
         params: { type: tabType, warehouse: effectiveWarehouse, search }
@@ -195,7 +196,7 @@ const StockReports = () => {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder="Search by Lot Code or Product Code..."
                 onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
               />
               <Button variant="outline" onClick={handleSearch}>

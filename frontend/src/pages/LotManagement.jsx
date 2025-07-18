@@ -572,16 +572,16 @@ const LotManagement = () => {
                             <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                               {lot.expDate ? format(new Date(lot.expDate), 'dd/MM/yyyy') : 'N/A'}
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">
                               {lot.totalQty || 0}
                             </td>
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-red-500">
 
                               {lot.damaged || 0}
 
                             </td>
 
-                            <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td className="px-4 py-4 whitespace-nowrap text-sm text-green-500 font-semibold">
                               {lot.qtyOnHand || 0}
                             </td>
 

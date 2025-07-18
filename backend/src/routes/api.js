@@ -1818,14 +1818,11 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
 
     const { type, warehouse, search } = req.query;
     const user = req.user;
-    const query = {};
+    let matchStage = {};
 
     // Admin: ดูได้ทุกคลัง, User: ดูได้เฉพาะคลังตัวเองเท่านั้น
     if (user.role !== 'admin') {
-      let assignedWarehouse = user.warehouse; // ใช้ user.warehouse
-      logger.debug('User warehouse from token:', { assignedWarehouse, type: typeof assignedWarehouse });
-
-      // ตรวจสอบและแปลง assignedWarehouse ให้เป็น _id
+      let assignedWarehouse = user.warehouse;
       if (!assignedWarehouse) {
         logger.warn('User not assigned to a warehouse', { userId: user._id });
         return res.status(400).json({ message: 'User must be assigned to a warehouse' });
@@ -1841,44 +1838,68 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         logger.warn('Invalid warehouse format', { assignedWarehouse });
         return res.status(400).json({ message: 'User assigned warehouse is in an invalid format' });
       }
-
-      const warehouseIdObj = new mongoose.Types.ObjectId(warehouseId);
-      const warehouseDoc = await Warehouse.findById(warehouseIdObj);
-      if (!warehouseDoc) {
-        logger.warn('Assigned warehouse not found', { warehouseId: warehouseId });
-        return res.status(400).json({ message: 'Assigned warehouse not found' });
-      }
-      query.warehouse = warehouseIdObj;
-      logger.debug('User warehouse query set', { warehouseId });
+      matchStage.warehouse = new mongoose.Types.ObjectId(warehouseId);
     } else if (warehouse && warehouse !== 'all') {
-      const warehouseId = new mongoose.Types.ObjectId(warehouse);
-      const warehouseDoc = await Warehouse.findById(warehouseId);
-      if (!warehouseDoc) {
-        logger.warn('Requested warehouse not found', { warehouseId: warehouse });
-        return res.status(400).json({ message: 'Warehouse not found' });
-      }
-      query.warehouse = warehouseId;
-    }
-
-    if (search) {
-      query.$or = [
-        { lotCode: { $regex: search, $options: 'i' } },
-        { 'productId.productCode': { $regex: search, $options: 'i' } },
-        { 'productId.name': { $regex: search, $options: 'i' } }
-      ];
+      matchStage.warehouse = new mongoose.Types.ObjectId(warehouse);
     }
 
     const setting = await Setting.findOne();
     const warningDays = setting ? setting.expirationWarningDays : 15;
     const lowStockThreshold = setting ? setting.lowStockThreshold : 10;
 
-    const lots = await Lot.find(query)
-      .populate('warehouse', 'name')
-      .populate('productId', 'productCode name')
-      .lean();
+    // Use aggregate for search
+    let lots = [];
+    if (search) {
+      const pipeline = [
+        { $match: matchStage },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'productId',
+            foreignField: '_id',
+            as: 'productObj'
+          }
+        },
+        { $unwind: '$productObj' },
+        {
+          $lookup: {
+            from: 'warehouses',
+            localField: 'warehouse',
+            foreignField: '_id',
+            as: 'warehouseObj'
+          }
+        },
+        { $unwind: { path: '$warehouseObj', preserveNullAndEmptyArrays: true } },
+        {
+          $match: {
+            $or: [
+              { lotCode: { $regex: search, $options: 'i' } },
+              { 'productObj.productCode': { $regex: search, $options: 'i' } },
+              { 'productObj.name': { $regex: search, $options: 'i' } }
+            ]
+          }
+        }
+      ];
+      lots = await Lot.aggregate(pipeline);
+      // Map productObj and warehouseObj to productId and warehouse for compatibility
+      lots = lots.map(lot => ({
+        ...lot,
+        productId: lot.productObj,
+        warehouse: lot.warehouseObj ? lot.warehouseObj.name : null
+      }));
+    } else {
+      lots = await Lot.find(matchStage)
+        .populate('warehouse', 'name')
+        .populate('productId', 'productCode name')
+        .lean();
+      lots = lots.map(lot => ({
+        ...lot,
+        warehouse: lot.warehouse ? lot.warehouse.name : null
+      }));
+    }
 
     if (lots.length === 0) {
-      logger.warn('No lots found for the query', { query });
+      logger.warn('No lots found for the query', { matchStage, search });
     }
 
     let reportData = [];
@@ -1904,12 +1925,6 @@ router.get('/stock-reports', authMiddleware, async (req, res) => {
         reportData = lots;
         break;
     }
-
-    // แปลง warehouse object กลับเป็นชื่อสำหรับ response
-    reportData = reportData.map(lot => ({
-      ...lot,
-      warehouse: lot.warehouse ? lot.warehouse.name : null
-    }));
 
     logger.info('Stock report data:', { count: reportData.length, sample: reportData.slice(0, 2) });
     res.json({ data: reportData, warningDays, lowStockThreshold });
