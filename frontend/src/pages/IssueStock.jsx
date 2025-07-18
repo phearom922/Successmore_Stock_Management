@@ -161,7 +161,7 @@ const IssueStock = () => {
 
     setAddedItems(prevItems => [...prevItems, ...selectedLots]);
     setSelectedProduct('');
-    setCurrentItem({ lotId: '', quantity: '', transactionType: 'Sale' });
+    setCurrentItem(prev => ({ ...prev, lotId: '', quantity: '' })); // ไม่รีเซ็ต transactionType
     fetchLots(''); // รีเซ็ต lots
   };
 
