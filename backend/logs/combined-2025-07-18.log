@@ -4606,3 +4606,387 @@ JsonWebTokenError: jwt malformed
 2025-07-18 13:20:11 [info]: Received GET request to /api/notifications
 2025-07-18 13:20:41 [info]: Received GET request to /api/notifications
 2025-07-18 13:21:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:21:39 [info]: Logger initialized successfully
+2025-07-18 13:21:39 [info]: Server running on port 3000
+2025-07-18 13:21:39 [info]: Connected to MongoDB
+2025-07-18 13:21:50 [info]: Received GET request to /api/notifications
+2025-07-18 13:21:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:21:53 [info]: Received GET request to /api/warehouses
+2025-07-18 13:21:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:21:53 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:21:53 [info]: Fetching stock reports
+2025-07-18 13:21:53 [info]: Received GET request to /api/warehouses
+2025-07-18 13:21:53 [info]: Stock report data:
+2025-07-18 13:21:53 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:21:53 [info]: Fetching stock reports
+2025-07-18 13:21:53 [info]: Stock report data:
+2025-07-18 13:21:59 [info]: Received GET request to /api/stock-reports?type=damaged&warehouse=all&search=
+2025-07-18 13:21:59 [info]: Fetching stock reports
+2025-07-18 13:21:59 [info]: Stock report data:
+2025-07-18 13:22:02 [info]: Received GET request to /api/stock-reports?type=expiring-soon&warehouse=all&search=
+2025-07-18 13:22:02 [info]: Fetching stock reports
+2025-07-18 13:22:02 [info]: Stock report data:
+2025-07-18 13:22:02 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-18 13:22:02 [info]: Fetching stock reports
+2025-07-18 13:22:02 [info]: Stock report data:
+2025-07-18 13:22:03 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:22:03 [info]: Fetching stock reports
+2025-07-18 13:22:03 [info]: Stock report data:
+2025-07-18 13:22:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:22:05 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:22:05 [info]: Fetching stock reports
+2025-07-18 13:22:05 [info]: Stock report data:
+2025-07-18 13:22:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:22:42 [info]: Received GET request to /api/stock-reports?type=damaged&warehouse=all&search=
+2025-07-18 13:22:42 [info]: Fetching stock reports
+2025-07-18 13:22:42 [info]: Stock report data:
+2025-07-18 13:22:43 [info]: Received GET request to /api/stock-reports?type=expiring-soon&warehouse=all&search=
+2025-07-18 13:22:43 [info]: Fetching stock reports
+2025-07-18 13:22:43 [info]: Stock report data:
+2025-07-18 13:22:44 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-18 13:22:44 [info]: Fetching stock reports
+2025-07-18 13:22:44 [info]: Stock report data:
+2025-07-18 13:22:44 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:22:44 [info]: Fetching stock reports
+2025-07-18 13:22:44 [info]: Stock report data:
+2025-07-18 13:22:47 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-18 13:22:47 [info]: Fetching stock reports
+2025-07-18 13:22:47 [info]: Stock report data:
+2025-07-18 13:22:48 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:22:48 [info]: Fetching stock reports
+2025-07-18 13:22:48 [info]: Stock report data:
+2025-07-18 13:22:49 [info]: Received GET request to /api/stock-reports?type=expiring-soon&warehouse=all&search=
+2025-07-18 13:22:49 [info]: Fetching stock reports
+2025-07-18 13:22:49 [info]: Stock report data:
+2025-07-18 13:22:50 [info]: Received GET request to /api/stock-reports?type=damaged&warehouse=all&search=
+2025-07-18 13:22:50 [info]: Fetching stock reports
+2025-07-18 13:22:50 [info]: Stock report data:
+2025-07-18 13:22:51 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-18 13:22:51 [info]: Fetching stock reports
+2025-07-18 13:22:51 [info]: Stock report data:
+2025-07-18 13:22:51 [info]: Received GET request to /api/stock-reports?type=expiring-soon&warehouse=all&search=
+2025-07-18 13:22:51 [info]: Fetching stock reports
+2025-07-18 13:22:51 [info]: Stock report data:
+2025-07-18 13:22:52 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-18 13:22:52 [info]: Fetching stock reports
+2025-07-18 13:22:52 [info]: Stock report data:
+2025-07-18 13:22:52 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:22:52 [info]: Fetching stock reports
+2025-07-18 13:22:52 [info]: Stock report data:
+2025-07-18 13:22:53 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:22:53 [info]: Fetching stock reports
+2025-07-18 13:22:53 [info]: Stock report data:
+2025-07-18 13:22:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:22:56 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:22:56 [info]: Fetching stock reports
+2025-07-18 13:22:56 [info]: Stock report data:
+2025-07-18 13:22:59 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:22:59 [info]: Fetching stock reports
+2025-07-18 13:22:59 [info]: Stock report data:
+2025-07-18 13:23:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:23:07 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:23:07 [info]: Fetching stock reports
+2025-07-18 13:23:07 [info]: Stock report data:
+2025-07-18 13:23:10 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=1004
+2025-07-18 13:23:10 [info]: Fetching stock reports
+2025-07-18 13:23:10 [info]: Stock report data:
+2025-07-18 13:23:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:23:29 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=1004
+2025-07-18 13:23:29 [info]: Fetching stock reports
+2025-07-18 13:23:29 [info]: Stock report data:
+2025-07-18 13:23:43 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=1004
+2025-07-18 13:23:43 [info]: Fetching stock reports
+2025-07-18 13:23:43 [info]: Stock report data:
+2025-07-18 13:23:50 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=1004
+2025-07-18 13:23:50 [info]: Fetching stock reports
+2025-07-18 13:23:50 [info]: Stock report data:
+2025-07-18 13:23:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:23:58 [info]: Received GET request to /api/warehouses
+2025-07-18 13:23:58 [info]: Received GET request to /api/receive-history?startDate=18-07-2025&endDate=18-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-18 13:23:58 [info]: Received GET request to /api/warehouses
+2025-07-18 13:23:59 [info]: Received GET request to /api/receive-history?startDate=18-07-2025&endDate=18-07-2025&warehouse=&searchQuery=&userQuery=&page=1&limit=25
+2025-07-18 13:23:59 [info]: Received GET request to /api/warehouses
+2025-07-18 13:23:59 [info]: Received GET request to /api/issue-history?startDate=2025-07-17T17:00:00.000Z&endDate=2025-07-18T16:59:59.999Z
+2025-07-18 13:23:59 [info]: Received GET request to /api/warehouses
+2025-07-18 13:23:59 [info]: Received GET request to /api/issue-history?startDate=2025-07-17T17:00:00.000Z&endDate=2025-07-18T16:59:59.999Z
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68752294b042512b3efe0cdd
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/6870c922fb52dc3a6ce88482
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68752564b042512b3efe1191
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68791b9b247899f954a3e382
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/687631991628c7f9e4d7db75
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/6879cc649b79f49003746b79
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68726d706730d17c8b3226f2
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/6875239fb042512b3efe0f4a
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68752294b042512b3efe0cdd
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/6870c922fb52dc3a6ce88482
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68791b9b247899f954a3e382
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/687631991628c7f9e4d7db75
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/6879cc649b79f49003746b79
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68752564b042512b3efe1191
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68726d706730d17c8b3226f2
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/6875239fb042512b3efe0f4a
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68752294b042512b3efe0cdd
+2025-07-18 13:23:59 [info]: Received GET request to /api/lots/68752294b042512b3efe0cdd
+2025-07-18 13:24:01 [info]: Received GET request to /api/warehouses
+2025-07-18 13:24:01 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:24:01 [info]: Fetching stock reports
+2025-07-18 13:24:01 [info]: Received GET request to /api/warehouses
+2025-07-18 13:24:01 [info]: Stock report data:
+2025-07-18 13:24:01 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:24:01 [info]: Fetching stock reports
+2025-07-18 13:24:01 [info]: Stock report data:
+2025-07-18 13:24:02 [info]: Received GET request to /api/suppliers
+2025-07-18 13:24:02 [info]: Received GET request to /api/suppliers
+2025-07-18 13:24:03 [info]: Received GET request to /api/warehouses
+2025-07-18 13:24:03 [info]: Received GET request to /api/users
+2025-07-18 13:24:03 [info]: Fetching users for:
+2025-07-18 13:24:03 [info]: Received GET request to /api/warehouses
+2025-07-18 13:24:03 [info]: Received GET request to /api/users
+2025-07-18 13:24:03 [info]: Fetching users for:
+2025-07-18 13:24:03 [info]: Received GET request to /api/warehouses
+2025-07-18 13:24:03 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:24:03 [info]: Fetching stock reports
+2025-07-18 13:24:03 [info]: Received GET request to /api/warehouses
+2025-07-18 13:24:03 [info]: Stock report data:
+2025-07-18 13:24:03 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:24:03 [info]: Fetching stock reports
+2025-07-18 13:24:03 [info]: Stock report data:
+2025-07-18 13:24:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:24:08 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:24:08 [info]: Fetching stock reports
+2025-07-18 13:24:08 [info]: Stock report data:
+2025-07-18 13:24:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:24:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:25:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:25:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:25:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:26:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:26:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:26:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:27:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:27:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:27:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:28:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:28:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:28:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:29:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:29:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:29:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:30:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:30:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:30:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:31:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:31:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:31:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:32:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:32:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:32:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:33:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:33:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:33:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:34:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:34:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:34:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:35:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:35:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:35:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:36:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:36:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:36:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:37:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:37:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:37:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:38:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:38:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:38:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:39:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:39:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:39:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:40:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:40:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:40:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:41:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:41:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:41:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:42:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:42:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:42:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:43:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:43:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:43:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:44:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:44:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:44:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:45:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:45:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:45:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:46:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:46:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:46:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:47:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:47:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:47:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:48:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:48:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:48:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:49:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:49:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:49:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:50:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:50:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:50:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:51:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:51:16 [info]: Received GET request to /api/stock-reports/export?type=summary&warehouse=all&search=
+2025-07-18 13:51:16 [info]: Exporting stock reports
+2025-07-18 13:51:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:51:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:51:53 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-18 13:52:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:52:03 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-18 13:52:23 [info]: Received GET request to /api/notifications
+2025-07-18 13:52:23 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-18 13:52:53 [info]: Received GET request to /api/notifications
+2025-07-18 13:52:53 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-18 13:52:56 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:52:56 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-18 13:53:02 [info]: Received POST request to /api/login
+2025-07-18 13:53:02 [info]: Login attempt:
+2025-07-18 13:53:02 [info]: Login successful:
+2025-07-18 13:53:02 [info]: Received GET request to /api/notifications
+2025-07-18 13:53:02 [info]: Received GET request to /api/products
+2025-07-18 13:53:02 [info]: Received GET request to /api/lots
+2025-07-18 13:53:02 [info]: Received GET request to /api/warehouses
+2025-07-18 13:53:02 [info]: Received GET request to /api/notifications
+2025-07-18 13:53:02 [info]: Received GET request to /api/warehouses
+2025-07-18 13:53:02 [info]: Received GET request to /api/products
+2025-07-18 13:53:02 [info]: Received GET request to /api/lots
+2025-07-18 13:53:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:53:04 [info]: Received GET request to /api/warehouses
+2025-07-18 13:53:04 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:53:04 [info]: Fetching stock reports
+2025-07-18 13:53:04 [info]: Received GET request to /api/warehouses
+2025-07-18 13:53:04 [info]: Stock report data:
+2025-07-18 13:53:04 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:53:04 [info]: Fetching stock reports
+2025-07-18 13:53:04 [info]: Stock report data:
+2025-07-18 13:53:06 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:53:06 [info]: Fetching stock reports
+2025-07-18 13:53:06 [info]: Stock report data:
+2025-07-18 13:53:07 [info]: Received GET request to /api/stock-reports/export?type=summary&warehouse=all&search=
+2025-07-18 13:53:07 [info]: Exporting stock reports
+2025-07-18 13:53:32 [info]: Received GET request to /api/notifications
+2025-07-18 13:53:50 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:53:50 [info]: Fetching stock reports
+2025-07-18 13:53:50 [info]: Stock report data:
+2025-07-18 13:54:02 [info]: Received GET request to /api/notifications
+2025-07-18 13:54:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:54:32 [info]: Received GET request to /api/notifications
+2025-07-18 13:55:02 [info]: Received GET request to /api/notifications
+2025-07-18 13:55:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:55:12 [info]: Received GET request to /api/notifications
+2025-07-18 13:55:12 [info]: Received GET request to /api/notifications
+2025-07-18 13:55:12 [info]: Received GET request to /api/warehouses
+2025-07-18 13:55:12 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:55:12 [info]: Fetching stock reports
+2025-07-18 13:55:12 [info]: Received GET request to /api/warehouses
+2025-07-18 13:55:12 [info]: Stock report data:
+2025-07-18 13:55:12 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:55:12 [info]: Fetching stock reports
+2025-07-18 13:55:12 [info]: Stock report data:
+2025-07-18 13:55:15 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:55:15 [info]: Fetching stock reports
+2025-07-18 13:55:15 [info]: Stock report data:
+2025-07-18 13:55:22 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:55:22 [info]: Fetching stock reports
+2025-07-18 13:55:22 [info]: Stock report data:
+2025-07-18 13:55:43 [info]: Received GET request to /api/notifications
+2025-07-18 13:56:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:56:05 [info]: Received GET request to /api/stock-reports?type=low-stock&warehouse=all&search=
+2025-07-18 13:56:05 [info]: Fetching stock reports
+2025-07-18 13:56:05 [info]: Stock report data:
+2025-07-18 13:56:06 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:56:06 [info]: Fetching stock reports
+2025-07-18 13:56:06 [info]: Stock report data:
+2025-07-18 13:56:12 [info]: Received GET request to /api/stock-reports/export?type=all-stock&warehouse=all&search=
+2025-07-18 13:56:12 [info]: Exporting stock reports
+2025-07-18 13:56:12 [info]: Received GET request to /api/notifications
+2025-07-18 13:56:38 [info]: Received GET request to /api/stock-reports?type=summary&warehouse=all&search=
+2025-07-18 13:56:38 [info]: Fetching stock reports
+2025-07-18 13:56:38 [info]: Stock report data:
+2025-07-18 13:56:40 [info]: Received GET request to /api/stock-reports/export?type=summary&warehouse=all&search=
+2025-07-18 13:56:40 [info]: Exporting stock reports
+2025-07-18 13:56:42 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:13 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:43 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:47 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:48 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:48 [info]: Received GET request to /api/warehouses
+2025-07-18 13:57:48 [info]: Received GET request to /api/notifications
+2025-07-18 13:57:48 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:57:48 [info]: Fetching stock reports
+2025-07-18 13:57:48 [info]: Received GET request to /api/warehouses
+2025-07-18 13:57:48 [info]: Stock report data:
+2025-07-18 13:57:48 [info]: Received GET request to /api/stock-reports?type=all-stock&warehouse=all&search=
+2025-07-18 13:57:48 [info]: Fetching stock reports
+2025-07-18 13:57:49 [info]: Stock report data:
+2025-07-18 13:58:13 [info]: Received GET request to /api/notifications
+2025-07-18 13:58:19 [info]: Received GET request to /api/notifications
+2025-07-18 13:58:49 [info]: Received GET request to /api/notifications
+2025-07-18 13:59:03 [info]: Received GET request to /api/notifications
+2025-07-18 13:59:19 [info]: Received GET request to /api/notifications

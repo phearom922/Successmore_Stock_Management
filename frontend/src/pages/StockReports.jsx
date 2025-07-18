@@ -109,19 +109,36 @@ const StockReports = () => {
 
   const handleExport = async (type) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/stock-reports/export', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { type, warehouse: selectedWarehouse, search: searchQuery },
-        responseType: 'blob'
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${type}-report-${new Date().toISOString().split('T')[0]}.xlsx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      if (type === 'summary') {
+        // Export summaryRows as Excel
+        const xlsx = await import('xlsx');
+        const worksheet = xlsx.utils.json_to_sheet(summaryRows);
+        const workbook = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Summary');
+        const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `summary-report-${new Date().toISOString().split('T')[0]}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:3000/api/stock-reports/export', {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { type, warehouse: selectedWarehouse, search: searchQuery },
+          responseType: 'blob'
+        });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${type}-report-${new Date().toISOString().split('T')[0]}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
     } catch (error) {
       console.error('Error exporting data:', error);
       toast.error('Failed to export data');
@@ -254,7 +271,7 @@ const StockReports = () => {
             }}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="all-stock">All Stock</TabsTrigger>
               <TabsTrigger value="low-stock">Low Stock</TabsTrigger>
               <TabsTrigger value="expiring-soon">Expiring Soon</TabsTrigger>
