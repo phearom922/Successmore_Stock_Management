@@ -171,6 +171,7 @@ const AdjustStock = () => {
       console.error('Adjust stock error:', error);
     } finally {
       setIsLoading(false);
+      toast.success(response.data.message);
     }
   };
 
@@ -746,10 +747,9 @@ const AdjustStock = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-
-          <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
         </div>
       )}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

@@ -53,12 +53,12 @@ function App() {
       const exp = payload.exp * 1000; // Convert to milliseconds
       if (Date.now() >= exp) {
         localStorage.removeItem('token');
-        toast.error('Session expired, please login again');
+        // toast.error('Session expired, please login again');
         navigate('/login');
       }
     } catch (error) {
       localStorage.removeItem('token');
-      toast.error('Invalid token, please login again');
+      // toast.error('Invalid token, please login again');
       navigate('/login');
     }
   }, [token, navigate]);

@@ -1,6 +1,8 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 import App from './App';
 import Dashboard from './pages/Dashboard';
@@ -20,96 +22,221 @@ import IssueHistory from './pages/IssueHistory';
 import TransferOrder from './pages/TransferOrder';
 import AdjustStock from './pages/AdjustStock';
 
+// Initial Loading Component
+const InitialLoading = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <p className="mt-4 text-gray-600">Loading application...</p>
+    </div>
+  </div>
+);
 
-// Component เพื่อแสดง Toast เมื่อ Unauthorized
+// UnauthorizedToast Component
 const UnauthorizedToast = () => {
   const location = useLocation();
   const state = location.state;
 
   useEffect(() => {
-    if (state && state.message === 'Unauthorized access') {
-      toast.error(state.message);
+    if (state?.message) {
+      toast[state.type || 'error'](state.message, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   }, [state]);
 
   return null;
 };
 
-const ProtectedRoute = ({ children, requiredRoles = [], requiredPermissions = [] }) => {
-  const token = localStorage.getItem('token');
-  if (!token) return <Navigate to="/login" />;
+// AuthChecker Component
+const AuthChecker = ({ children, requiredRoles = [], requiredPermissions = [] }) => {
+  const [authState, setAuthState] = useState({
+    loading: true,
+    isAuthorized: false,
+    redirect: null
+  });
 
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    if (payload.exp * 1000 < Date.now()) {
-      localStorage.removeItem('token');
-      return <Navigate to="/login" />;
-    }
-    const userRole = payload.role;
-    const userPermissions = payload.permissions || [];
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setAuthState({
+            loading: false,
+            isAuthorized: false,
+            redirect: <Navigate to="/login" replace state={{ 
+              message: 'Please login to continue',
+              type: 'info'
+            }} />
+          });
+          return;
+        }
 
-    // ตรวจสอบ Permissions ก่อน Role
-    if (requiredPermissions.length > 0) {
-      const hasPermission = requiredPermissions.every(perm => {
-        const featurePerm = userPermissions.find(p => p.feature === perm.feature);
-        if (!featurePerm) return false;
-        // ถ้าไม่ระบุ permissions หรือเป็น Array ว่าง ให้ยอมรับถ้ามีฟีเจอร์นั้น
-        if (!perm.permissions || perm.permissions.length === 0) return true;
-        return perm.permissions.every(p => featurePerm.permissions.includes(p));
-      });
-      if (!hasPermission) {
-        return <Navigate to="/" replace state={{ message: 'Unauthorized access' }} />;
+        // Decode token without verification (for demo)
+        // In production, you should verify the token with your backend
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        
+        // Check token expiration
+        if (payload.exp * 1000 < Date.now()) {
+          localStorage.removeItem('token');
+          setAuthState({
+            loading: false,
+            isAuthorized: false,
+            redirect: <Navigate to="/login" replace state={{ 
+              message: 'Session expired. Please login again.',
+              type: 'warning'
+            }} />
+          });
+          return;
+        }
+
+        const userRole = payload.role;
+        const userPermissions = payload.permissions || [];
+
+        // Check Permissions
+        if (requiredPermissions.length > 0) {
+          const hasPermission = requiredPermissions.every(perm => {
+            const featurePerm = userPermissions.find(p => p.feature === perm.feature);
+            if (!featurePerm) return false;
+            if (!perm.permissions || perm.permissions.length === 0) return true;
+            return perm.permissions.every(p => featurePerm.permissions.includes(p));
+          });
+          
+          if (!hasPermission) {
+            setAuthState({
+              loading: false,
+              isAuthorized: false,
+              redirect: <Navigate to="/" replace state={{ 
+                message: 'You don\'t have permission to access this page',
+                type: 'error'
+              }} />
+            });
+            return;
+          }
+        }
+
+        // Check Roles
+        if (requiredRoles.length > 0 && !requiredRoles.includes(userRole)) {
+          setAuthState({
+            loading: false,
+            isAuthorized: false,
+            redirect: <Navigate to="/" replace state={{ 
+              message: 'Access denied. Insufficient privileges.',
+              type: 'error'
+            }} />
+          });
+          return;
+        }
+
+        // All checks passed
+        setAuthState({
+          loading: false,
+          isAuthorized: true,
+          redirect: null
+        });
+
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        localStorage.removeItem('token');
+        setAuthState({
+          loading: false,
+          isAuthorized: false,
+          redirect: <Navigate to="/login" replace state={{ 
+            message: 'Invalid session. Please login again.',
+            type: 'error'
+          }} />
+        });
       }
-    }
+    };
 
-    // ตรวจสอบ Role เฉพาะกรณีที่ต้องการ Role เฉพาะ (เช่น admin)
-    if (requiredRoles.length > 0 && !requiredRoles.includes(userRole)) {
-      return <Navigate to="/" replace state={{ message: 'Unauthorized access' }} />;
-    }
+    checkAuth();
+  }, [requiredRoles, requiredPermissions]);
 
+  if (authState.loading) {
     return (
-      <>
-        <UnauthorizedToast />
-        {children}
-      </>
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-100/50 z-50">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+          <p className="mt-4 text-gray-600">Verifying access...</p>
+        </div>
+      </div>
     );
-  } catch {
-    localStorage.removeItem('token');
-    return <Navigate to="/login" />;
   }
+
+  if (authState.redirect) return authState.redirect;
+
+  return authState.isAuthorized ? (
+    <>
+      <UnauthorizedToast />
+      {children}
+    </>
+  ) : null;
 };
 
+// ErrorBoundary Component
 const ErrorBoundary = () => (
-  <div className="p-6">
-    <h2 className="text-xl font-bold mb-4">Error</h2>
-    <p>Something went wrong. Please try again.</p>
+  <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-xl font-bold mb-4 text-red-600">Error</h2>
+      <p className="text-gray-600">Something went wrong. Please try again or contact support.</p>
+    </div>
   </div>
 );
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+// AppWrapper Component to handle initial loading
+const AppWrapper = () => {
+  const [appLoading, setAppLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate initial app loading
+    const timer = setTimeout(() => {
+      setAppLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (appLoading) {
+    return <InitialLoading />;
+  }
+
+  return (
     <BrowserRouter>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<ProtectedRoute requiredRoles={['admin', 'user']}><Dashboard /></ProtectedRoute>} />
-          <Route path="/users" element={<ProtectedRoute requiredRoles={['admin']}><Users /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute requiredRoles={['admin']}><Settings /></ProtectedRoute>} />       
-          <Route path="/categories" element={<ProtectedRoute requiredPermissions={[{ feature: 'category', permissions: ['Show'] }]}><Categories /></ProtectedRoute>} />
-          <Route path="/products" element={<ProtectedRoute requiredPermissions={[{ feature: 'products', permissions: ['Show'] }]}><Products /></ProtectedRoute>} />
-          <Route path="/warehouses" element={<ProtectedRoute requiredRoles={['admin']}><Warehouses /></ProtectedRoute>} />
-          <Route path="/receive-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><ReceiveHistory /></ProtectedRoute>} />
-          <Route path="/lot-management" element={<ProtectedRoute requiredPermissions={[{ feature: 'lotManagement', permissions: ['Show'] }]}><LotManagement /></ProtectedRoute>} />
-          <Route path="/manage-damage" element={<ProtectedRoute requiredPermissions={[{ feature: 'manageDamage', permissions: ['Show'] }]}><ManageDamage /></ProtectedRoute>} />
-          <Route path="/stock-reports" element={<ProtectedRoute requiredRoles={['admin', 'user']}><StockReports /></ProtectedRoute>} />
-          <Route path="/suppliers" element={<ProtectedRoute requiredRoles={['admin', 'user']}><Suppliers /></ProtectedRoute>} />
-          <Route path="/issue-stock" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueStock /></ProtectedRoute>} />
-          <Route path="/issue-history" element={<ProtectedRoute requiredRoles={['admin', 'user']}><IssueHistory /></ProtectedRoute>} />
-          <Route path="/transfer-order" element={<ProtectedRoute requiredRoles={['admin', 'user']}><TransferOrder /></ProtectedRoute>} />
-          <Route path="/adjust-stock" element={<ProtectedRoute requiredRoles={['admin']}><AdjustStock /></ProtectedRoute>} />
+          <Route index element={<AuthChecker requiredRoles={['admin', 'user']}><Dashboard /></AuthChecker>} />
+          <Route path="/users" element={<AuthChecker requiredRoles={['admin']}><Users /></AuthChecker>} />
+          <Route path="/settings" element={<AuthChecker requiredRoles={['admin']}><Settings /></AuthChecker>} />
+          <Route path="/categories" element={<AuthChecker requiredPermissions={[{ feature: 'category', permissions: ['Show'] }]}><Categories /></AuthChecker>} />
+          <Route path="/products" element={<AuthChecker requiredPermissions={[{ feature: 'products', permissions: ['Show'] }]}><Products /></AuthChecker>} />
+          <Route path="/warehouses" element={<AuthChecker requiredRoles={['admin']}><Warehouses /></AuthChecker>} />
+          <Route path="/receive-history" element={<AuthChecker requiredRoles={['admin', 'user']}><ReceiveHistory /></AuthChecker>} />
+          <Route path="/lot-management" element={<AuthChecker requiredPermissions={[{ feature: 'lotManagement', permissions: ['Show'] }]}><LotManagement /></AuthChecker>} />
+          <Route path="/manage-damage" element={<AuthChecker requiredPermissions={[{ feature: 'manageDamage', permissions: ['Show'] }]}><ManageDamage /></AuthChecker>} />
+          <Route path="/stock-reports" element={<AuthChecker requiredRoles={['admin', 'user']}><StockReports /></AuthChecker>} />
+          <Route path="/suppliers" element={<AuthChecker requiredRoles={['admin', 'user']}><Suppliers /></AuthChecker>} />
+          <Route path="/issue-stock" element={<AuthChecker requiredRoles={['admin', 'user']}><IssueStock /></AuthChecker>} />
+          <Route path="/issue-history" element={<AuthChecker requiredRoles={['admin', 'user']}><IssueHistory /></AuthChecker>} />
+          <Route path="/transfer-order" element={<AuthChecker requiredRoles={['admin', 'user']}><TransferOrder /></AuthChecker>} />
+          <Route path="/adjust-stock" element={<AuthChecker requiredRoles={['admin']}><AdjustStock /></AuthChecker>} />
           <Route path="*" element={<ErrorBoundary />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
+  );
+};
+
+// Main App Render
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <AppWrapper />
   </StrictMode>
 );
