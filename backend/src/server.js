@@ -2,11 +2,11 @@ require("dotenv").config();
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
-const apiRoutes = require('./routes/api'); 
+const apiRoutes = require('./routes/api');
+const telegramRoutes = require('./routes/telegram'); // เพิ่ม Route Telegram
 const logger = require('./config/logger');
 
 const app = express();
-
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -23,6 +23,7 @@ app.use((req, res, next) => {
 
 // Load API routes
 app.use('/api', apiRoutes);
+app.use('/api', telegramRoutes); // เพิ่ม Route Telegram
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-management')
@@ -36,6 +37,9 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-man
 if (!process.env.JWT_SECRET) {
   logger.error('JWT_SECRET is not defined in environment variables');
   process.exit(1);
+}
+if (!process.env.TELEGRAM_BOT_TOKEN) {
+  logger.warn('TELEGRAM_BOT_TOKEN is not defined in environment variables, Telegram notifications may not work');
 }
 
 // Start server

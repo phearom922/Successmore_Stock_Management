@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const { z } = require('zod');
@@ -2790,6 +2791,5 @@ router.get('/lots/lot-code/:lotCode', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error fetching lot', error: error.message });
   }
 });
-
 
 module.exports = router;

@@ -212,12 +212,57 @@ const IssueHistory = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(response.data.message);
+
+      // Send Telegram notification
+      const transaction = history.find(t => t._id === transactionId);
+      if (transaction) {
+        await sendTelegramNotification(transaction);
+      }
+
       fetchData();
     } catch (error) {
-      toast.error('Failed to cancel transaction');
-      console.error('Error cancelling transaction:', error.response ? error.response.data : error);
+      toast.error(`Failed to cancel transaction: ${error.response?.status} - ${error.response?.data?.message || error.message}`);
+      console.error('Error cancelling transaction:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const sendTelegramNotification = async (transaction) => {
+    const totalQty = transaction.lots.reduce((sum, lot) => sum + lot.quantity, 0);
+    const message = `
+*Transaction Notification*
+- Transaction #: ${transaction.transactionNumber}
+- Warehouse: ${transaction.warehouseId.name}
+- Issue Type: ${transaction.type}
+- Total Qty: ${totalQty}
+- User: ${transaction.userId.username}
+- Status: ${transaction.status}
+- Date/Time: ${format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss')}
+    `.trim();
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/telegram/send`,
+        {
+          chat_id: '-4871143154',
+          text: message,
+          parse_mode: 'Markdown'
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log('Telegram notification response:', response.data);
+    } catch (error) {
+      console.error('Failed to send Telegram notification:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      toast.error(`Failed to send Telegram notification: ${error.response?.data?.description || error.message}`);
     }
   };
 
