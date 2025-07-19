@@ -15,6 +15,7 @@ const Settings = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
   const token = localStorage.getItem('token');
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     fetchSettings();
@@ -22,7 +23,7 @@ const Settings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/settings', {
+      const response = await axios.get(`${API_BASE_URL}/api/settings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const settings = response.data;
@@ -53,7 +54,7 @@ const Settings = () => {
       };
       console.log('Saving Notification Settings:', payload); // Debug
       const response = await axios.put(
-        'http://localhost:3000/api/settings/notification',
+        `${API_BASE_URL}/api/settings/notification`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +79,7 @@ const Settings = () => {
       };
       console.log('Saving Telegram Config:', payload); // Debug
       const response = await axios.put(
-        'http://localhost:3000/api/settings/telegram',
+        `${API_BASE_URL}/api/settings/telegram`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );

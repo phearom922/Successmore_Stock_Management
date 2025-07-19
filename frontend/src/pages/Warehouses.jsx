@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,8 +30,8 @@ const Warehouses = () => {
     const fetchData = async () => {
       try {
         const [warehousesRes, usersRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/users`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
         setWarehouses(warehousesRes.data);
         setUsers(usersRes.data);
@@ -66,13 +67,13 @@ const Warehouses = () => {
 
       const payload = { warehouseCode, name, branch, status, assignedUsers };
       if (editingId) {
-        const res = await axios.put(`http://localhost:3000/api/warehouses/${editingId}`, payload, {
+        const res = await axios.put(`${API_BASE_URL}/api/warehouses/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWarehouses(warehouses.map(w => w._id === editingId ? res.data.warehouse : w));
         toast.success('Warehouse updated successfully');
       } else {
-        const res = await axios.post('http://localhost:3000/api/warehouses', payload, {
+        const res = await axios.post(`${API_BASE_URL}/api/warehouses`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setWarehouses([...warehouses, res.data.warehouse]);
@@ -101,7 +102,7 @@ const Warehouses = () => {
         toast.error('Cannot delete warehouse. Please remove all assigned users first.');
         return;
       }
-      await axios.delete(`http://localhost:3000/api/warehouses/${warehouseId}`, {
+      await axios.delete(`${API_BASE_URL}/api/warehouses/${warehouseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWarehouses(warehouses.filter(w => w._id.toString() !== warehouseId));
@@ -114,7 +115,7 @@ const Warehouses = () => {
   const handleToggleStatus = async (warehouse) => {
     const newStatus = warehouse.status === 'Active' ? 'Inactive' : 'Active';
     try {
-      const res = await axios.put(`http://localhost:3000/api/warehouses/${warehouse._id}`, {
+      const res = await axios.put(`${API_BASE_URL}/api/warehouses/${warehouse._id}`, {
         warehouseCode: warehouse.warehouseCode,
         name: warehouse.name,
         branch: warehouse.branch,

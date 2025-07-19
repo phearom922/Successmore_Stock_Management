@@ -10,6 +10,8 @@ import {
 import { FaCube } from 'react-icons/fa'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Dashboard = () => {
   const [stats, setStats] = useState({
     totalProducts: 0,
@@ -60,7 +62,7 @@ const Dashboard = () => {
       setIsLoading(true);
       try {
         // Fetch warehouses first
-        const warehousesRes = await axios.get('http://localhost:3000/api/warehouses', {
+        const warehousesRes = await axios.get(`${API_BASE_URL}/api/warehouses`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setWarehouses(warehousesRes.data);
@@ -97,22 +99,22 @@ const Dashboard = () => {
         expiringRes,
         damagesRes,
       ] = await Promise.all([
-        axios.get('http://localhost:3000/api/products', {
+        axios.get(`${API_BASE_URL}/api/products`, {
           headers: { Authorization: `Bearer ${token}` },
           params
         }),
-        axios.get('http://localhost:3000/api/lots', {
+        axios.get(`${API_BASE_URL}/api/lots`, {
           headers: { Authorization: `Bearer ${token}` },
           params
         }),
-        axios.get('http://localhost:3000/api/warehouses', {
+        axios.get(`${API_BASE_URL}/api/warehouses`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get('http://localhost:3000/api/lot-management/expiring', {
+        axios.get(`${API_BASE_URL}/api/lot-management/expiring`, {
           headers: { Authorization: `Bearer ${token}` },
           params
         }),
-        axios.get('http://localhost:3000/api/manage-damage/history', {
+        axios.get(`${API_BASE_URL}/api/manage-damage/history`, {
           headers: { Authorization: `Bearer ${token}` },
           params: {
             ...params,
@@ -189,7 +191,7 @@ const Dashboard = () => {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/settings', {
+      const res = await axios.get(`${API_BASE_URL}/api/settings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSettings(res.data);
@@ -205,7 +207,7 @@ const Dashboard = () => {
 
   const updateSettings = async () => {
     try {
-      await axios.put('http://localhost:3000/api/settings', settings, {
+      await axios.put(`${API_BASE_URL}/api/settings`, settings, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Settings updated successfully');

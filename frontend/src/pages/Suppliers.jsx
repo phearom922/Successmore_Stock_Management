@@ -16,6 +16,7 @@ const Suppliers = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const token = localStorage.getItem('token');
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const userRole = token ? JSON.parse(atob(token.split('.')[1])).role : '';
 
@@ -48,7 +49,7 @@ const Suppliers = () => {
       setIsLoading(true);
       try {
         console.log('Fetching suppliers, token:', token);
-        const response = await axios.get('http://localhost:3000/api/suppliers', {
+        const response = await axios.get(`${API_BASE_URL}/api/suppliers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('Suppliers:', response.data);
@@ -101,7 +102,7 @@ const Suppliers = () => {
       const payload = { name, address: address || undefined, phone: phone || undefined };
       console.log('Sending supplier payload:', payload);
       if (editingId) {
-        const response = await axios.put(`http://localhost:3000/api/suppliers/${editingId}`, payload, {
+        const response = await axios.put(`${API_BASE_URL}/api/suppliers/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('Update supplier response:', response.data);
@@ -109,7 +110,7 @@ const Suppliers = () => {
         setFilteredSuppliers(filteredSuppliers.map(s => s._id === editingId ? response.data.supplier : s));
         toast.success(response.data.message);
       } else {
-        const response = await axios.post('http://localhost:3000/api/suppliers', payload, {
+        const response = await axios.post(`${API_BASE_URL}/api/suppliers`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('Create supplier response:', response.data);
@@ -144,7 +145,7 @@ const Suppliers = () => {
       setIsLoading(true);
       try {
         console.log('Deleting supplier:', id);
-        await axios.delete(`http://localhost:3000/api/suppliers/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/suppliers/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setSuppliers(suppliers.filter(s => s._id !== id));

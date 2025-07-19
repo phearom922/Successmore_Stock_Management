@@ -15,6 +15,8 @@ import { FiDownload } from 'react-icons/fi';
 import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ExpiringNotification = ({ lots, warningDays, onClose }) => {
   const daysLeft = (expDate) => {
     const diff = new Date(expDate) - new Date();
@@ -129,7 +131,7 @@ const LotManagement = () => {
 
   const fetchWarehouses = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/warehouses', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/warehouses`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
@@ -145,7 +147,7 @@ const LotManagement = () => {
 
   const fetchSettings = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/settings', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/settings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarningDays(data.expirationWarningDays || 15); // Use default if not present
@@ -168,7 +170,7 @@ const LotManagement = () => {
         limit
       };
       console.log('Fetching lots with params:', queryParams); // ดีบั๊กพารามิเตอร์
-      const { data } = await axios.get('http://localhost:3000/api/lot-management', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/lot-management`, {
         headers: { Authorization: `Bearer ${token}` },
         params: queryParams
       });
@@ -195,7 +197,7 @@ const LotManagement = () => {
       const queryParams = {
         warehouse: isAdmin ? '' : user.warehouse || '' // จำกัด User Role
       };
-      const { data } = await axios.get('http://localhost:3000/api/lot-management/expiring', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/lot-management/expiring`, {
         headers: { Authorization: `Bearer ${token}` },
         params: queryParams
       });
@@ -224,7 +226,7 @@ const LotManagement = () => {
   const handleExport = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/lot-management/export', {
+      const response = await axios.get(`${API_BASE_URL}/api/lot-management/export`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { searchQuery, warehouse: isAdmin ? warehouse : user.warehouse || '' },
         responseType: 'blob'
@@ -257,7 +259,7 @@ const LotManagement = () => {
     if (!isAdmin || !editLot) return;
     setIsLoading(true);
     try {
-      await axios.put(`http://localhost:3000/api/lot-management/${editLot._id}`, {
+      await axios.put(`${API_BASE_URL}/api/lot-management/${editLot._id}`, {
         ...editLot,
         productionDate: editLot.productionDate?.toISOString(),
         expDate: editLot.expDate?.toISOString(),
@@ -295,7 +297,7 @@ const LotManagement = () => {
     setIsLoading(true);
     let success = false;
     try {
-      await axios.delete(`http://localhost:3000/api/lot-management/${confirmDeleteLot._id}`, {
+      await axios.delete(`${API_BASE_URL}/api/lot-management/${confirmDeleteLot._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(`Lot ${confirmDeleteLot.lotCode} deleted successfully`);

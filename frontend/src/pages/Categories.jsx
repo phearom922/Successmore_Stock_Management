@@ -8,6 +8,8 @@ import { AiFillStop } from "react-icons/ai";
 import { SiTicktick } from "react-icons/si";
 import { FiLoader } from "react-icons/fi";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -37,8 +39,8 @@ const Categories = () => {
       setIsLoading(true);
       try {
         const [categoriesRes, productsRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/categories', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3000/api/products', { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
         setCategories(categoriesRes.data);
         setProducts(productsRes.data);
@@ -69,14 +71,14 @@ const Categories = () => {
     setIsLoading(true);
     try {
       if (editingId) {
-        const res = await axios.put(`http://localhost:3000/api/categories/${editingId}`, {
+        const res = await axios.put(`${API_BASE_URL}/api/categories/${editingId}`, {
           name,
           description,
         }, { headers: { Authorization: `Bearer ${token}` } });
         setCategories(categories.map(cat => cat._id === editingId ? res.data.category : cat));
         toast.success(res.data.message);
       } else {
-        const res = await axios.post('http://localhost:3000/api/categories', {
+        const res = await axios.post(`${API_BASE_URL}/api/categories`, {
           name,
           description,
         }, { headers: { Authorization: `Bearer ${token}` } });
@@ -109,7 +111,7 @@ const Categories = () => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       setIsLoading(true);
       try {
-        await axios.delete(`http://localhost:3000/api/categories/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.delete(`${API_BASE_URL}/api/categories/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         setCategories(categories.filter(cat => cat._id !== id));
         toast.success('Category deleted successfully');
       } catch (error) {

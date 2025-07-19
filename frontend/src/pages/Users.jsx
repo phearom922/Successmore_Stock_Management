@@ -9,7 +9,10 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
 import { FaPlus, FaRegTrashAlt, FaRegEdit, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 
@@ -52,8 +55,8 @@ const Users = () => {
     setIsFetching(true);
     try {
       const [userRes, whRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/users', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/users`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       console.log('Fetched users:', userRes.data);
       console.log('Fetched warehouses:', whRes.data.map(w => ({ _id: w._id, name: w.name, warehouseCode: w.warehouseCode })));
@@ -69,7 +72,7 @@ const Users = () => {
 
   const refreshWarehouses = async () => {
     try {
-      const whRes = await axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } });
+      const whRes = await axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } });
       console.log('Refreshed warehouses:', whRes.data.map(w => ({ _id: w._id, name: w.name, warehouseCode: w.warehouseCode })));
       setWarehouses(whRes.data);
     } catch (error) {
@@ -124,7 +127,7 @@ const Users = () => {
             }
           }
         }
-        await axios.put(`http://localhost:3000/api/users/${editingId}`, updatePayload, {
+        await axios.put(`${API_BASE_URL}/api/users/${editingId}`, updatePayload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         toast.success('User updated');
@@ -135,11 +138,11 @@ const Users = () => {
           toast.error('User role must have an assigned warehouse');
           return;
         }
-        const response = await axios.post(`http://localhost:3000/api/users`, payload, {
+        const response = await axios.post(`${API_BASE_URL}/api/users`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (payload.warehouse) {
-          await axios.put(`http://localhost:3000/api/warehouses/${payload.warehouse}`, {
+          await axios.put(`${API_BASE_URL}/api/warehouses/${payload.warehouse}`, {
             assignedUsers: [response.data.user._id]
           }, { headers: { Authorization: `Bearer ${token}` } });
         }
@@ -172,7 +175,7 @@ const Users = () => {
   const handleDelete = async (id) => {
     try {
       const user = users.find(u => u._id === id);
-      await axios.delete(`http://localhost:3000/api/users/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('User deleted');
@@ -186,7 +189,7 @@ const Users = () => {
   const toggleActive = async (user) => {
     try {
       const payload = { isActive: !user.isActive };
-      await axios.put(`http://localhost:3000/api/users/${user._id}`, payload, {
+      await axios.put(`${API_BASE_URL}/api/users/${user._id}`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(user.isActive ? 'User disabled' : 'User activated');

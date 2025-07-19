@@ -5,6 +5,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaSpinner } from 'react-icons/fa';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +22,7 @@ const Login = () => {
     }
     setIsLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:3000/api/login', {
+      const { data } = await axios.post(`${API_BASE_URL}/api/login`, {
         username,
         password,
       });

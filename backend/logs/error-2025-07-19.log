@@ -6917,3 +6917,4 @@ AxiosError: Request failed with status code 401
     at async Timeout._onTimeout (E:\Personal Documents\Stock-Management\backend\src\routes\telegram.js:38:15)
 2025-07-19 17:06:35 [error]: Failed to send Telegram notification for issue:
 2025-07-19 17:06:47 [error]: Failed to send Telegram notification for cancellation:
+2025-07-19 17:39:08 [error]: Failed to send Telegram notification for issue:

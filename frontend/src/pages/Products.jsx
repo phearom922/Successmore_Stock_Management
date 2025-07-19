@@ -14,6 +14,8 @@ import {
 
 Modal.setAppElement('#root');
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -41,8 +43,8 @@ const Products = () => {
       setIsLoading(true);
       try {
         const [productsRes, categoriesRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/products', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3000/api/categories', { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
         setProducts(productsRes.data);
         setFilteredProducts(productsRes.data);
@@ -111,7 +113,7 @@ const Products = () => {
     }
     try {
       if (editingId) {
-        const res = await axios.put(`http://localhost:3000/api/products/${editingId}`, {
+        const res = await axios.put(`${API_BASE_URL}/api/products/${editingId}`, {
           productCode,
           name,
           category,
@@ -123,7 +125,7 @@ const Products = () => {
         setMessage(res.data.message);
         toast.success('Product updated successfully!');
       } else {
-        const res = await axios.post('http://localhost:3000/api/products', {
+        const res = await axios.post(`${API_BASE_URL}/api/products`, {
           productCode,
           name,
           category,
@@ -149,7 +151,7 @@ const Products = () => {
     }
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`http://localhost:3000/api/products/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/products/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProducts(products.filter(prod => prod._id !== id));
@@ -186,7 +188,7 @@ const Products = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:3000/api/products/batch', {
+      const response = await axios.post(`${API_BASE_URL}/api/products/batch`, {
         products: productsToCreate,
       }, {
         headers: { Authorization: `Bearer ${token}` },

@@ -20,6 +20,7 @@ const StockReports = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem('token');
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [currentTab, setCurrentTab] = useState('all-stock');
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +42,7 @@ const StockReports = () => {
 
   const fetchWarehouses = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/warehouses', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/warehouses`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
@@ -61,7 +62,7 @@ const StockReports = () => {
       const effectiveWarehouse = !isAdmin && warehouseVal === 'all' ? userWarehouseId : warehouseVal; // ใช้ _id
       console.log('Fetching data with warehouse:', effectiveWarehouse); // Debug
       // Send only 'search' param, let backend handle matching Lot Code or Product Code
-      const { data } = await axios.get('http://localhost:3000/api/stock-reports', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/stock-reports`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { type: tabType, warehouse: effectiveWarehouse, search }
       });
@@ -128,7 +129,7 @@ const StockReports = () => {
         link.remove();
       } else {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:3000/api/stock-reports/export', {
+        const response = await axios.get(`${API_BASE_URL}/api/stock-reports/export`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { type, warehouse: selectedWarehouse, search: searchQuery },
           responseType: 'blob'

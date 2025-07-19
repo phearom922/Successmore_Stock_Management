@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ReceiveHistory = () => {
   const [transactions, setTransactions] = useState([]);
   const [total, setTotal] = useState(0);
@@ -36,7 +38,7 @@ const ReceiveHistory = () => {
 
   const fetchWarehouses = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/api/warehouses', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/warehouses`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
@@ -63,7 +65,7 @@ const ReceiveHistory = () => {
         limit
       };
       console.log('Fetching transactions with params:', queryParams); // ดีบั๊กพารามิเตอร์
-      const { data } = await axios.get('http://localhost:3000/api/receive-history', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/receive-history`, {
         headers: { Authorization: `Bearer ${token}` },
         params: queryParams
       });
@@ -83,7 +85,7 @@ const ReceiveHistory = () => {
 
   const handleExport = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/receive-history/export', {
+      const response = await axios.get(`${API_BASE_URL}/api/receive-history/export`, {
         headers: { Authorization: `Bearer ${token}` },
         params: {
           startDate: startDate ? format(startOfDay(startDate), 'dd/MM/yyyy') : '',

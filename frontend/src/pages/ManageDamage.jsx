@@ -37,6 +37,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ManageDamage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [warehouses, setWarehouses] = useState([]);
@@ -93,7 +95,7 @@ const ManageDamage = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/manage-damage',
+        `${API_BASE_URL}/api/manage-damage`,
         { lotId: selectedLot, quantity: parseInt(quantity), reason },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -141,7 +143,7 @@ const ManageDamage = () => {
   const fetchWarehouses = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.get('http://localhost:3000/api/warehouses', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/warehouses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWarehouses(data);
@@ -173,7 +175,7 @@ const ManageDamage = () => {
         setError('');
         return;
       }
-      const { data } = await axios.get(`http://localhost:3000/api/products?warehouse=${warehouseId}`, {
+      const { data } = await axios.get(`${API_BASE_URL}/api/products?warehouse=${warehouseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProducts(data || []);
@@ -203,7 +205,7 @@ const ManageDamage = () => {
         setError('');
         return;
       }
-      const { data } = await axios.get(`http://localhost:3000/api/lots?productId=${productId}&warehouse=${selectedWarehouse}`, {
+      const { data } = await axios.get(`${API_BASE_URL}/api/lots?productId=${productId}&warehouse=${selectedWarehouse}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLots(data || []);
@@ -230,7 +232,7 @@ const ManageDamage = () => {
         user: filters.user || undefined,
         transaction: filters.transaction || undefined
       };
-      const { data } = await axios.get('http://localhost:3000/api/manage-damage/history', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/manage-damage/history`, {
         headers: { Authorization: `Bearer ${token}` },
         params
       });
@@ -495,7 +497,7 @@ const ManageDamage = () => {
                   setFilters(newFilters);
                   setIsLoading(true);
                   try {
-                    const { data } = await axios.get('http://localhost:3000/api/manage-damage/history', {
+                    const { data } = await axios.get(`${API_BASE_URL}/api/manage-damage/history`, {
                       headers: { Authorization: `Bearer ${token}` }
                     });
                     setDamageHistory(data.map(record => ({

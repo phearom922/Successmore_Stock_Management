@@ -43,6 +43,7 @@ const ReceiveStock = () => {
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const productInputRef = useRef(null);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     if (!token) {
       navigate('/login');
@@ -68,10 +69,10 @@ const ReceiveStock = () => {
       setIsLoading(true);
       try {
         const [productsRes, categoriesRes, warehousesRes, suppliersRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/products', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3000/api/categories', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:3000/api/suppliers', { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_BASE_URL}/api/suppliers`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
         setProducts(productsRes.data || []);
@@ -240,7 +241,7 @@ const ReceiveStock = () => {
         }))
       };
       console.log('Payload being sent:', JSON.stringify(payload, null, 2));
-      const response = await axios.post('http://localhost:3000/api/receive', payload, {
+      const response = await axios.post(`${API_BASE_URL}/api/receive`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

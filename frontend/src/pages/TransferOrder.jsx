@@ -69,7 +69,7 @@ const TransferOrder = () => {
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const userWarehouseId = user.warehouse?.toString() || (user.role === 'admin' ? filters.warehouse : null);
 
-  const API_BASE_URL = 'http://localhost:3000';
+   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (!token) {
