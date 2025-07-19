@@ -65,7 +65,7 @@ const AdjustStock = () => {
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
   const userWarehouseId = user.warehouse?.toString();
 
-  const API_BASE_URL = 'http://localhost:3000';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // โหลดข้อมูลหลัก (warehouse, products, categories) เฉพาะตอน mount และตรวจสอบ role
   useEffect(() => {

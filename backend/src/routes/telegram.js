@@ -7,6 +7,9 @@ const authMiddleware = require('../middleware/auth');
 // Load environment variables
 require('dotenv').config();
 
+
+
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const DEFAULT_CHAT_ID = '-4871143154'; // Chat ID เริ่มต้นตามที่ระบุ
 

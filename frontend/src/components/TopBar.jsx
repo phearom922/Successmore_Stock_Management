@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import 'moment/locale/th';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const TopBar = ({
   handleLogout,
   username,
@@ -45,7 +47,7 @@ const TopBar = ({
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const { data } = await axios.get('http://localhost:3000/api/notifications', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const sortedNotifications = data.sort(
@@ -61,7 +63,7 @@ const TopBar = ({
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:3000/api/notifications/${notificationId}`,
+        `${API_BASE_URL}/api/notifications/${notificationId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -79,7 +81,7 @@ const TopBar = ({
       let success = false;
       try {
         await axios.put(
-          'http://localhost:3000/api/notifications/mark-all-read',
+          `${API_BASE_URL}/api/notifications/mark-all-read`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -91,7 +93,7 @@ const TopBar = ({
         await Promise.all(
           notifications.filter((n) => !n.read).map((n) =>
             axios.put(
-              `http://localhost:3000/api/notifications/${n._id}`,
+              `${API_BASE_URL}/api/notifications/${n._id}`,
               {},
               { headers: { Authorization: `Bearer ${token}` } }
             )
