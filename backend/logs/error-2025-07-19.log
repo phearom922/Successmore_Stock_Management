@@ -6918,3 +6918,4 @@ AxiosError: Request failed with status code 401
 2025-07-19 17:06:35 [error]: Failed to send Telegram notification for issue:
 2025-07-19 17:06:47 [error]: Failed to send Telegram notification for cancellation:
 2025-07-19 17:39:08 [error]: Failed to send Telegram notification for issue:
+2025-07-19 17:51:29 [error]: Failed to send Telegram notification for cancellation:

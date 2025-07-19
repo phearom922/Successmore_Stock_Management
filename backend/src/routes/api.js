@@ -1770,11 +1770,6 @@ router.get('/lot-management/expiring', authMiddleware, async (req, res) => {
   }
 });
 
-
-
-
-
-
 // Get or update settings
 router.get('/settings', authMiddleware, async (req, res) => {
   try {
@@ -2170,19 +2165,6 @@ router.patch('/issue-history/:id/cancel', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Error cancelling transaction', error: error.message });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // stock-reports
 router.get('/stock-reports', authMiddleware, async (req, res) => {
