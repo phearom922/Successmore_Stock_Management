@@ -1985,7 +1985,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
     if (settings && settings.issueStockNotificationEnabled === true) { // Strict check for true
       try {
         const telegramResponse = await axios.post(
-          'http://localhost:3000/api/telegram/send',
+          `${process.env.VITE_API_BASE_URL}/api/telegram/send`,
           {
             chat_id: settings.chatId,
             text: `
@@ -2124,7 +2124,7 @@ router.patch('/issue-history/:id/cancel', authMiddleware, async (req, res) => {
     if (settings && settings.issueHistoryNotificationEnabled === true) { // Strict check for true
       try {
         const telegramResponse = await axios.post(
-          'http://localhost:3000/api/telegram/send',
+          `${process.env.VITE_API_BASE_URL}/api/telegram/send`,
           {
             chat_id: settings.chatId,
             text: `
