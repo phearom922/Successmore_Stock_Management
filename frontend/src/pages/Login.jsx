@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaEye, FaEyeSlash, FaUser, FaLock, FaSpinner } from 'react-icons/fa';
+import scm_logo from '../../public/SCM-Logo.png'; // Assuming you have a logo image in your assets
+
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -38,10 +40,11 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-md">
+      <div className="w-full max-w-sm px-8 py-14 space-y-8 bg-white rounded-md shadow-md">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-700">Welcome Back</h2>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account to manage your inventory</p>
+          <div className='p-2'><img className='max-w-65' src={scm_logo} alt="" /></div>
+          {/* <h2 className="text-3xl font-bold text-gray-700">Welcome Back</h2> */}
+          {/* <p className="mt-2 text-sm text-gray-600">Sign in to your account to manage your inventory</p> */}
         </div>
 
         <form onSubmit={handleLogin} className="mt-8 space-y-6">
@@ -61,7 +64,7 @@ const Login = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition duration-200"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition duration-200"
                   placeholder="Username"
                 />
               </div>
@@ -82,7 +85,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition duration-200"
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 transition duration-200"
                   placeholder="Password"
                 />
                 <button
@@ -105,7 +108,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
             >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                 {isLoading ? (
