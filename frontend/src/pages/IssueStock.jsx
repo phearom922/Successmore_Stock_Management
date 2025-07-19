@@ -7,6 +7,7 @@ import * as Select from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { format } from 'date-fns';
 
 const IssueStock = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -33,6 +34,9 @@ const IssueStock = () => {
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
 
+  
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+
   useEffect(() => {
     if (!token) {
       navigate('/login');
@@ -45,9 +49,9 @@ const IssueStock = () => {
     setIsLoading(true);
     try {
       const [warehousesRes, productsRes, categoriesRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/warehouses', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:3000/api/products', { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get('http://localhost:3000/api/categories', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
       setWarehouses(warehousesRes.data);
       setProducts(productsRes.data.map(p => ({ ...p, _id: p._id.toString() })));
@@ -58,7 +62,9 @@ const IssueStock = () => {
       if (user.warehouse) {
         defaultWarehouse = user.warehouse.toString();
       }
-      if (!defaultWarehouse) {
+      if (!defaultWarehouse && warehousesRes.data.length > 0) {
+        defaultWarehouse = warehousesRes.data[0]._id.toString();
+      } else if (!defaultWarehouse) {
         toast.error('No warehouse assigned');
         return;
       }
@@ -75,7 +81,7 @@ const IssueStock = () => {
   const fetchLots = async (productId) => {
     if (!productId || !selectedWarehouse) return;
     try {
-      const { data } = await axios.get('http://localhost:3000/api/lots', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/lots`, {
         headers: { Authorization: `Bearer ${token}` },
         params: {
           productId,
@@ -174,8 +180,6 @@ const IssueStock = () => {
       toast.error('Please add at least one item');
       return;
     }
-    const totalItems = addedItems.length;
-    const totalQuantity = addedItems.reduce((sum, item) => sum + Number(item.quantity), 0);
     setShowConfirmModal(true);
   };
 
@@ -183,23 +187,38 @@ const IssueStock = () => {
     setShowConfirmModal(false);
     setIsLoading(true);
     try {
+      const transactionNumber = `TRX-${Date.now()}`; // Generate temporary transaction number
       const payload = {
+        transactionNumber,
         lots: addedItems.map(item => ({
           lotId: item.lotId,
           quantity: Number(item.quantity),
-          fromDamaged: item.fromDamaged || false // ส่งข้อมูลว่าใช้ damaged หรือไม่
+          fromDamaged: item.fromDamaged || false
         })),
         type: addedItems[0].transactionType,
         warehouse: selectedWarehouse,
-        destinationWarehouseId: "",
+        destinationWarehouseId: '',
         note: ''
       };
       console.log('Issuing with payload:', JSON.stringify(payload, null, 2));
-      const response = await axios.post('http://localhost:3000/api/issue', payload, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.post(`${API_BASE_URL}/api/issue`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       toast.success(response.data.message);
-      console.log('Transaction Number:', response.data.transactionNumber);
+      console.log('Transaction response:', response.data);
+
+      // Send Telegram notification
+      const transactionData = {
+        transactionNumber: response.data.transactionNumber || transactionNumber,
+        warehouseId: selectedWarehouse,
+        type: addedItems[0].transactionType,
+        lots: addedItems,
+        userId: user.id,
+        status: 'Active',
+        createdAt: new Date(),
+      };
+      await sendTelegramNotification(transactionData);
+
       setAddedItems([]);
     } catch (error) {
       console.error('Issue error:', error.response?.data || error);
@@ -207,6 +226,41 @@ const IssueStock = () => {
     } finally {
       setIsLoading(false);
       navigate('/issue-history');
+    }
+  };
+
+  const sendTelegramNotification = async (transaction) => {
+    const totalQty = transaction.lots.reduce((sum, lot) => sum + lot.quantity, 0);
+    const warehouse = warehouses.find(w => w._id === transaction.warehouseId)?.name || 'Unknown';
+    const message = `
+*Transaction Notification*
+- Transaction #: ${transaction.transactionNumber}
+- Warehouse: ${warehouse}
+- Issue Type: ${transaction.type}
+- Total Qty: ${totalQty}
+- User: ${user.lastName || user.id}
+- Status: ${transaction.status}
+- Date/Time: ${format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss')}
+    `.trim();
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/telegram/send`,
+        {
+          chat_id: '-4871143154',
+          text: message,
+          parse_mode: 'Markdown'
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log('Telegram notification response:', response.data);
+    } catch (error) {
+      console.error('Failed to send Telegram notification:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      toast.error(`Failed to send Telegram notification: ${error.response?.data?.description || error.message}`);
     }
   };
 
@@ -303,7 +357,7 @@ const IssueStock = () => {
                     className={`${user.role === 'user' ? 'bg-gray-200 text-gray-500' : 'bg-white'} mt-1 relative block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none hover:bg-gray-100 transition-colors duration-200`}
                   >
                     <Select.Value placeholder="Select warehouse" />
-                    <Select.Icon className="absolute right-3  top-1/2 transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
@@ -318,11 +372,11 @@ const IssueStock = () => {
                           <Select.Item
                             key={w._id}
                             value={w._id}
-                            className="px-3 py-2  text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
+                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
                             disabled={user.role !== 'admin' && w._id !== user.warehouse}
                           >
                             <Select.ItemText>{w.name} ({w.warehouseCode})</Select.ItemText>
-                            <Select.ItemIndicator className="absolute right-2  inline-flex items-center">
+                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
                               <CheckIcon />
                             </Select.ItemIndicator>
                           </Select.Item>
@@ -462,15 +516,13 @@ const IssueStock = () => {
                   disabled={isLoading}
                 >
                   <Select.Trigger
-                    className="mt-1 relative block w-full pl-3 pr-10  py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
+                    className="mt-1 relative block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-lg appearance-none bg-white hover:bg-gray-100 transition-colors duration-200"
                   >
                     <Select.Value placeholder="Select type" />
-                    <Select.Icon className="absolute right-2  top-1/2 transform -translate-y-1/2">
+                    <Select.Icon className="absolute right-2 top-1/2 transform -translate-y-1/2">
                       <ChevronDownIcon />
                     </Select.Icon>
                   </Select.Trigger>
-
-
                   <Select.Content className="bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
                     <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-gray-100 text-gray-600">
                       <ChevronUpIcon />
@@ -485,7 +537,7 @@ const IssueStock = () => {
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer focus:bg-red-100 m-2 rounded-sm focus:outline-none"
                           >
                             <Select.ItemText>{type}</Select.ItemText>
-                            <Select.ItemIndicator className="absolute  right-2 inline-flex items-center">
+                            <Select.ItemIndicator className="absolute right-2 inline-flex items-center">
                               <CheckIcon />
                             </Select.ItemIndicator>
                           </Select.Item>

@@ -53,6 +53,7 @@ const IssueHistory = () => {
   const itemsPerPage = 10;
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
   // Initialize dates with start and end of current day
   const [startDate, setStartDate] = useState(startOfDay(new Date()));
@@ -99,7 +100,7 @@ const IssueHistory = () => {
   const fetchWarehouses = async () => {
     if (!token) return;
     try {
-      const { data } = await axios.get('http://localhost:3000/api/warehouses', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/warehouses`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWarehouses(data);
@@ -122,7 +123,7 @@ const IssueHistory = () => {
       if (filters.status === 'Active' || filters.status === 'Cancelled') {
         params.status = filters.status;
       }
-      const { data } = await axios.get('http://localhost:3000/api/issue-history', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/issue-history`, {
         headers: { Authorization: `Bearer ${token}` },
         params
       });
@@ -130,7 +131,7 @@ const IssueHistory = () => {
       const enrichedHistory = await Promise.all(data.map(async (transaction) => {
         const lotsWithDetails = await Promise.all(transaction.lots.map(async (lot) => {
           try {
-            const response = await axios.get(`http://localhost:3000/api/lots/${lot.lotId}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/lots/${lot.lotId}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             const dbLot = response.data;
@@ -207,7 +208,7 @@ const IssueHistory = () => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:3000/api/issue-history/${transactionId}/cancel`,
+        `${API_BASE_URL}/api/issue-history/${transactionId}/cancel`,
         { cancelledBy: userId, cancelledDate: new Date() },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -240,14 +241,14 @@ const IssueHistory = () => {
 - Warehouse: ${transaction.warehouseId.name}
 - Issue Type: ${transaction.type}
 - Total Qty: ${totalQty}
-- User: ${transaction.userId.username}
-- Status: ${transaction.status}
+- User: ${transaction.userId.lastName}
+- Status: "Cancelled"
 - Date/Time: ${format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss')}
     `.trim();
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/telegram/send`,
+        `${API_BASE_URL}/api/telegram/send`,
         {
           chat_id: '-4871143154',
           text: message,
@@ -421,7 +422,7 @@ const IssueHistory = () => {
   };
 
   const exportToExcel = () => {
-    const excelData = history.flatMap(transaction => 
+    const excelData = history.flatMap(transaction =>
       transaction.lots.map(lot => ({
         'Date/Time': format(new Date(transaction.createdAt), 'dd/MM/yyyy, HH:mm:ss'),
         'Transaction #': transaction.transactionNumber,
@@ -464,7 +465,7 @@ const IssueHistory = () => {
   const clearFilters = async () => {
     const newStartDate = startOfDay(new Date());
     const newEndDate = endOfDay(new Date());
-    
+
     setFilters(prev => ({
       ...prev,
       type: 'all',
@@ -478,7 +479,7 @@ const IssueHistory = () => {
 
     setIsLoading(true);
     try {
-      const { data } = await axios.get('http://localhost:3000/api/issue-history', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/issue-history`, {
         headers: { Authorization: `Bearer ${token}` },
         params: {
           startDate: newStartDate.toISOString(),
@@ -489,7 +490,7 @@ const IssueHistory = () => {
       const enrichedHistory = await Promise.all(data.map(async (transaction) => {
         const lotsWithDetails = await Promise.all(transaction.lots.map(async (lot) => {
           try {
-            const response = await axios.get(`http://localhost:3000/api/lots/${lot.lotId}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/lots/${lot.lotId}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             const dbLot = response.data;
@@ -808,7 +809,7 @@ const IssueHistory = () => {
           )}
         </div>
       )}
-    
+
       {confirmCancel && (
         <Dialog open={true} onOpenChange={closeModal}>
           <DialogContent className="sm:max-w-[425px]">
