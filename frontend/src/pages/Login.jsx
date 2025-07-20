@@ -18,7 +18,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!username || !password) {
-      toast.error("Please enter both username and password");
+      toast.error("សូមបញ្ចូលទាំងឈ្មោះ និងពាក្យសម្ងាត់");
       return;
     }
     setIsLoading(true);
@@ -28,12 +28,18 @@ const Login = () => {
         password,
       });
       localStorage.setItem("token", data.token);
-      toast.success("Login successful!");
-      navigate("/");
+      toast.success("ចូលបានដោយជោគជ័យ!");
+      //wait for a moment before redirecting
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+      // navigate("/");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      toast.error(error.response?.data?.message || "ការចូលបានបរាជ័យ");
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
     }
   };
 
@@ -41,7 +47,7 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="w-full max-w-sm space-y-8 rounded-md bg-white px-8 py-14 shadow-md">
         <div className="text-center">
-          <div className="p-2">
+          <div className="flex justify-center p-2">
             <img className="max-w-65" src={scm_logo} alt="" />
           </div>
           {/* <h2 className="text-3xl font-bold text-gray-700">Welcome Back</h2> */}
@@ -63,7 +69,6 @@ const Login = () => {
                   name="username"
                   type="text"
                   autoComplete="username"
-                  required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
@@ -86,7 +91,6 @@ const Login = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
-                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
@@ -113,14 +117,14 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`group relative flex w-full cursor-pointer justify-center rounded-md border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white transition duration-200 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${isLoading ? "cursor-not-allowed opacity-75" : ""}`}
+              className={`group relative flex w-full cursor-pointer justify-center rounded-md bg-gradient-to-br from-orange-500 to-orange-700 px-4 py-3 text-sm font-medium text-white transition duration-200 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${isLoading ? "cursor-not-allowed opacity-75" : ""}`}
             >
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                 {isLoading ? (
-                  <FaSpinner className="h-5 w-5 animate-spin text-blue-300" />
+                  <FaSpinner className="h-5 w-5 animate-spin text-white" />
                 ) : (
                   <svg
-                    className="h-5 w-5 text-blue-300 group-hover:text-blue-200"
+                    className="h-5 w-5 text-white group-hover:text-blue-200"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
@@ -140,9 +144,9 @@ const Login = () => {
         </form>
       </div>
       <ToastContainer
-        position="top-right"
+        position="top-center"
         autoClose={3000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop
         closeOnClick
         rtl={false}

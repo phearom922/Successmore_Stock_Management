@@ -76,7 +76,7 @@ const userSchema = z.object({
   }
   return true;
 }, {
-  message: 'User role must have a warehouse',
+  message: 'តួនាទីអ្នកប្រើប្រាស់ត្រូវតែមានឃ្លាំង',
   path: ['warehouse'],
 });
 
@@ -107,15 +107,15 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) {
       logger.warn('User not found:', { username });
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'មិនមានឃើញអ្នកប្រើប្រាស់' });
     }
     if (!(await bcrypt.compare(password, user.password))) {
       logger.warn('Invalid password for user:', { username });
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'លេខសម្អាត់មិនត្រឹមត្រូវ' });
     }
     if (!user.isActive) {
       logger.warn('User is disabled:', { username });
-      return res.status(403).json({ message: 'User is disabled' });
+      return res.status(403).json({ message: 'អ្នកប្រើប្រាស់ត្រូវបានបិទ' });
     }
 
     // ตั้งค่าเริ่มต้น warehouse เป็น PNH-WH-01 ถ้าไม่มี
@@ -127,7 +127,7 @@ router.post('/login', async (req, res) => {
         logger.info('Assigned default warehouse PNH-WH-01 to user:', { username, userId: user._id });
       } else {
         logger.error('Default warehouse PNH-WH-01 not found');
-        return res.status(500).json({ message: 'Default warehouse not found' });
+        return res.status(500).json({ message: 'រកមិនឃើញឃ្លាំងលំនាំដើម' });
       }
     }
 
@@ -1134,7 +1134,7 @@ router.post('/receive', authMiddleware, async (req, res) => {
       timestamp: new Date(),
     });
 
-    res.json({ message: 'Stock received successfully', transactionNumbers });
+    res.json({ message: 'បញ្ជូលស្តុកដោយជោគជ័យ!', transactionNumbers });
   } catch (error) {
     logger.error('Error receiving stock:', {
       message: error.message,

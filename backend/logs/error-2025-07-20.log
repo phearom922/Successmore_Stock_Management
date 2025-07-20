@@ -26,3 +26,5 @@ JsonWebTokenError: jwt malformed
 MongooseServerSelectionError: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
     at _handleConnectionErrors (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\connection.js:1165:11)
     at NativeConnection.openUri (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\connection.js:1096:11)
+2025-07-20 12:34:33 [error]: Failed to send Telegram notification for issue:
+2025-07-20 12:35:00 [error]: Failed to send Telegram notification for cancellation:

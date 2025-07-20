@@ -484,13 +484,21 @@ const TransferOrder = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 mx-auto bg-gray-50 min-h-screen">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+    <div className="mx-auto min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Transfer Order Management</h1>
-          <p className="text-gray-600">Issue, Transfer, and Reserve stock with FEFO system</p>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Transfer Order Management
+          </h1>
+          <p className="text-gray-600">
+            Issue, Transfer, and Reserve stock with FEFO system
+          </p>
         </div>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full md:w-auto">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full md:w-auto"
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="newTransfer">New Transfer</TabsTrigger>
             <TabsTrigger value="history">Transfer History</TabsTrigger>
@@ -505,34 +513,40 @@ const TransferOrder = () => {
         </div>
       ) : (
         <div className="space-y-6">
-          {activeTab === 'newTransfer' && (
+          {activeTab === "newTransfer" && (
             <>
               <Card>
                 <CardHeader>
                   <CardTitle>Create New Transfer</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <div>
-                        <Label htmlFor="sourceWarehouse" className="mb-2">Source Warehouse</Label>
+                        <Label htmlFor="sourceWarehouse" className="mb-2">
+                          Source Warehouse
+                        </Label>
                         <Select
-                          value={sourceWarehouse || ''}
-                          onValueChange={val => {
-                            console.log('Selected source warehouse:', val);
+                          value={sourceWarehouse || ""}
+                          onValueChange={(val) => {
+                            console.log("Selected source warehouse:", val);
                             setSourceWarehouse(val);
                           }}
-                          disabled={user.role !== 'admin' || isLoading}
+                          disabled={user.role !== "admin" || isLoading}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select source warehouse" />
                           </SelectTrigger>
                           <SelectContent>
-                            {warehouses.map(w => (
+                            {warehouses.map((w) => (
                               <SelectItem
                                 key={w._id}
                                 value={w._id.toString()}
-                                disabled={user.role !== 'admin' && w._id.toString() !== user.warehouse?.toString()}
+                                disabled={
+                                  user.role !== "admin" &&
+                                  w._id.toString() !==
+                                    user.warehouse?.toString()
+                                }
                               >
                                 {w.name} ({w.warehouseCode})
                               </SelectItem>
@@ -541,22 +555,26 @@ const TransferOrder = () => {
                         </Select>
                       </div>
 
-                      <div className=' inline-flex flex-col mt-4'>
-                        <Label htmlFor="category" className="mb-2">Category</Label>
-                        <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="mt-4 inline-flex flex-col">
+                        <Label htmlFor="category" className="mb-2">
+                          Category
+                        </Label>
+                        <div className="mb-4 flex flex-wrap gap-2">
                           <button
                             type="button"
-                            className={`px-3 py-1 rounded-lg border cursor-pointer text-sm font-medium ${selectedCategory === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
-                            onClick={() => setSelectedCategory('All')}
+                            className={`cursor-pointer rounded-lg border px-3 py-1 text-sm font-medium ${selectedCategory === "All" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700"} hover:bg-blue-100`}
+                            onClick={() => setSelectedCategory("All")}
                           >
                             All Products
                           </button>
-                          {categories.map(category => (
+                          {categories.map((category) => (
                             <button
                               key={category._id}
                               type="button"
-                              className={`px-3 py-1 rounded-lg cursor-pointer border text-sm font-medium ${selectedCategory === category._id.toString() ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-blue-100`}
-                              onClick={() => setSelectedCategory(category._id.toString())}
+                              className={`cursor-pointer rounded-lg border px-3 py-1 text-sm font-medium ${selectedCategory === category._id.toString() ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700"} hover:bg-blue-100`}
+                              onClick={() =>
+                                setSelectedCategory(category._id.toString())
+                              }
                             >
                               {category.name}
                             </button>
@@ -564,31 +582,40 @@ const TransferOrder = () => {
                         </div>
                       </div>
 
-                      <div >
-                        <Label htmlFor="product" className="mb-2">Product</Label>
+                      <div>
+                        <Label htmlFor="product" className="mb-2">
+                          Product
+                        </Label>
                         <div className="relative">
                           <Input
                             ref={productInputRef}
                             type="text"
                             placeholder="Search by product code or name..."
-                            className="mb-2 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            className="mb-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                             value={productSearch}
                             onChange={handleProductSearch}
                             onFocus={() => {
                               setShowProductDropdown(true);
                               setSearchResults(filteredProducts);
                             }}
-                            onBlur={() => setTimeout(() => setShowProductDropdown(false), 150)}
+                            onBlur={() =>
+                              setTimeout(
+                                () => setShowProductDropdown(false),
+                                150,
+                              )
+                            }
                             disabled={isLoading || !sourceWarehouse}
                             autoComplete="off"
                           />
                           {showProductDropdown && searchResults.length > 0 && (
-                            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                              {searchResults.map(product => (
+                            <ul className="absolute z-10 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
+                              {searchResults.map((product) => (
                                 <li
                                   key={product._id}
-                                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-blue-100 ${selectedProduct === product._id ? 'bg-blue-600 text-white' : 'text-gray-700'}`}
-                                  onMouseDown={() => handleProductSelect(product._id)}
+                                  className={`cursor-pointer px-3 py-2 text-sm hover:bg-blue-100 ${selectedProduct === product._id ? "bg-blue-600 text-white" : "text-gray-700"}`}
+                                  onMouseDown={() =>
+                                    handleProductSelect(product._id)
+                                  }
                                 >
                                   {product.name} ({product.productCode})
                                 </li>
@@ -601,11 +628,13 @@ const TransferOrder = () => {
 
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="destinationWarehouse" className="mb-2">Destination Warehouse</Label>
+                        <Label htmlFor="destinationWarehouse" className="mb-2">
+                          Destination Warehouse
+                        </Label>
                         <Select
-                          value={destinationWarehouse || ''}
-                          onValueChange={val => {
-                            console.log('Selected destination warehouse:', val);
+                          value={destinationWarehouse || ""}
+                          onValueChange={(val) => {
+                            console.log("Selected destination warehouse:", val);
                             setDestinationWarehouse(val);
                           }}
                           disabled={isLoading || !sourceWarehouse}
@@ -615,8 +644,10 @@ const TransferOrder = () => {
                           </SelectTrigger>
                           <SelectContent>
                             {warehouses
-                              .filter(w => w._id.toString() !== sourceWarehouse)
-                              .map(w => (
+                              .filter(
+                                (w) => w._id.toString() !== sourceWarehouse,
+                              )
+                              .map((w) => (
                                 <SelectItem
                                   key={w._id}
                                   value={w._id.toString()}
@@ -636,32 +667,48 @@ const TransferOrder = () => {
                           onChange={(e) => {
                             setIsManualSelection(e.target.checked);
                             if (!e.target.checked && lots.length > 0) {
-                              setCurrentItem(prev => ({ ...prev, lotId: lots[0]._id.toString() }));
+                              setCurrentItem((prev) => ({
+                                ...prev,
+                                lotId: lots[0]._id.toString(),
+                              }));
                             } else {
-                              setCurrentItem(prev => ({ ...prev, lotId: '' }));
+                              setCurrentItem((prev) => ({
+                                ...prev,
+                                lotId: "",
+                              }));
                             }
                           }}
                           className="h-5 w-5 cursor-pointer"
                         />
-                        <Label htmlFor="manualSelection">Manual Lot Selection</Label>
-                        {!isManualSelection && <Label>| Selected Lot (FEFO)</Label>}
+                        <Label htmlFor="manualSelection">
+                          Manual Lot Selection
+                        </Label>
+                        {!isManualSelection && (
+                          <Label>| Selected Lot (FEFO)</Label>
+                        )}
                       </div>
 
                       {!isManualSelection && (
                         <Input
-                          value={lots.length > 0 ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})` : 'No lots available'}
+                          value={
+                            lots.length > 0
+                              ? `${lots[0].lotCode} (Qty: ${lots[0].qtyOnHand}, Exp: ${new Date(lots[0].expDate).toLocaleDateString()})`
+                              : "No lots available"
+                          }
                           readOnly
                         />
                       )}
 
                       {isManualSelection && (
                         <div>
-
                           <Select
-                            value={currentItem.lotId || ''}
-                            onValueChange={val => {
-                              console.log('Selected lot:', val);
-                              setCurrentItem(prev => ({ ...prev, lotId: val }));
+                            value={currentItem.lotId || ""}
+                            onValueChange={(val) => {
+                              console.log("Selected lot:", val);
+                              setCurrentItem((prev) => ({
+                                ...prev,
+                                lotId: val,
+                              }));
                             }}
                             disabled={isLoading || !selectedProduct}
                           >
@@ -669,9 +716,13 @@ const TransferOrder = () => {
                               <SelectValue placeholder="Select lot" />
                             </SelectTrigger>
                             <SelectContent>
-                              {lots.map(lot => (
-                                <SelectItem key={lot._id} value={lot._id.toString()}>
-                                  {lot.lotCode} (Qty: {lot.qtyOnHand}, Exp: {new Date(lot.expDate).toLocaleDateString()})
+                              {lots.map((lot) => (
+                                <SelectItem
+                                  key={lot._id}
+                                  value={lot._id.toString()}
+                                >
+                                  {lot.lotCode} (Qty: {lot.qtyOnHand}, Exp:{" "}
+                                  {new Date(lot.expDate).toLocaleDateString()})
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -680,12 +731,19 @@ const TransferOrder = () => {
                       )}
 
                       <div>
-                        <Label htmlFor="quantity" className="mb-2">Quantity</Label>
+                        <Label htmlFor="quantity" className="mb-2">
+                          Quantity
+                        </Label>
                         <Input
                           type="number"
                           id="quantity"
                           value={currentItem.quantity}
-                          onChange={e => setCurrentItem(prev => ({ ...prev, quantity: e.target.value }))}
+                          onChange={(e) =>
+                            setCurrentItem((prev) => ({
+                              ...prev,
+                              quantity: e.target.value,
+                            }))
+                          }
                           placeholder="Enter quantity"
                           min="1"
                         />
@@ -696,7 +754,11 @@ const TransferOrder = () => {
                 <CardFooter className="flex justify-end">
                   <Button
                     onClick={handleAddItem}
-                    disabled={isLoading || !currentItem.quantity || (isManualSelection && !currentItem.lotId)}
+                    disabled={
+                      isLoading ||
+                      !currentItem.quantity ||
+                      (isManualSelection && !currentItem.lotId)
+                    }
                     className="w-full md:w-auto"
                   >
                     Add Item
@@ -707,7 +769,7 @@ const TransferOrder = () => {
               {addedItems.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex justify-between items-center">
+                    <CardTitle className="flex items-center justify-between">
                       <span>Items to Transfer</span>
                       <Badge variant="outline">{addedItems.length} items</Badge>
                     </CardTitle>
@@ -715,7 +777,7 @@ const TransferOrder = () => {
                   <CardContent>
                     <ScrollArea className="h-[300px] rounded-md border">
                       <Table>
-                        <TableHeader className="sticky top-0 bg-background">
+                        <TableHeader className="bg-background sticky top-0">
                           <TableRow>
                             <TableHead>Product Code</TableHead>
                             <TableHead>Product Name</TableHead>
@@ -723,23 +785,58 @@ const TransferOrder = () => {
                             <TableHead>Quantity</TableHead>
                             <TableHead>Prod Date</TableHead>
                             <TableHead>Exp Date</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-right">
+                              Actions
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {addedItems.map((item, index) => {
-                            const lotInTable = addedItems.find(i => i.lotCode === item.lotCode);
-                            const lot = lots.find(l => l._id.toString() === item.lotId) || lotInTable;
-                            const productId = lot?.productId?._id?.toString() || lot?.productId?.toString();
-                            const product = productId ? products.find(p => p._id === productId) : null;
+                            const lotInTable = addedItems.find(
+                              (i) => i.lotCode === item.lotCode,
+                            );
+                            const lot =
+                              lots.find(
+                                (l) => l._id.toString() === item.lotId,
+                              ) || lotInTable;
+                            const productId =
+                              lot?.productId?._id?.toString() ||
+                              lot?.productId?.toString();
+                            const product = productId
+                              ? products.find((p) => p._id === productId)
+                              : null;
                             return (
                               <TableRow key={index}>
-                                <TableCell>{product?.productCode || lotInTable?.productCode || 'N/A'}</TableCell>
-                                <TableCell>{product?.name || lotInTable?.productName || 'Unknown'}</TableCell>
+                                <TableCell>
+                                  {product?.productCode ||
+                                    lotInTable?.productCode ||
+                                    "N/A"}
+                                </TableCell>
+                                <TableCell>
+                                  {product?.name ||
+                                    lotInTable?.productName ||
+                                    "Unknown"}
+                                </TableCell>
                                 <TableCell>{item.lotCode}</TableCell>
                                 <TableCell>{item.quantity}</TableCell>
-                                <TableCell>{lot ? format(new Date(lot.prodDate || lot.productionDate), 'dd/MM/yyyy') : '-'}</TableCell>
-                                <TableCell>{lot ? format(new Date(lot.expDate), 'dd/MM/yyyy') : '-'}</TableCell>
+                                <TableCell>
+                                  {lot
+                                    ? format(
+                                        new Date(
+                                          lot.prodDate || lot.productionDate,
+                                        ),
+                                        "dd/MM/yyyy",
+                                      )
+                                    : "-"}
+                                </TableCell>
+                                <TableCell>
+                                  {lot
+                                    ? format(
+                                        new Date(lot.expDate),
+                                        "dd/MM/yyyy",
+                                      )
+                                    : "-"}
+                                </TableCell>
                                 <TableCell className="text-right">
                                   <Button
                                     variant="ghost"
@@ -764,7 +861,7 @@ const TransferOrder = () => {
                       disabled={isLoading || addedItems.length === 0}
                       className="w-full md:w-auto"
                     >
-                      {isLoading ? 'Processing...' : 'Transfer Stock'}
+                      {isLoading ? "Processing..." : "Transfer Stock"}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -772,18 +869,20 @@ const TransferOrder = () => {
             </>
           )}
 
-          {activeTab === 'history' && (
+          {activeTab === "history" && (
             <Card>
               <CardHeader>
                 <CardTitle>Transfer History</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                  <div>
+                <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+                  <div className="space-y-2">
                     <Label>Status</Label>
                     <Select
                       value={filters.status}
-                      onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
+                      onValueChange={(value) =>
+                        setFilters((prev) => ({ ...prev, status: value }))
+                      }
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select status" />
@@ -796,18 +895,20 @@ const TransferOrder = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <Label>Warehouse</Label>
                     <Select
                       value={filters.warehouse}
-                      onValueChange={(value) => setFilters(prev => ({ ...prev, warehouse: value }))}
+                      onValueChange={(value) =>
+                        setFilters((prev) => ({ ...prev, warehouse: value }))
+                      }
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="All Warehouses" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Warehouses</SelectItem>
-                        {warehouses.map(w => (
+                        {warehouses.map((w) => (
                           <SelectItem key={w._id} value={w._id.toString()}>
                             {w.name}
                           </SelectItem>
@@ -815,36 +916,46 @@ const TransferOrder = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <Label>Start Date</Label>
                     <DatePicker
                       selected={filters.startDate}
-                      onChange={(date) => setFilters(prev => ({ ...prev, startDate: startOfDay(date) }))}
+                      onChange={(date) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          startDate: startOfDay(date),
+                        }))
+                      }
                       selectsStart
                       startDate={filters.startDate}
                       endDate={filters.endDate}
                       dateFormat="dd/MM/yyyy"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <Label>End Date</Label>
                     <DatePicker
                       selected={filters.endDate}
-                      onValueChange={(date) => setFilters(prev => ({ ...prev, endDate: endOfDay(date) }))}
+                      onValueChange={(date) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          endDate: endOfDay(date),
+                        }))
+                      }
                       selectsEnd
                       startDate={filters.startDate}
                       endDate={filters.endDate}
                       minDate={filters.startDate}
                       dateFormat="dd/MM/yyyy"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </div>
                 </div>
 
                 <ScrollArea className="h-[600px] rounded-md border">
                   <Table>
-                    <TableHeader className="sticky top-0 bg-background">
+                    <TableHeader className="bg-background sticky top-0">
                       <TableRow>
                         <TableHead>Transfer #</TableHead>
                         <TableHead>Source</TableHead>
@@ -860,22 +971,42 @@ const TransferOrder = () => {
                     </TableHeader>
                     <TableBody>
                       {transferHistory.map((transfer) => {
-                        const isDestination = user.role === 'admin' || (transfer.destinationWarehouseId.toString() === userWarehouseId && userWarehouseId);
-                        const totalQty = transfer.lots.reduce((sum, l) => sum + l.quantity, 0);
+                        const isDestination =
+                          user.role === "admin" ||
+                          (transfer.destinationWarehouseId.toString() ===
+                            userWarehouseId &&
+                            userWarehouseId);
+                        const totalQty = transfer.lots.reduce(
+                          (sum, l) => sum + l.quantity,
+                          0,
+                        );
                         // Determine Type: OUT if source warehouse matches user's warehouse, else IN
-                        const userWarehouse = warehouses.find(w => w._id.toString() === userWarehouseId);
-                        const sourceWarehouse = transfer.sourceWarehouseId?.name;
+                        const userWarehouse = warehouses.find(
+                          (w) => w._id.toString() === userWarehouseId,
+                        );
+                        const sourceWarehouse =
+                          transfer.sourceWarehouseId?.name;
                         const isOut = userWarehouse?.name === sourceWarehouse;
                         return (
                           <TableRow key={transfer._id}>
-                            <TableCell className="font-medium">{transfer.transferNumber}</TableCell>
-                            <TableCell>{transfer.sourceWarehouseId?.name || 'N/A'}</TableCell>
-                            <TableCell>{transfer.destinationWarehouseId?.name || 'N/A'}</TableCell>
+                            <TableCell className="font-medium">
+                              {transfer.transferNumber}
+                            </TableCell>
+                            <TableCell>
+                              {transfer.sourceWarehouseId?.name || "N/A"}
+                            </TableCell>
+                            <TableCell>
+                              {transfer.destinationWarehouseId?.name || "N/A"}
+                            </TableCell>
                             <TableCell>
                               {isOut ? (
-                                <span className="px-2 py-1 rounded bg-red-200  text-red-800 text-xs">OUT</span>
+                                <span className="rounded bg-red-200 px-2 py-1 text-xs text-red-800">
+                                  OUT
+                                </span>
                               ) : (
-                                <span className="px-2 py-1 rounded bg-green-200 text-green-800 text-xs">IN</span>
+                                <span className="rounded bg-green-200 px-2 py-1 text-xs text-green-800">
+                                  IN
+                                </span>
                               )}
                             </TableCell>
 
@@ -883,45 +1014,57 @@ const TransferOrder = () => {
                             <TableCell>{transfer.lots.map(l => l.lotId?.productId?.name || 'N/A').join(', ') || 'N/A'}</TableCell> */}
 
                             <TableCell>{totalQty}</TableCell>
-                            <TableCell>{getStatusBadge(transfer.status)}</TableCell>
-                            <TableCell>{format(new Date(transfer.createdAt), 'dd-MM-yyyy, HH:mm')}</TableCell>
-                            <TableCell className="text-right space-x-2">
+                            <TableCell>
+                              {getStatusBadge(transfer.status)}
+                            </TableCell>
+                            <TableCell>
+                              {format(
+                                new Date(transfer.createdAt),
+                                "dd-MM-yyyy, HH:mm",
+                              )}
+                            </TableCell>
+                            <TableCell className="space-x-2 text-right">
                               <Button
                                 variant="primary"
                                 size="sm"
                                 onClick={() => generatePDF(transfer)}
-                                className="bg-gray-800 text-white hover:bg-gray-700 text-xs"
+                                className="bg-gray-800 text-xs text-white hover:bg-gray-700"
                               >
                                 View PDF
                               </Button>
-                              {isDestination && transfer.status === 'Pending' && (
-                                <>
-                                  {isOut ? (
-                                    ""
-                                  ) : (
-                                    <Button
-                                      variant="primary"
-                                      size="sm"
-                                      onClick={() => handleConfirmTransfer(transfer._id)}
-                                      className="bg-green-600 text-white hover:bg-green-700 text-xs"
-                                    >
-                                      Confirm
-                                    </Button>
-                                  )}
-                                  {isOut ? (
-                                    ""
-                                  ) : (
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() => handleRejectTransfer(transfer._id)}
-                                      className="text-xs"
-                                    >
-                                      Reject
-                                    </Button>
-                                  )}
-                                </>
-                              )}
+                              {isDestination &&
+                                transfer.status === "Pending" && (
+                                  <>
+                                    {isOut ? (
+                                      ""
+                                    ) : (
+                                      <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleConfirmTransfer(transfer._id)
+                                        }
+                                        className="bg-green-600 text-xs text-white hover:bg-green-700"
+                                      >
+                                        Confirm
+                                      </Button>
+                                    )}
+                                    {isOut ? (
+                                      ""
+                                    ) : (
+                                      <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleRejectTransfer(transfer._id)
+                                        }
+                                        className="text-xs"
+                                      >
+                                        Reject
+                                      </Button>
+                                    )}
+                                  </>
+                                )}
                             </TableCell>
                           </TableRow>
                         );
@@ -945,20 +1088,37 @@ const TransferOrder = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Total Quantity</Label>
-                  <p className="font-medium">{addedItems.reduce((sum, item) => sum + Number(item.quantity), 0)}</p>
+                  <p className="font-medium">
+                    {addedItems.reduce(
+                      (sum, item) => sum + Number(item.quantity),
+                      0,
+                    )}
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label>Source Warehouse</Label>
-                  <p className="font-medium">{warehouses.find(w => w._id.toString() === sourceWarehouse)?.name || 'N/A'}</p>
+                  <p className="font-medium">
+                    {warehouses.find(
+                      (w) => w._id.toString() === sourceWarehouse,
+                    )?.name || "N/A"}
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <Label>Destination Warehouse</Label>
-                  <p className="font-medium">{warehouses.find(w => w._id.toString() === destinationWarehouse)?.name || 'N/A'}</p>
+                  <p className="font-medium">
+                    {warehouses.find(
+                      (w) => w._id.toString() === destinationWarehouse,
+                    )?.name || "N/A"}
+                  </p>
                 </div>
               </div>
 
               <DialogFooter>
-                <Button variant="outline" onClick={cancelTransfer} disabled={isLoading}>
+                <Button
+                  variant="outline"
+                  onClick={cancelTransfer}
+                  disabled={isLoading}
+                >
                   Cancel
                 </Button>
                 <Button onClick={confirmTransfer} disabled={isLoading}>
@@ -968,7 +1128,17 @@ const TransferOrder = () => {
             </DialogContent>
           </Dialog>
 
-          <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </div>
       )}
     </div>
