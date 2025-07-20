@@ -34,7 +34,7 @@ const IssueStock = () => {
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
 
-  
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
   useEffect(() => {
@@ -314,18 +314,18 @@ const IssueStock = () => {
           >
             {isLoading ? 'Processing...' : 'Issue Stock'}
           </Button>
-        </div>
+        </div    >
       </div>
 
       {isLoading && !products.length ? (
-        <div className="flex justify-center items-center h-64">
+        <div className=" justify-center items-center h-64 flex">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
       ) : (
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="mb-6">
-              <div className="flex flex-wrap gap-2">
+              <div className=" flex-wrap gap-2 flex">
                 <button
                   type="button"
                   className={`px-3 py-1 rounded-lg border text-sm font-medium ${selectedCategory === 'All' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-red-100`}

@@ -29,5 +29,9 @@
     "winston-daily-rotate-file": "^5.0.0",
     "xlsx": "^0.18.5",
     "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14"
   }
 }

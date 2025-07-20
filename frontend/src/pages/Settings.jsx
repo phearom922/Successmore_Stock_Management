@@ -1,20 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import Modal from 'react-modal';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Modal from "react-modal";
 
-Modal.setAppElement('#root'); // ป้องกันการ warning ใน console
+Modal.setAppElement("#root"); // ป้องกันการ warning ใน console
 
 const Settings = () => {
   const [warningDays, setWarningDays] = useState(15);
   const [lowStockThreshold, setLowStockThreshold] = useState(10);
-  const [isIssueStockNotificationEnabled, setIssueStockNotificationEnabled] = useState(true);
-  const [isIssueHistoryNotificationEnabled, setIssueHistoryNotificationEnabled] = useState(true);
-  const [telegramBotToken, setTelegramBotToken] = useState('');
-  const [chatId, setChatId] = useState('-4871143154');
+  const [isIssueStockNotificationEnabled, setIssueStockNotificationEnabled] =
+    useState(true);
+  const [
+    isIssueHistoryNotificationEnabled,
+    setIssueHistoryNotificationEnabled,
+  ] = useState(true);
+  const [telegramBotToken, setTelegramBotToken] = useState("");
+  const [chatId, setChatId] = useState("-4871143154");
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isTelegramModalOpen, setIsTelegramModalOpen] = useState(false);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
@@ -24,19 +28,23 @@ const Settings = () => {
   const fetchSettings = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/settings`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       const settings = response.data;
       setWarningDays(settings.expirationWarningDays);
       setLowStockThreshold(settings.lowStockThreshold);
-      setIssueStockNotificationEnabled(settings.issueStockNotificationEnabled || false); // Default to false if undefined
-      setIssueHistoryNotificationEnabled(settings.issueHistoryNotificationEnabled || false); // Default to false if undefined
-      setTelegramBotToken(settings.telegramBotToken || '');
-      setChatId(settings.chatId || '-4871143154');
-      console.log('Fetched Settings:', settings); // Debug
+      setIssueStockNotificationEnabled(
+        settings.issueStockNotificationEnabled || false,
+      ); // Default to false if undefined
+      setIssueHistoryNotificationEnabled(
+        settings.issueHistoryNotificationEnabled || false,
+      ); // Default to false if undefined
+      setTelegramBotToken(settings.telegramBotToken || "");
+      setChatId(settings.chatId || "-4871143154");
+      console.log("Fetched Settings:", settings); // Debug
     } catch (error) {
-      console.error('Error fetching settings:', error);
-      toast.error('Failed to load settings');
+      console.error("Error fetching settings:", error);
+      toast.error("Failed to load settings");
     }
   };
 
@@ -52,18 +60,18 @@ const Settings = () => {
         issueStockNotificationEnabled: isIssueStockNotificationEnabled,
         issueHistoryNotificationEnabled: isIssueHistoryNotificationEnabled,
       };
-      console.log('Saving Notification Settings:', payload); // Debug
+      console.log("Saving Notification Settings:", payload); // Debug
       const response = await axios.put(
         `${API_BASE_URL}/api/settings/notification`,
         payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
-      toast.success('Notification settings saved successfully');
+      toast.success("Notification settings saved successfully");
       setIsNotificationModalOpen(false);
       await fetchSettings(); // รีเฟรช Settings หลังบันทึก
     } catch (error) {
-      console.error('Error saving notification settings:', error);
-      toast.error('Failed to save notification settings');
+      console.error("Error saving notification settings:", error);
+      toast.error("Failed to save notification settings");
     }
   };
 
@@ -77,63 +85,69 @@ const Settings = () => {
         telegramBotToken,
         chatId,
       };
-      console.log('Saving Telegram Config:', payload); // Debug
+      console.log("Saving Telegram Config:", payload); // Debug
       const response = await axios.put(
         `${API_BASE_URL}/api/settings/telegram`,
         payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
-      toast.success('Telegram configuration saved successfully');
+      toast.success("Telegram configuration saved successfully");
       setIsTelegramModalOpen(false);
       await fetchSettings(); // รีเฟรช Settings หลังบันทึก
     } catch (error) {
-      console.error('Error saving telegram configuration:', error);
-      toast.error('Failed to save telegram configuration');
+      console.error("Error saving telegram configuration:", error);
+      toast.error("Failed to save telegram configuration");
     }
   };
 
   const handleCancelSave = (modalType) => {
-    if (modalType === 'notification') setIsNotificationModalOpen(false);
-    if (modalType === 'telegram') setIsTelegramModalOpen(false);
+    if (modalType === "notification") setIsNotificationModalOpen(false);
+    if (modalType === "telegram") setIsTelegramModalOpen(false);
   };
 
   return (
-    <div className="p-6 max-w-screen mx-auto bg-gray-50 rounded-xl">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
+    <div className="mx-auto max-w-screen rounded-xl bg-gray-50 p-6">
+      <h1 className="mb-6 text-2xl font-bold text-gray-800">Settings</h1>
+      <div className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         {/* Expiration Warning and Low Stock Threshold */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Expiration Warning Days</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Expiration Warning Days
+          </label>
           <input
             type="number"
             value={warningDays}
             onChange={(e) => setWarningDays(Number(e.target.value))}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500"
             min="1"
-            disabled // เก็บไว้ก่อนตามคำขอ
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Low Stock Threshold</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Low Stock Threshold
+          </label>
           <input
             type="number"
             value={lowStockThreshold}
             onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500"
             min="1"
-            disabled // เก็บไว้ก่อนตามคำขอ
           />
         </div>
 
         {/* Notification Settings */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Notification Settings</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Notification Settings
+          </label>
           <div className="space-y-2">
             <div className="flex items-center">
               <input
                 type="checkbox"
                 checked={isIssueStockNotificationEnabled}
-                onChange={(e) => setIssueStockNotificationEnabled(e.target.checked)}
+                onChange={(e) =>
+                  setIssueStockNotificationEnabled(e.target.checked)
+                }
                 className="mr-2 leading-tight"
               />
               <span>Enable Issue Stock Notifications</span>
@@ -142,14 +156,16 @@ const Settings = () => {
               <input
                 type="checkbox"
                 checked={isIssueHistoryNotificationEnabled}
-                onChange={(e) => setIssueHistoryNotificationEnabled(e.target.checked)}
+                onChange={(e) =>
+                  setIssueHistoryNotificationEnabled(e.target.checked)
+                }
                 className="mr-2 leading-tight"
               />
               <span>Enable Issue History Notifications</span>
             </div>
             <button
               onClick={handleSaveNotificationSettings}
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="mt-2 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Save Notification Settings
             </button>
@@ -158,31 +174,37 @@ const Settings = () => {
 
         {/* Telegram Configuration */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Telegram Configuration</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Telegram Configuration
+          </label>
           <div className="space-y-2">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Telegram Bot Token</label>
+              <label className="mb-1 block text-sm text-gray-600">
+                Telegram Bot Token
+              </label>
               <input
                 type="text"
                 value={telegramBotToken}
                 onChange={(e) => setTelegramBotToken(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500"
                 placeholder="Enter Telegram Bot Token"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Chat ID</label>
+              <label className="mb-1 block text-sm text-gray-600">
+                Chat ID
+              </label>
               <input
                 type="text"
                 value={chatId}
                 onChange={(e) => setChatId(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full rounded-md border border-gray-300 p-2 focus:border-blue-500 focus:ring-blue-500"
                 placeholder="Enter Chat ID (e.g., -4871143154)"
               />
             </div>
             <button
               onClick={handleSaveTelegramConfig}
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="mt-2 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Save Telegram Configuration
             </button>
@@ -192,32 +214,34 @@ const Settings = () => {
 
       <Modal
         isOpen={isNotificationModalOpen}
-        onRequestClose={() => handleCancelSave('notification')}
+        onRequestClose={() => handleCancelSave("notification")}
         style={{
           content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            width: '300px',
-            padding: '20px',
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "300px",
+            padding: "20px",
           },
         }}
       >
-        <h2 className="text-lg font-bold mb-4">Confirm Save Notification Settings</h2>
+        <h2 className="mb-4 text-lg font-bold">
+          Confirm Save Notification Settings
+        </h2>
         <p>Are you sure you want to save these notification settings?</p>
         <div className="mt-4 flex justify-end space-x-2">
           <button
-            onClick={() => handleCancelSave('notification')}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            onClick={() => handleCancelSave("notification")}
+            className="rounded-md bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
           >
             Cancel
           </button>
           <button
             onClick={handleConfirmSaveNotification}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             Confirm
           </button>
@@ -226,32 +250,34 @@ const Settings = () => {
 
       <Modal
         isOpen={isTelegramModalOpen}
-        onRequestClose={() => handleCancelSave('telegram')}
+        onRequestClose={() => handleCancelSave("telegram")}
         style={{
           content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-            width: '300px',
-            padding: '20px',
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "300px",
+            padding: "20px",
           },
         }}
       >
-        <h2 className="text-lg font-bold mb-4">Confirm Save Telegram Configuration</h2>
+        <h2 className="mb-4 text-lg font-bold">
+          Confirm Save Telegram Configuration
+        </h2>
         <p>Are you sure you want to save these telegram settings?</p>
         <div className="mt-4 flex justify-end space-x-2">
           <button
-            onClick={() => handleCancelSave('telegram')}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            onClick={() => handleCancelSave("telegram")}
+            className="rounded-md bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
           >
             Cancel
           </button>
           <button
             onClick={handleConfirmSaveTelegram}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             Confirm
           </button>
