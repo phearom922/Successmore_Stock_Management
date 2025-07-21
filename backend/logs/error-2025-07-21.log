@@ -82,3 +82,150 @@ TokenExpiredError: jwt expired
     at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
     at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
     at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:44 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:16:31 [error]: Failed to set bot commands 400: Bad Request: BOT_COMMAND_INVALID
+Error: 400: Bad Request: BOT_COMMAND_INVALID
+    at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7
+2025-07-21 11:19:24 [error]: Failed to set bot commands 400: Bad Request: BOT_COMMAND_INVALID
+Error: 400: Bad Request: BOT_COMMAND_INVALID
+    at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7
+2025-07-21 11:20:07 [error]: Failed to set bot commands 400: Bad Request: BOT_COMMAND_INVALID
+Error: 400: Bad Request: BOT_COMMAND_INVALID
+    at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7

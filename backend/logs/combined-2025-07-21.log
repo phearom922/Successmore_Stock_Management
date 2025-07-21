@@ -275,3 +275,582 @@ TokenExpiredError: jwt expired
     at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
     at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
     at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:37 [info]: Logger initialized successfully
+2025-07-21 11:03:39 [info]: Server + Bot listening on port 3000
+2025-07-21 11:03:40 [info]: Connected to MongoDB
+2025-07-21 11:03:40 [info]: Telegram webhook set to https://1ac9191e4ce5.ngrok-free.app/bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:03:40 [info]: Telegram bot commands set
+2025-07-21 11:03:44 [info]: Received GET /api/notifications
+2025-07-21 11:03:44 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/notifications
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/notifications
+2025-07-21 11:03:49 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 11:03:49 [info]: Received GET /api/warehouses
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/products
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/categories
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/transfer-history?status=Pending&startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/warehouses
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/products
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/categories
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:49 [info]: Received GET /api/transfer-history?status=Pending&startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:03:49 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 11:03:54 [info]: Received POST /api/login
+2025-07-21 11:03:54 [info]: Login attempt:
+2025-07-21 11:03:54 [info]: Login successful:
+2025-07-21 11:03:55 [info]: Received GET /api/notifications
+2025-07-21 11:03:55 [info]: Received GET /api/warehouses
+2025-07-21 11:03:55 [info]: Received GET /api/notifications
+2025-07-21 11:03:55 [info]: Received GET /api/warehouses
+2025-07-21 11:03:55 [info]: Received GET /api/products
+2025-07-21 11:03:55 [info]: Received GET /api/warehouses
+2025-07-21 11:03:55 [info]: Received GET /api/lots
+2025-07-21 11:03:55 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:03:55 [info]: Fetching expiring lots
+2025-07-21 11:03:55 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:03:55 [info]: Received GET /api/warehouses
+2025-07-21 11:03:55 [info]: Received GET /api/products
+2025-07-21 11:03:55 [info]: Received GET /api/lots
+2025-07-21 11:03:55 [info]: Expiring lots found:
+2025-07-21 11:03:55 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:03:55 [info]: Fetching expiring lots
+2025-07-21 11:03:55 [info]: Expiring lots found:
+2025-07-21 11:03:55 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:03:55 [info]: Received GET /api/settings
+2025-07-21 11:03:55 [info]: Fetched settings
+2025-07-21 11:03:55 [info]: Received GET /api/settings
+2025-07-21 11:03:55 [info]: Fetched settings
+2025-07-21 11:03:57 [info]: Received GET /api/warehouses
+2025-07-21 11:03:57 [info]: Received GET /api/manage-damage/history?startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:03:57 [info]: Received GET /api/warehouses
+2025-07-21 11:03:57 [info]: Received GET /api/manage-damage/history?startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/settings
+2025-07-21 11:03:58 [info]: Received GET /api/lot-management/expiring?warehouse=
+2025-07-21 11:03:58 [info]: Fetching expiring lots
+2025-07-21 11:03:58 [info]: Fetched settings
+2025-07-21 11:03:58 [info]: Received GET /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-21 11:03:58 [info]: Fetching lot management data
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/settings
+2025-07-21 11:03:58 [info]: Fetched settings
+2025-07-21 11:03:58 [info]: Expiring lots found:
+2025-07-21 11:03:58 [info]: Received GET /api/lot-management/expiring?warehouse=
+2025-07-21 11:03:58 [info]: Fetching expiring lots
+2025-07-21 11:03:58 [info]: Received GET /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-21 11:03:58 [info]: Fetching lot management data
+2025-07-21 11:03:58 [info]: Expiring lots found:
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/manage-damage/history?startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/manage-damage/history?startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/products
+2025-07-21 11:03:58 [info]: Received GET /api/lots
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:03:58 [info]: Fetching expiring lots
+2025-07-21 11:03:58 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:03:58 [info]: Received GET /api/products
+2025-07-21 11:03:58 [info]: Received GET /api/lots
+2025-07-21 11:03:58 [info]: Received GET /api/warehouses
+2025-07-21 11:03:58 [info]: Expiring lots found:
+2025-07-21 11:03:58 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:03:58 [info]: Fetching expiring lots
+2025-07-21 11:03:58 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:03:58 [info]: Received GET /api/settings
+2025-07-21 11:03:58 [info]: Fetched settings
+2025-07-21 11:03:58 [info]: Expiring lots found:
+2025-07-21 11:03:58 [info]: Received GET /api/settings
+2025-07-21 11:03:58 [info]: Fetched settings
+2025-07-21 11:04:26 [info]: Received GET /api/notifications
+2025-07-21 11:04:56 [info]: Received GET /api/notifications
+2025-07-21 11:05:24 [info]: Received POST /api/login
+2025-07-21 11:05:24 [info]: Login attempt:
+2025-07-21 11:05:24 [info]: Login successful:
+2025-07-21 11:05:25 [info]: Received GET /api/notifications
+2025-07-21 11:05:25 [info]: Received GET /api/warehouses
+2025-07-21 11:05:25 [info]: Received GET /api/notifications
+2025-07-21 11:05:25 [info]: Received GET /api/warehouses
+2025-07-21 11:05:25 [info]: Received GET /api/warehouses
+2025-07-21 11:05:25 [info]: Received GET /api/products
+2025-07-21 11:05:25 [info]: Received GET /api/lots
+2025-07-21 11:05:25 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:05:25 [info]: Fetching expiring lots
+2025-07-21 11:05:25 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:05:25 [info]: Received GET /api/warehouses
+2025-07-21 11:05:25 [info]: Received GET /api/products
+2025-07-21 11:05:25 [info]: Received GET /api/lots
+2025-07-21 11:05:25 [info]: Expiring lots found:
+2025-07-21 11:05:25 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:05:25 [info]: Fetching expiring lots
+2025-07-21 11:05:25 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:05:25 [info]: Received GET /api/settings
+2025-07-21 11:05:25 [info]: Fetched settings
+2025-07-21 11:05:25 [info]: Expiring lots found:
+2025-07-21 11:05:25 [info]: Received GET /api/settings
+2025-07-21 11:05:25 [info]: Fetched settings
+2025-07-21 11:05:56 [info]: Received GET /api/notifications
+2025-07-21 11:06:26 [info]: Received GET /api/notifications
+2025-07-21 11:06:56 [info]: Received GET /api/notifications
+2025-07-21 11:07:19 [info]: Received GET /api/notifications
+2025-07-21 11:07:19 [info]: Received GET /api/warehouses
+2025-07-21 11:07:19 [info]: Received GET /api/notifications
+2025-07-21 11:07:19 [info]: Received GET /api/warehouses
+2025-07-21 11:07:19 [info]: Received GET /api/products
+2025-07-21 11:07:19 [info]: Received GET /api/lots
+2025-07-21 11:07:19 [info]: Received GET /api/warehouses
+2025-07-21 11:07:19 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:07:19 [info]: Fetching expiring lots
+2025-07-21 11:07:19 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:07:19 [info]: Received GET /api/warehouses
+2025-07-21 11:07:19 [info]: Received GET /api/products
+2025-07-21 11:07:19 [info]: Received GET /api/lots
+2025-07-21 11:07:19 [info]: Expiring lots found:
+2025-07-21 11:07:19 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:07:19 [info]: Fetching expiring lots
+2025-07-21 11:07:19 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:07:19 [info]: Received GET /api/settings
+2025-07-21 11:07:19 [info]: Fetched settings
+2025-07-21 11:07:19 [info]: Expiring lots found:
+2025-07-21 11:07:19 [info]: Received GET /api/settings
+2025-07-21 11:07:19 [info]: Fetched settings
+2025-07-21 11:07:26 [info]: Received GET /api/notifications
+2025-07-21 11:07:50 [info]: Received GET /api/notifications
+2025-07-21 11:07:56 [info]: Received GET /api/notifications
+2025-07-21 11:08:08 [info]: Received POST /api/login
+2025-07-21 11:08:08 [info]: Login attempt:
+2025-07-21 11:08:08 [info]: Login successful:
+2025-07-21 11:08:09 [info]: Received GET /api/notifications
+2025-07-21 11:08:09 [info]: Received GET /api/warehouses
+2025-07-21 11:08:10 [info]: Received GET /api/notifications
+2025-07-21 11:08:10 [info]: Received GET /api/warehouses
+2025-07-21 11:08:10 [info]: Received GET /api/warehouses
+2025-07-21 11:08:10 [info]: Received GET /api/products
+2025-07-21 11:08:10 [info]: Received GET /api/lots
+2025-07-21 11:08:10 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:08:10 [info]: Fetching expiring lots
+2025-07-21 11:08:10 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:08:10 [info]: Received GET /api/warehouses
+2025-07-21 11:08:10 [info]: Received GET /api/products
+2025-07-21 11:08:10 [info]: Received GET /api/lots
+2025-07-21 11:08:10 [info]: Expiring lots found:
+2025-07-21 11:08:10 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:08:10 [info]: Fetching expiring lots
+2025-07-21 11:08:10 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:08:10 [info]: Received GET /api/settings
+2025-07-21 11:08:10 [info]: Fetched settings
+2025-07-21 11:08:10 [info]: Expiring lots found:
+2025-07-21 11:08:10 [info]: Received GET /api/settings
+2025-07-21 11:08:10 [info]: Fetched settings
+2025-07-21 11:08:24 [info]: Received POST /api/login
+2025-07-21 11:08:24 [info]: Login attempt:
+2025-07-21 11:08:24 [info]: Login successful:
+2025-07-21 11:08:25 [info]: Received GET /api/notifications
+2025-07-21 11:08:25 [info]: Received GET /api/warehouses
+2025-07-21 11:08:25 [info]: Received GET /api/notifications
+2025-07-21 11:08:25 [info]: Received GET /api/warehouses
+2025-07-21 11:08:25 [info]: Received GET /api/warehouses
+2025-07-21 11:08:25 [info]: Received GET /api/products
+2025-07-21 11:08:25 [info]: Received GET /api/lots
+2025-07-21 11:08:25 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:08:25 [info]: Fetching expiring lots
+2025-07-21 11:08:25 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:08:25 [info]: Received GET /api/warehouses
+2025-07-21 11:08:25 [info]: Received GET /api/products
+2025-07-21 11:08:25 [info]: Received GET /api/lots
+2025-07-21 11:08:25 [info]: Expiring lots found:
+2025-07-21 11:08:25 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:08:25 [info]: Fetching expiring lots
+2025-07-21 11:08:25 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:08:25 [info]: Received GET /api/settings
+2025-07-21 11:08:25 [info]: Fetched settings
+2025-07-21 11:08:25 [info]: Expiring lots found:
+2025-07-21 11:08:26 [info]: Received GET /api/settings
+2025-07-21 11:08:26 [info]: Fetched settings
+2025-07-21 11:08:56 [info]: Received GET /api/notifications
+2025-07-21 11:09:17 [info]: Received GET /api/notifications
+2025-07-21 11:09:17 [info]: Received GET /api/warehouses
+2025-07-21 11:09:17 [info]: Received GET /api/notifications
+2025-07-21 11:09:17 [info]: Received GET /api/warehouses
+2025-07-21 11:09:17 [info]: Received GET /api/warehouses
+2025-07-21 11:09:17 [info]: Received GET /api/products
+2025-07-21 11:09:17 [info]: Received GET /api/lots
+2025-07-21 11:09:17 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:09:17 [info]: Fetching expiring lots
+2025-07-21 11:09:17 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:09:17 [info]: Received GET /api/warehouses
+2025-07-21 11:09:17 [info]: Received GET /api/products
+2025-07-21 11:09:17 [info]: Received GET /api/lots
+2025-07-21 11:09:17 [info]: Expiring lots found:
+2025-07-21 11:09:17 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:09:17 [info]: Fetching expiring lots
+2025-07-21 11:09:17 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:09:17 [info]: Received GET /api/settings
+2025-07-21 11:09:17 [info]: Fetched settings
+2025-07-21 11:09:17 [info]: Expiring lots found:
+2025-07-21 11:09:17 [info]: Received GET /api/settings
+2025-07-21 11:09:17 [info]: Fetched settings
+2025-07-21 11:09:26 [info]: Received GET /api/notifications
+2025-07-21 11:09:30 [info]: Received GET /api/warehouses
+2025-07-21 11:09:30 [info]: Received GET /api/products
+2025-07-21 11:09:30 [info]: Received GET /api/categories
+2025-07-21 11:09:30 [info]: Received GET /api/transfer-history?status=Pending&startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:09:30 [info]: Received GET /api/warehouses
+2025-07-21 11:09:30 [info]: Received GET /api/categories
+2025-07-21 11:09:30 [info]: Received GET /api/transfer-history?status=Pending&startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:09:30 [info]: Received GET /api/products
+2025-07-21 11:09:30 [info]: Received GET /api/products
+2025-07-21 11:09:30 [info]: Received GET /api/categories
+2025-07-21 11:09:30 [info]: Received GET /api/warehouses
+2025-07-21 11:09:30 [info]: Received GET /api/suppliers
+2025-07-21 11:09:30 [info]: Received GET /api/categories
+2025-07-21 11:09:30 [info]: Received GET /api/warehouses
+2025-07-21 11:09:30 [info]: Received GET /api/products
+2025-07-21 11:09:30 [info]: Received GET /api/suppliers
+2025-07-21 11:09:30 [info]: Received GET /api/warehouses
+2025-07-21 11:09:30 [info]: Received GET /api/products
+2025-07-21 11:09:30 [info]: Received GET /api/categories
+2025-07-21 11:09:30 [info]: Received GET /api/warehouses
+2025-07-21 11:09:30 [info]: Received GET /api/categories
+2025-07-21 11:09:30 [info]: Received GET /api/products
+2025-07-21 11:09:31 [info]: Received GET /api/warehouses
+2025-07-21 11:09:31 [info]: Received GET /api/products
+2025-07-21 11:09:31 [info]: Received GET /api/categories
+2025-07-21 11:09:31 [info]: Received GET /api/adjust-stock/history
+2025-07-21 11:09:31 [info]: Received GET /api/warehouses
+2025-07-21 11:09:31 [info]: Received GET /api/categories
+2025-07-21 11:09:31 [info]: Received GET /api/products
+2025-07-21 11:09:31 [info]: Received GET /api/adjust-stock/history
+2025-07-21 11:09:35 [info]: Received GET /api/adjust-stock/history
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/products
+2025-07-21 11:09:42 [info]: Received GET /api/lots
+2025-07-21 11:09:42 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:09:42 [info]: Fetching expiring lots
+2025-07-21 11:09:42 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/products
+2025-07-21 11:09:42 [info]: Received GET /api/lots
+2025-07-21 11:09:42 [info]: Expiring lots found:
+2025-07-21 11:09:42 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:09:42 [info]: Fetching expiring lots
+2025-07-21 11:09:42 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:09:42 [info]: Received GET /api/settings
+2025-07-21 11:09:42 [info]: Fetched settings
+2025-07-21 11:09:42 [info]: Expiring lots found:
+2025-07-21 11:09:42 [info]: Received GET /api/settings
+2025-07-21 11:09:42 [info]: Fetched settings
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/manage-damage/history?startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/manage-damage/history?startDate=2025-07-20T17:00:00.000Z&endDate=2025-07-21T16:59:59.999Z
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/products
+2025-07-21 11:09:42 [info]: Received GET /api/lots
+2025-07-21 11:09:42 [info]: Received GET /api/warehouses
+2025-07-21 11:09:42 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:09:42 [info]: Fetching expiring lots
+2025-07-21 11:09:42 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:09:43 [info]: Received GET /api/warehouses
+2025-07-21 11:09:43 [info]: Received GET /api/products
+2025-07-21 11:09:43 [info]: Received GET /api/lots
+2025-07-21 11:09:43 [info]: Expiring lots found:
+2025-07-21 11:09:43 [info]: Received GET /api/lot-management/expiring
+2025-07-21 11:09:43 [info]: Fetching expiring lots
+2025-07-21 11:09:43 [info]: Received GET /api/manage-damage/history?limit=5&sort=desc
+2025-07-21 11:09:43 [info]: Received GET /api/settings
+2025-07-21 11:09:43 [info]: Fetched settings
+2025-07-21 11:09:43 [info]: Expiring lots found:
+2025-07-21 11:09:43 [info]: Received GET /api/settings
+2025-07-21 11:09:43 [info]: Fetched settings
+2025-07-21 11:09:43 [info]: Received GET /api/warehouses
+2025-07-21 11:09:43 [info]: Received GET /api/settings
+2025-07-21 11:09:43 [info]: Received GET /api/lot-management/expiring?warehouse=
+2025-07-21 11:09:43 [info]: Fetching expiring lots
+2025-07-21 11:09:43 [info]: Fetched settings
+2025-07-21 11:09:43 [info]: Received GET /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-21 11:09:43 [info]: Fetching lot management data
+2025-07-21 11:09:43 [info]: Received GET /api/warehouses
+2025-07-21 11:09:43 [info]: Received GET /api/settings
+2025-07-21 11:09:43 [info]: Fetched settings
+2025-07-21 11:09:43 [info]: Expiring lots found:
+2025-07-21 11:09:43 [info]: Received GET /api/lot-management/expiring?warehouse=
+2025-07-21 11:09:43 [info]: Fetching expiring lots
+2025-07-21 11:09:43 [info]: Received GET /api/lot-management?searchQuery=&warehouse=all&page=1&limit=25
+2025-07-21 11:09:43 [info]: Fetching lot management data
+2025-07-21 11:09:43 [info]: Expiring lots found:
+2025-07-21 11:09:47 [info]: Received GET /api/notifications
+2025-07-21 11:09:54 [info]: Received GET /api/warehouses
+2025-07-21 11:09:54 [info]: Received GET /api/users
+2025-07-21 11:09:54 [info]: Fetching users for:
+2025-07-21 11:09:54 [info]: Received GET /api/warehouses
+2025-07-21 11:09:54 [info]: Received GET /api/users
+2025-07-21 11:09:54 [info]: Fetching users for:
+2025-07-21 11:09:55 [info]: Received GET /api/notifications
+2025-07-21 11:10:17 [info]: Received GET /api/notifications
+2025-07-21 11:10:26 [info]: Received GET /api/notifications
+2025-07-21 11:10:48 [info]: Received GET /api/notifications
+2025-07-21 11:10:56 [info]: Received GET /api/notifications
+2025-07-21 11:11:18 [info]: Received GET /api/notifications
+2025-07-21 11:11:26 [info]: Received GET /api/notifications
+2025-07-21 11:11:48 [info]: Received GET /api/notifications
+2025-07-21 11:12:04 [info]: Received GET /api/notifications
+2025-07-21 11:12:18 [info]: Received GET /api/notifications
+2025-07-21 11:12:26 [info]: Received GET /api/notifications
+2025-07-21 11:12:48 [info]: Received GET /api/notifications
+2025-07-21 11:12:56 [info]: Received GET /api/notifications
+2025-07-21 11:14:04 [info]: Received GET /api/notifications
+2025-07-21 11:14:04 [info]: Received GET /api/notifications
+2025-07-21 11:15:04 [info]: Received GET /api/notifications
+2025-07-21 11:15:04 [info]: Received GET /api/notifications
+2025-07-21 11:16:04 [info]: Received GET /api/notifications
+2025-07-21 11:16:04 [info]: Received GET /api/notifications
+2025-07-21 11:16:30 [info]: Logger initialized successfully
+2025-07-21 11:16:30 [info]: Server + Bot listening on port 3000
+2025-07-21 11:16:31 [info]: Connected to MongoDB
+2025-07-21 11:16:31 [info]: Telegram webhook set to https://84d4e21144a3.ngrok-free.app/bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:16:31 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:16:31 [error]: Failed to set bot commands 400: Bad Request: BOT_COMMAND_INVALID
+Error: 400: Bad Request: BOT_COMMAND_INVALID
+    at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7
+2025-07-21 11:16:47 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:17:04 [info]: Received GET /api/notifications
+2025-07-21 11:17:04 [info]: Received GET /api/notifications
+2025-07-21 11:17:20 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:17:32 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:17:32 [info]: Received POST /api/login
+2025-07-21 11:17:32 [info]: Login attempt:
+2025-07-21 11:17:32 [info]: Login successful:
+2025-07-21 11:17:33 [info]: Service logged in (Bot)
+2025-07-21 11:17:33 [info]: Received GET /api/stock-reports?type=summary&search=1004KH
+2025-07-21 11:17:33 [info]: Fetching stock reports
+2025-07-21 11:17:33 [info]: Stock report data:
+2025-07-21 11:19:23 [info]: Logger initialized successfully
+2025-07-21 11:19:23 [info]: Server + Bot listening on port 3000
+2025-07-21 11:19:23 [info]: Connected to MongoDB
+2025-07-21 11:19:24 [info]: Telegram webhook set to https://84d4e21144a3.ngrok-free.app/bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:19:24 [error]: Failed to set bot commands 400: Bad Request: BOT_COMMAND_INVALID
+Error: 400: Bad Request: BOT_COMMAND_INVALID
+    at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7
+2025-07-21 11:19:37 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:20:05 [info]: Logger initialized successfully
+2025-07-21 11:20:06 [info]: Server + Bot listening on port 3000
+2025-07-21 11:20:06 [info]: Received GET /api/notifications
+2025-07-21 11:20:06 [info]: Connected to MongoDB
+2025-07-21 11:20:07 [info]: Received GET /api/notifications
+2025-07-21 11:20:07 [info]: Telegram webhook set to https://84d4e21144a3.ngrok-free.app/bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:20:07 [error]: Failed to set bot commands 400: Bad Request: BOT_COMMAND_INVALID
+Error: 400: Bad Request: BOT_COMMAND_INVALID
+    at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7
+2025-07-21 11:21:04 [info]: Received GET /api/notifications
+2025-07-21 11:21:04 [info]: Received GET /api/notifications
+2025-07-21 11:21:31 [info]: Logger initialized successfully
+2025-07-21 11:21:31 [info]: Server + Bot listening on port 3000
+2025-07-21 11:21:31 [info]: Connected to MongoDB
+2025-07-21 11:21:32 [info]: Telegram webhook set to https://84d4e21144a3.ngrok-free.app/bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:21:32 [info]: Telegram bot commands set
+2025-07-21 11:21:38 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:22:04 [info]: Received GET /api/notifications
+2025-07-21 11:22:04 [info]: Received GET /api/notifications
+2025-07-21 11:23:04 [info]: Received GET /api/notifications
+2025-07-21 11:23:04 [info]: Received GET /api/notifications
+2025-07-21 11:24:04 [info]: Received GET /api/notifications
+2025-07-21 11:24:04 [info]: Received GET /api/notifications
+2025-07-21 11:25:04 [info]: Received GET /api/notifications
+2025-07-21 11:25:04 [info]: Received GET /api/notifications
+2025-07-21 11:26:04 [info]: Received GET /api/notifications
+2025-07-21 11:26:04 [info]: Received GET /api/notifications
+2025-07-21 11:27:04 [info]: Received GET /api/notifications
+2025-07-21 11:27:04 [info]: Received GET /api/notifications
+2025-07-21 11:28:04 [info]: Received GET /api/notifications
+2025-07-21 11:28:04 [info]: Received GET /api/notifications
+2025-07-21 11:29:04 [info]: Received GET /api/notifications
+2025-07-21 11:29:04 [info]: Received GET /api/notifications
+2025-07-21 11:30:04 [info]: Received GET /api/notifications
+2025-07-21 11:30:04 [info]: Received GET /api/notifications
+2025-07-21 11:31:04 [info]: Received GET /api/notifications
+2025-07-21 11:31:04 [info]: Received GET /api/notifications
+2025-07-21 11:32:04 [info]: Received GET /api/notifications
+2025-07-21 11:32:04 [info]: Received GET /api/notifications
+2025-07-21 11:33:04 [info]: Received GET /api/notifications
+2025-07-21 11:33:04 [info]: Received GET /api/notifications
+2025-07-21 11:34:04 [info]: Received GET /api/notifications
+2025-07-21 11:34:04 [info]: Received GET /api/notifications
+2025-07-21 11:35:04 [info]: Received GET /api/notifications
+2025-07-21 11:35:04 [info]: Received GET /api/notifications
+2025-07-21 11:36:04 [info]: Received GET /api/notifications
+2025-07-21 11:36:04 [info]: Received GET /api/notifications
+2025-07-21 11:37:04 [info]: Received GET /api/notifications
+2025-07-21 11:37:04 [info]: Received GET /api/notifications
+2025-07-21 11:38:04 [info]: Received GET /api/notifications
+2025-07-21 11:38:04 [info]: Received GET /api/notifications
+2025-07-21 11:38:24 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:38:40 [info]: Received POST /bot8072384960:AAHDk5NfJFPW1oAlyyDtLzKGqukUQFAURmc
+2025-07-21 11:38:40 [info]: Received POST /api/login
+2025-07-21 11:38:40 [info]: Login attempt:
+2025-07-21 11:38:40 [info]: Login successful:
+2025-07-21 11:38:40 [info]: Service logged in (Bot)
+2025-07-21 11:38:40 [info]: Received GET /api/stock-reports?type=summary&search=1004KH
+2025-07-21 11:38:40 [info]: Fetching stock reports
+2025-07-21 11:38:40 [info]: Stock report data:
+2025-07-21 11:39:04 [info]: Received GET /api/notifications
+2025-07-21 11:39:04 [info]: Received GET /api/notifications
+2025-07-21 11:40:04 [info]: Received GET /api/notifications
+2025-07-21 11:40:04 [info]: Received GET /api/notifications
+2025-07-21 11:40:18 [info]: Received GET /api/notifications
+2025-07-21 11:40:26 [info]: Received GET /api/notifications
+2025-07-21 11:40:48 [info]: Received GET /api/notifications
+2025-07-21 11:40:56 [info]: Received GET /api/notifications
+2025-07-21 11:42:04 [info]: Received GET /api/notifications
+2025-07-21 11:42:04 [info]: Received GET /api/notifications
+2025-07-21 11:43:04 [info]: Received GET /api/notifications
+2025-07-21 11:43:04 [info]: Received GET /api/notifications
+2025-07-21 11:44:04 [info]: Received GET /api/notifications
+2025-07-21 11:44:04 [info]: Received GET /api/notifications
+2025-07-21 11:45:04 [info]: Received GET /api/notifications
+2025-07-21 11:45:04 [info]: Received GET /api/notifications
+2025-07-21 11:46:04 [info]: Received GET /api/notifications
+2025-07-21 11:46:04 [info]: Received GET /api/notifications
+2025-07-21 11:46:24 [info]: Received GET /api/notifications
+2025-07-21 11:46:25 [info]: Received GET /api/notifications
+2025-07-21 11:46:48 [info]: Received GET /api/notifications
+2025-07-21 11:46:56 [info]: Received GET /api/notifications

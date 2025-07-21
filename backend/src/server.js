@@ -148,7 +148,7 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
       const reply = formatSummaryMessage(rows, code);
       return ctx.replyWithMarkdown(reply);
     } catch (err) {
-      return ctx.reply('❗ เกิดข้อผิดพลาด ลองใหม่อีกครั้ง');
+      return ctx.reply('❗ មានបញ្ហាកើតឡើង សូមព្យាយាមម្តងទៀត');
     }
   });
 
