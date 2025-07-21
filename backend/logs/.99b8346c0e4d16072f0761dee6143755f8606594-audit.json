@@ -114,6 +114,11 @@
             "date": 1752982294228,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-20.log",
             "hash": "0b2686836db373957cab96add413d942eb5c2860ae2627f6a7f7bfdc4ac4f62e"
+        },
+        {
+            "date": 1753065387623,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-21.log",
+            "hash": "4aa783fa9c0f3cfacbd252e486f292fdd2591040570482aab86b065e2518ca65"
         }
     ],
     "hashType": "sha256"
