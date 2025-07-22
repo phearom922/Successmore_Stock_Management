@@ -163,11 +163,19 @@ const ReceiveStock = () => {
       return;
     }
     if (Number(currentLot.boxCount) <= 0 || Number(currentLot.qtyPerBox) <= 0) {
-      toast.error("បរិមាណ ចំនួនប្រអប់ និងបរិមាណក្នុងមួយប្រអប់ត្រូវតែវិជ្ជមាន");
+      toast.error(
+        <span className="font-kantumruy">
+          បរិមាណ ចំនួនប្រអប់ និងបរិមាណក្នុងមួយប្រអប់ត្រូវតែវិជ្ជមាន
+        </span>,
+      );
       return;
     }
     if (new Date(currentLot.expDate) <= new Date(currentLot.productionDate)) {
-      toast.error("កាលបរិច្ឆេទផុតកំណត់ ត្រូវតែធំជាងកាលបរិច្ឆេទផលិត");
+      toast.error(
+        <span className="font-kantumruy">
+          ថ្ងៃផុតកំណត់ ត្រូវតែធំជាងថ្ងៃផលិត
+        </span>,
+      );
       return;
     }
 
@@ -249,12 +257,18 @@ const ReceiveStock = () => {
       }
       if (lot.quantity <= 0 || lot.boxCount <= 0 || lot.qtyPerBox <= 0) {
         toast.error(
-          "បរិមាណ ចំនួនប្រអប់ និងបរិមាណក្នុងមួយប្រអប់ត្រូវតែវិជ្ជមាន",
+          <span className="font-kantumruy">
+            បរិមាណ ចំនួនប្រអប់ និងបរិមាណក្នុងមួយប្រអប់ត្រូវតែវិជ្ជមាន
+          </span>,
         );
         return;
       }
       if (new Date(lot.expDate) <= new Date(lot.productionDate)) {
-        toast.error("កាលបរិច្ឆេទផុតកំណត់ ត្រូវតែធំជាងកាលបរិច្ឆេទផលិត");
+        toast.error(
+          <span className="font-kantumruy">
+            កាលបរិច្ឆេទផុតកំណត់ ត្រូវតែធំជាងកាលបរិច្ឆេទផលិត
+          </span>,
+        );
         return;
       }
       if (lot.quantity !== lot.boxCount * lot.qtyPerBox) {
@@ -307,7 +321,11 @@ const ReceiveStock = () => {
         },
       );
 
-      toast.success(response.data.message || "បញ្ជូលស្តុកដោយជោគជ័យ!");
+      toast.success(
+        response.data.message || (
+          <span className="font-kantumruy">បញ្ជូលស្តុកដោយជោគជ័យ!</span>
+        ),
+      );
       setAddedLots([]);
       setCurrentLot({
         productId: "",
@@ -322,9 +340,11 @@ const ReceiveStock = () => {
       });
     } catch (error) {
       console.error("Error receiving stock:", error.response || error);
-      const errorMessage =
-        error.response?.data?.message ||
-        "បរាជ័យក្នុងការបញ្ជូលស្តុក សូមព្យាយាមម្តងទៀត";
+      const errorMessage = error.response?.data?.message || (
+        <span className="font-kantumruy">
+          បរាជ័យក្នុងការបញ្ជូលស្តុក សូមព្យាយាមម្តងទៀត
+        </span>
+      );
       toast.error(errorMessage);
       if (error.response?.status === 401) {
         navigate("/login");

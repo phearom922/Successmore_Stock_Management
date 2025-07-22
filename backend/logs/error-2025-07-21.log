@@ -229,3 +229,279 @@ Error: 400: Bad Request: BOT_COMMAND_INVALID
     at Telegram.callApi (E:\Personal Documents\Stock-Management\backend\node_modules\telegraf\lib\core\network\client.js:315:19)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async E:\Personal Documents\Stock-Management\backend\src\server.js:98:7
+2025-07-21 16:17:00 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 16:17:00 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 17:18:56 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 17:19:14 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 17:19:44 [error]: Authentication failed
+TokenExpiredError: jwt expired
+    at E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+2025-07-21 18:03:41 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 18:03:41 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 18:20:52 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 18:20:52 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 22:44:47 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 22:44:47 [error]: Authentication failed
+JsonWebTokenError: jwt malformed
+    at module.exports [as verify] (E:\Personal Documents\Stock-Management\backend\node_modules\jsonwebtoken\verify.js:70:17)
+    at authMiddleware (E:\Personal Documents\Stock-Management\backend\src\middleware\auth.js:10:25)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\layer.js:95:5)
+    at E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (E:\Personal Documents\Stock-Management\backend\node_modules\express\lib\router\index.js:175:3)
+2025-07-21 23:55:56 [error]: Error fetching notifications
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:56:09 [error]: Error fetching warehouses: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:56:15 [error]: Error fetching expiring lots:
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at runNextTicks (node:internal/process/task_queues:60:5)
+    at listOnTimeout (node:internal/timers:545:9)
+    at process.processTimers (node:internal/timers:519:7)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+2025-07-21 23:56:15 [error]: Error fetching settings:
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async Collection.findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:277:21)
+    at async model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2687:15)
+    at async model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:63)
+2025-07-21 23:56:26 [error]: Error fetching lot management data
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:56:43 [error]: Error fetching warehouses: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:56:45 [error]: Error fetching warehouses: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:56:45 [error]: Error fetching warehouses: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:56:56 [error]: Error fetching warehouses: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:57:01 [error]: Error fetching notifications
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:57:01 [error]: Error fetching warehouses: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async [Symbol.asyncIterator] (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:255:34)
+    at async FindCursor.toArray (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:427:26)
+    at async model.Query._find (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2407:14)
+2025-07-21 23:57:51 [error]: Error during login:
+MongoServerSelectionError: connect ETIMEDOUT fe80::ffdf:2008:9e41:1848:27017, connect ETIMEDOUT 192.168.1.98:27017, connect ETIMEDOUT fe80::2cb5:1d40:c59e:2b87:27017, connect ECONNREFUSED 2001:0:2851:fcb0:2cb5:1d40:c59e:2b87:27017
+    at Topology.selectServer (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\sdam\topology.js:326:38)
+    at async tryOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:145:18)
+    at async executeOperation (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\operations\execute_operation.js:75:16)
+    at async FindCursor._initialize (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\find_cursor.js:61:26)
+    at async FindCursor.cursorInit (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:633:27)
+    at async FindCursor.fetchBatch (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:667:13)
+    at async FindCursor.next (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\cursor\abstract_cursor.js:347:17)
+    at async Collection.findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongodb\lib\collection.js:277:21)
+    at async model.Query._findOne (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:2687:15)
+    at async model.Query.exec (E:\Personal Documents\Stock-Management\backend\node_modules\mongoose\lib\query.js:4604:63)

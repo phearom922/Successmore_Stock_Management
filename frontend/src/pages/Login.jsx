@@ -18,7 +18,11 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!username || !password) {
-      toast.error("សូមបញ្ចូលទាំងឈ្មោះ និងពាក្យសម្ងាត់");
+      toast.error(
+        <span className="font-kantumruy">
+          សូមបញ្ចូលទាំងឈ្មោះ និងពាក្យសម្ងាត់
+        </span>,
+      );
       return;
     }
     setIsLoading(true);
@@ -28,14 +32,21 @@ const Login = () => {
         password,
       });
       localStorage.setItem("token", data.token);
-      toast.success("ចូលបានដោយជោគជ័យ!");
+      toast.success(<span className="font-kantumruy">ការចូលបានជោគជ័យ</span>);
+
       //wait for a moment before redirecting
       setTimeout(() => {
         navigate("/");
       }, 1000);
       // navigate("/");
     } catch (error) {
-      toast.error(error.response?.data?.message || "ការចូលបានបរាជ័យ");
+      toast.error(
+        (
+          <span className="font-kantumruy">
+            {error.response?.data?.message}
+          </span>
+        ) || <span className="font-kantumruy">ការចូលបរាជ័យ</span>,
+      );
     } finally {
       setTimeout(() => {
         setIsLoading(false);

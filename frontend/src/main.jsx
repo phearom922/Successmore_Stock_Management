@@ -32,7 +32,7 @@ import AdjustStock from "./pages/AdjustStock";
 const InitialLoading = () => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
     <div className="flex flex-col items-center">
-      <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-blue-600"></div>
+      <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-orange-600"></div>
       <p className="mt-4 text-gray-600">Loading application...</p>
     </div>
   </div>

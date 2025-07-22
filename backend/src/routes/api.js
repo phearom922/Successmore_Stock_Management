@@ -107,7 +107,7 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) {
       logger.warn('User not found:', { username });
-      return res.status(401).json({ message: 'មិនមានឃើញអ្នកប្រើប្រាស់' });
+      return res.status(401).json({ message: 'មិនមានអ្នកប្រើប្រាស់' });
     }
     if (!(await bcrypt.compare(password, user.password))) {
       logger.warn('Invalid password for user:', { username });

@@ -123,9 +123,9 @@ const TopBar = ({
               onMouseEnter={() => setShowProfile(true)}
               onMouseLeave={() => setShowProfile(false)}
             >
-              <h2 className="text-xl font-semibold text-gray-800 cursor-pointer flex items-center gap-2 group">
+              <h2 className="text-xl font-semibold text-gray-700 cursor-pointer flex items-center gap-2 group">
                 Hello,
-                <span className="text-blue-600 underline decoration-dotted decoration-2 underline-offset-4 transition group-hover:text-blue-800 flex items-center gap-1">
+                <span className="text-orange-600 underline decoration-dotted decoration-2 underline-offset-4 transition group-hover:text-orange-700 flex items-center gap-1">
                   <FiUser className="inline-block" />
                   {lastName}
                 </span>
@@ -134,7 +134,7 @@ const TopBar = ({
                 <div className="absolute left-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 z-50 animate-fade-in">
                   <div className="p-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="bg-blue-100 text-blue-600 rounded-full p-2">
+                      <div className="bg-orange-100 text-orange-600 rounded-full p-2">
                         <FiUser className="w-6 h-6" />
                       </div>
                       <div>
