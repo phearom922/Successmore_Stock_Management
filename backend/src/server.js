@@ -1,5 +1,3 @@
-// backend/src/server.js
-
 require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
@@ -7,21 +5,19 @@ const mongoose = require('mongoose');
 const { Telegraf } = require('telegraf');
 const axios = require('axios');
 const logger = require('./config/logger');
-const apiRoutes = require('./routes/api');    // ทั้ง API หลัก
+const apiRoutes = require('./routes/api');
+const telegramRoutes = require('./routes/telegram');
 
 const app = express();
 
-// ─── Middleware ──────────────────────────────────────────────────────────
-
+// Middleware
 const allowedOrigins = [
-  'http://178.128.60.193:3000',         // IP ของ Droplet
-  'http://localhost:5173',              // สำหรับ dev
-  //'http://your-domain.com'         // เพิ่ม domain ถ้ามีในอนาคต
+  'http://178.128.60.193:3000',
+  'http://localhost:5173',
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // อนุญาตเมื่อ origin อยู่ใน whitelist หรือไม่มี origin (เช่น curl/postman)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -30,9 +26,8 @@ app.use(cors({
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // ถ้ามีการใช้ cookie หรือ auth token
+  credentials: true,
 }));
-
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -40,10 +35,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// ─── API Routes ───────────────────────────────────────────────────────────
+// API Routes
 app.use('/api', apiRoutes);
+app.use('/api/telegram', telegramRoutes);
 
-// ─── MongoDB ──────────────────────────────────────────────────────────────
+// MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-management')
   .then(() => logger.info('Connected to MongoDB'))
   .catch(err => {
@@ -51,7 +47,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-man
     process.exit(1);
   });
 
-// ─── Validate Env Vars ────────────────────────────────────────────────────
+// Validate Env Vars
 if (!process.env.JWT_SECRET) {
   logger.error('JWT_SECRET is missing');
   process.exit(1);
@@ -60,7 +56,7 @@ if (!process.env.TELEGRAM_BOT_TOKEN) {
   logger.warn('TELEGRAM_BOT_TOKEN is missing; Telegram Bot will not start');
 }
 
-// ─── Telegram Bot Setup ───────────────────────────────────────────────────
+// Telegram Bot Setup
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SERVICE_PASS && process.env.WEBHOOK_URL) {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const API_BASE_URL = process.env.API_BASE_URL.replace('localhost', '127.0.0.1');
@@ -71,7 +67,6 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
   let serviceToken = null;
   const hookPath = `/bot${BOT_TOKEN}`;
 
-  // 1) Login service account  
   async function loginService() {
     const res = await axios.post(
       `${API_BASE_URL}/api/login`,
@@ -81,7 +76,6 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
     logger.info('Service logged in (Bot)');
   }
 
-  // 2) Fetch summary with auto‑retry on 401  
   async function fetchSummary(code) {
     if (!serviceToken) await loginService();
     try {
@@ -109,7 +103,6 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
     }
   }
 
-  // 3) Set /help in menu  
   (async () => {
     try {
       await bot.telegram.setMyCommands([
@@ -121,31 +114,25 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
     }
   })();
 
-  // 4) /help handler  
   bot.command('help', ctx => {
     ctx.reply(
-      'សូមវាយលេខកូដផលិតផលដែលអ្នកចង់ដឹង\nហាមដកឃ្លា ឬអក្សរតូច\nឧទាហរណ៍: 1015KH'
+      'សូមវាយលេខកូດផលិតផលដែលអ្នកចង់ដឹង\nហាមដកឃ្លា ឬអក្សរតូច\nឧទាហរណ៍: 1015KH'
     );
   });
 
-
-  // 5) Format summary per warehouse, รวมชื่อสินค้า
   function formatSummaryMessage(rows, code) {
     if (!rows.length) {
       return `❌ មិនមានផលិតផលកូដ \`${code}\``;
     }
 
-    // สมมติ API คืนแต่ละ row เป็น { warehouse, qtyOnHand, productName }
-    const totals = {};      // { warehouse: qty }
+    const totals = {};
     rows.forEach(r => {
       const wh = r.warehouse || 'Unknown';
       const q = Number(r.qtyOnHand) || 0;
       totals[wh] = (totals[wh] || 0) + q;
     });
 
-    // ดึงชื่อสินค้าจาก row ตัวแรก (สมมติทุก row เป็นรหัสเดียวกัน)
     const productName = rows[0].productId?.name || 'Unknown';
-
     let msg = `📦 Summary for *${code}* — _${productName}_\n\n`;
     for (const [warehouse, sum] of Object.entries(totals)) {
       msg += `🏭 _${warehouse}_\n   👉 ${productName} : *${sum}*\n`;
@@ -153,7 +140,6 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
     return msg;
   }
 
-  // 6) Main text handler  
   bot.on('text', async ctx => {
     const code = ctx.message.text.trim();
     if (!/^[A-Z0-9]+$/.test(code) || code === '/help') {
@@ -169,10 +155,8 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
     }
   });
 
-  // 7) Hook into Express
   app.use(bot.webhookCallback(hookPath));
 
-  // 8) Set the webhook URL on Telegram side
   (async () => {
     try {
       await bot.telegram.setWebhook(`${WEBHOOK_URL}${hookPath}`);
@@ -184,7 +168,6 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
   })();
 }
 
-// ─── Start Express ────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   logger.info(`Server + Bot listening on port ${PORT}`);

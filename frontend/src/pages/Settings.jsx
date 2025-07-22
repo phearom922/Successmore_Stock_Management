@@ -81,13 +81,19 @@ const Settings = () => {
 
   const handleConfirmSaveTelegram = async () => {
     try {
+      // Always send all settings fields to avoid partial overwrite
       const payload = {
+        expirationWarningDays: warningDays,
+        lowStockThreshold,
+        issueStockNotificationEnabled: isIssueStockNotificationEnabled,
+        issueHistoryNotificationEnabled: isIssueHistoryNotificationEnabled,
         telegramBotToken,
         chatId,
       };
       console.log("Saving Telegram Config:", payload); // Debug
+      // Use the same endpoint as notification to update all settings at once
       const response = await axios.put(
-        `${API_BASE_URL}/api/settings/telegram`,
+        `${API_BASE_URL}/api/settings/notification`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } },
       );

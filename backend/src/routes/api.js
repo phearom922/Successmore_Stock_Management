@@ -1885,7 +1885,7 @@ router.post('/issue', authMiddleware, async (req, res) => {
       { new: true, upsert: true, session }
     );
     const transactionNumber = `ISS-${warehouse.warehouseCode}-${String(counter.sequence).padStart(5, '0')}`;
-    console.log('Generated transactionNumber:', transactionNumber); // Debug
+    console.log('Generated transactionNumber:', transactionNumber);
 
     // Check for duplicate transactionNumber
     const existingTransaction = await IssueTransaction.findOne({ transactionNumber }).session(session);
@@ -1942,7 +1942,6 @@ router.post('/issue', authMiddleware, async (req, res) => {
         dbLot.qtyOnHand -= quantityToDeduct;
       }
 
-      // บันทึก Transaction
       dbLot.transactions.push({
         timestamp: new Date(),
         userId: new mongoose.Types.ObjectId(user._id),
@@ -1974,13 +1973,15 @@ router.post('/issue', authMiddleware, async (req, res) => {
     // Save Issue Transaction
     await issueTransaction.save({ session });
 
-    // Fetch latest settings to ensure updated values
-    const settings = await Setting.findOne().lean(); // Use lean to avoid mongoose overhead
-    console.log('Current Settings for Issue:', settings); // Debug
-    if (settings && settings.issueStockNotificationEnabled === true) { // Strict check for true
+    // Fetch latest settings
+    const settings = await Setting.findOne().lean();
+    console.log('Current Settings for Issue:', settings);
+
+    if (settings && settings.issueStockNotificationEnabled === true) {
       try {
+        // Use internal URL for the same server
         const telegramResponse = await axios.post(
-          `${process.env.VITE_API_BASE_URL}/api/telegram/send`,
+          `${process.env.API_BASE_URL || 'http://localhost:3000'}/api/telegram/send`,
           {
             chat_id: settings.chatId,
             text: `
@@ -1994,9 +1995,12 @@ router.post('/issue', authMiddleware, async (req, res) => {
 - Date/Time: ${new Date().toLocaleString()}
             `.trim(),
             parse_mode: 'Markdown',
-            telegramBotToken: settings.telegramBotToken, // Pass token from settings
           },
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${req.user.token || process.env.SERVICE_TOKEN}`, // ใช้ token จาก req.user หรือ service token
+            }
+          }
         );
         logger.info('Telegram notification sent for issue', { transactionNumber, telegramResponse: telegramResponse.data });
       } catch (telegramError) {
