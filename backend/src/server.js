@@ -10,10 +10,10 @@ const telegramRoutes = require('./routes/telegram');
 
 const app = express();
 
-// Middleware
 const allowedOrigins = [
-  'https://www.scmstockkh.com:3000',
+  'http://178.128.60.193:3000',
   'http://localhost:5173',
+  'https://www.scmstockkh.com:3000'
 ];
 
 app.use(cors({
@@ -35,11 +35,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// API Routes
+
 app.use('/api', apiRoutes);
 app.use('/api/telegram', telegramRoutes);
 
-// MongoDB
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-management')
   .then(() => logger.info('Connected to MongoDB'))
   .catch(err => {
@@ -47,7 +47,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-man
     process.exit(1);
   });
 
-// Validate Env Vars
+
 if (!process.env.JWT_SECRET) {
   logger.error('JWT_SECRET is missing');
   process.exit(1);
@@ -56,7 +56,7 @@ if (!process.env.TELEGRAM_BOT_TOKEN) {
   logger.warn('TELEGRAM_BOT_TOKEN is missing; Telegram Bot will not start');
 }
 
-// Telegram Bot Setup
+
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SERVICE_PASS && process.env.WEBHOOK_URL) {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const API_BASE_URL = process.env.API_BASE_URL.replace('localhost', '127.0.0.1');

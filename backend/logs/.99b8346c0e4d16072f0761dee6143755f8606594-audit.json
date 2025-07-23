@@ -124,6 +124,11 @@
             "date": 1753152175875,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-22.log",
             "hash": "f78552ac08fc067fdcfe50516531fafa2c42ebd31de2e7056210a7d20c8c310e"
+        },
+        {
+            "date": 1753255663773,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-23.log",
+            "hash": "2ecad81b49b0738e79a801660f6650ea1026af1c7bd2e56e794288fb942752cf"
         }
     ],
     "hashType": "sha256"
