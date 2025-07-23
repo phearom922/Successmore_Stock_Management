@@ -51,6 +51,7 @@ const defaultPermissions = defaultFeatures.map((f) => ({
   permissions: [],
 }));
 const Users = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [search, setSearch] = useState("");
@@ -91,6 +92,7 @@ const Users = () => {
   const fetchData = async () => {
     if (isFetching) return;
     setIsFetching(true);
+    setIsLoading(true);
     try {
       const [userRes, whRes] = await Promise.all([
         axios.get(`${API_BASE_URL}/api/users`, {
@@ -527,6 +529,12 @@ const Users = () => {
             User List
           </CardTitle>
         </CardHeader>
+
+        {isLoading && !users.length ? (
+        <div className="flex h-64 items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-blue-600"></div>
+        </div>
+      ) : (
         <CardContent>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
             <div>
@@ -745,6 +753,7 @@ const Users = () => {
             </div>
           </div>
         </CardContent>
+        )}
       </Card>
 
       <Dialog open={!!viewUser} onOpenChange={() => setViewUser(null)}>

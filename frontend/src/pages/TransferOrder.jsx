@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
-import { CheckIcon, ChevronDownIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+} from "@/components/ui/select";
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableHeader,
@@ -21,30 +27,36 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { startOfDay, endOfDay, format } from 'date-fns';
-import jsPDF from 'jspdf';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { startOfDay, endOfDay, format } from "date-fns";
+import jsPDF from "jspdf";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const TransferOrder = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [sourceWarehouse, setSourceWarehouse] = useState('');
-  const [destinationWarehouse, setDestinationWarehouse] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedProduct, setSelectedProduct] = useState('');
+  const [sourceWarehouse, setSourceWarehouse] = useState("");
+  const [destinationWarehouse, setDestinationWarehouse] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedProduct, setSelectedProduct] = useState("");
   const [lots, setLots] = useState([]);
   const [currentItem, setCurrentItem] = useState({
-    lotId: '',
-    quantity: ''
+    lotId: "",
+    quantity: "",
   });
   const [addedItems, setAddedItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,28 +64,30 @@ const TransferOrder = () => {
   const [isManualSelection, setIsManualSelection] = useState(false);
   const [transferHistory, setTransferHistory] = useState([]);
   const [filters, setFilters] = useState({
-    status: 'Pending',
-    warehouse: 'all',
-    type: 'all',
+    status: "Pending",
+    warehouse: "all",
+    type: "all",
     startDate: startOfDay(new Date()),
-    endDate: endOfDay(new Date())
+    endDate: endOfDay(new Date()),
   });
-  const [activeTab, setActiveTab] = useState('newTransfer');
-  const [productSearch, setProductSearch] = useState('');
+  const [activeTab, setActiveTab] = useState("newTransfer");
+  const [productSearch, setProductSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showProductDropdown, setShowProductDropdown] = useState(false);
   const productInputRef = React.useRef(null);
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const user = token ? JSON.parse(atob(token.split('.')[1])) : {};
-  const userWarehouseId = user.warehouse?.toString() || (user.role === 'admin' ? filters.warehouse : null);
+  const user = token ? JSON.parse(atob(token.split(".")[1])) : {};
+  const userWarehouseId =
+    user.warehouse?.toString() ||
+    (user.role === "admin" ? filters.warehouse : null);
 
-   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (!token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
     fetchData();
@@ -83,34 +97,42 @@ const TransferOrder = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      console.log('Fetching initial data...');
+      console.log("Fetching initial data...");
       const [warehousesRes, productsRes, categoriesRes] = await Promise.all([
-        axios.get(`${API_BASE_URL}/api/warehouses`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API_BASE_URL}/api/products`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API_BASE_URL}/api/categories`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API_BASE_URL}/api/warehouses`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${API_BASE_URL}/api/products`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${API_BASE_URL}/api/categories`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
-      console.log('Warehouses:', warehousesRes.data);
-      console.log('Products:', productsRes.data);
-      console.log('Categories:', categoriesRes.data);
+      console.log("Warehouses:", warehousesRes.data);
+      console.log("Products:", productsRes.data);
+      console.log("Categories:", categoriesRes.data);
       setWarehouses(warehousesRes.data);
-      setProducts(productsRes.data.map(p => ({ ...p, _id: p._id.toString() })));
+      setProducts(
+        productsRes.data.map((p) => ({ ...p, _id: p._id.toString() })),
+      );
       setCategories(categoriesRes.data);
 
       // กำหนดค่าเริ่มต้น sourceWarehouse เป็น warehouse ที่ถูก assigned ให้กับ user
-      let defaultWarehouse = '';
+      let defaultWarehouse = "";
       if (user.warehouse) {
         defaultWarehouse = user.warehouse.toString();
       }
-      console.log('Default Warehouse:', defaultWarehouse);
+      console.log("Default Warehouse:", defaultWarehouse);
       if (!defaultWarehouse) {
-        toast.error('No warehouse assigned');
+        toast.error("No warehouse assigned");
         return;
       }
       setSourceWarehouse(defaultWarehouse);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to load data');
-      console.error('Fetch data error:', error);
-      if (error.response?.status === 401) navigate('/login');
+      toast.error(error.response?.data?.message || "Failed to load data");
+      console.error("Fetch data error:", error);
+      if (error.response?.status === 401) navigate("/login");
     } finally {
       setIsLoading(false);
     }
@@ -119,49 +141,62 @@ const TransferOrder = () => {
   const fetchLots = async (productId) => {
     if (!productId || !sourceWarehouse) return;
     try {
-      console.log('Fetching lots for product:', productId, 'warehouse:', sourceWarehouse);
+      console.log(
+        "Fetching lots for product:",
+        productId,
+        "warehouse:",
+        sourceWarehouse,
+      );
       const { data } = await axios.get(`${API_BASE_URL}/api/lots`, {
         headers: { Authorization: `Bearer ${token}` },
-        params: { productId, warehouse: sourceWarehouse }
+        params: { productId, warehouse: sourceWarehouse },
       });
-      console.log('Fetched lots:', data);
-      const filteredLots = data.filter(lot => lot.warehouse.toString() === sourceWarehouse && lot.qtyOnHand > 0);
-      const sortedLots = filteredLots.sort((a, b) => new Date(a.expDate) - new Date(b.expDate));
+      console.log("Fetched lots:", data);
+      const filteredLots = data.filter(
+        (lot) =>
+          lot.warehouse.toString() === sourceWarehouse && lot.qtyOnHand > 0,
+      );
+      const sortedLots = filteredLots.sort(
+        (a, b) => new Date(a.expDate) - new Date(b.expDate),
+      );
       setLots(sortedLots);
       if (!isManualSelection && sortedLots.length > 0) {
-        setCurrentItem(prev => ({ ...prev, lotId: sortedLots[0]._id.toString() }));
+        setCurrentItem((prev) => ({
+          ...prev,
+          lotId: sortedLots[0]._id.toString(),
+        }));
       }
     } catch (error) {
-      toast.error('Failed to load lots');
-      console.error('Fetch lots error:', error);
+      toast.error("Failed to load lots");
+      console.error("Fetch lots error:", error);
     }
   };
 
   const fetchTransferHistory = async () => {
     try {
-      console.log('Fetching transfer history with filters:', filters);
+      console.log("Fetching transfer history with filters:", filters);
       const params = {
-        status: filters.status !== 'all' ? filters.status : undefined,
-        warehouse: filters.warehouse !== 'all' ? filters.warehouse : undefined,
+        status: filters.status !== "all" ? filters.status : undefined,
+        warehouse: filters.warehouse !== "all" ? filters.warehouse : undefined,
         startDate: filters.startDate.toISOString(),
-        endDate: filters.endDate.toISOString()
+        endDate: filters.endDate.toISOString(),
       };
       const { data } = await axios.get(`${API_BASE_URL}/api/transfer-history`, {
         headers: { Authorization: `Bearer ${token}` },
-        params
+        params,
       });
-      console.log('Transfer history data:', data);
+      console.log("Transfer history data:", data);
       setTransferHistory(data);
     } catch (error) {
-      toast.error('Failed to load transfer history');
-      console.error('Fetch transfer history error:', error.response?.data);
+      toast.error("Failed to load transfer history");
+      console.error("Fetch transfer history error:", error.response?.data);
     }
   };
 
   const addItem = () => {
     const quantity = Number(currentItem.quantity);
     if (!quantity) {
-      toast.error('Please fill all required fields');
+      toast.error("Please fill all required fields");
       return;
     }
 
@@ -172,42 +207,46 @@ const TransferOrder = () => {
     while (remainingQuantity > 0 && currentLots.length > 0) {
       const lot = currentLots[0];
       if (!lot) {
-        toast.error('No available lots for the selected quantity');
+        toast.error("No available lots for the selected quantity");
         return;
       }
 
       const qtyToTake = Math.min(remainingQuantity, lot.qtyOnHand);
       if (qtyToTake <= 0) {
-        toast.error('Quantity exceeds available stock');
+        toast.error("Quantity exceeds available stock");
         return;
       }
 
-      const productId = lot.productId._id ? lot.productId._id.toString() : lot.productId.toString();
-      const product = products.find(p => p._id === productId);
+      const productId = lot.productId._id
+        ? lot.productId._id.toString()
+        : lot.productId.toString();
+      const product = products.find((p) => p._id === productId);
 
       selectedLots.push({
         lotId: lot._id.toString(),
         quantity: qtyToTake,
-        productName: product?.name || 'Unknown',
-        productCode: product?.productCode || 'N/A',
+        productName: product?.name || "Unknown",
+        productCode: product?.productCode || "N/A",
         lotCode: lot.lotCode,
         prodDate: lot.productionDate,
-        expDate: lot.expDate
+        expDate: lot.expDate,
       });
 
       remainingQuantity -= qtyToTake;
-      currentLots = currentLots.filter(l => l._id.toString() !== lot._id.toString());
+      currentLots = currentLots.filter(
+        (l) => l._id.toString() !== lot._id.toString(),
+      );
     }
 
     if (remainingQuantity > 0) {
-      toast.error('Insufficient stock across all lots');
+      toast.error("Insufficient stock across all lots");
       return;
     }
 
-    setAddedItems(prevItems => [...prevItems, ...selectedLots]);
-    setSelectedProduct('');
-    setCurrentItem({ lotId: '', quantity: '' });
-    fetchLots(''); // รีเซ็ต lots
+    setAddedItems((prevItems) => [...prevItems, ...selectedLots]);
+    setSelectedProduct("");
+    setCurrentItem({ lotId: "", quantity: "" });
+    fetchLots(""); // รีเซ็ต lots
   };
 
   const removeItem = (index) => {
@@ -215,12 +254,21 @@ const TransferOrder = () => {
   };
 
   const handleTransfer = async () => {
-    if (addedItems.length === 0 || !destinationWarehouse || sourceWarehouse === destinationWarehouse) {
-      toast.error('Please add items and select a different destination warehouse');
+    if (
+      addedItems.length === 0 ||
+      !destinationWarehouse ||
+      sourceWarehouse === destinationWarehouse
+    ) {
+      toast.error(
+        "Please add items and select a different destination warehouse",
+      );
       return;
     }
     const totalItems = addedItems.length;
-    const totalQuantity = addedItems.reduce((sum, item) => sum + Number(item.quantity), 0);
+    const totalQuantity = addedItems.reduce(
+      (sum, item) => sum + Number(item.quantity),
+      0,
+    );
     setShowConfirmModal(true);
   };
 
@@ -229,22 +277,32 @@ const TransferOrder = () => {
     setIsLoading(true);
     try {
       const payload = {
-        lots: addedItems.map(item => ({ lotId: item.lotId, quantity: Number(item.quantity) })),
+        lots: addedItems.map((item) => ({
+          lotId: item.lotId,
+          quantity: Number(item.quantity),
+        })),
         sourceWarehouseId: sourceWarehouse,
         destinationWarehouseId: destinationWarehouse,
-        note: ''
+        note: "",
       };
-      console.log('Transferring with payload:', JSON.stringify(payload, null, 2));
-      const response = await axios.post(`${API_BASE_URL}/api/transfer`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      console.log(
+        "Transferring with payload:",
+        JSON.stringify(payload, null, 2),
+      );
+      const response = await axios.post(
+        `${API_BASE_URL}/api/transfer`,
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       toast.success(response.data.message);
-      console.log('Transfer Number:', response.data.transferNumber);
+      console.log("Transfer Number:", response.data.transferNumber);
       setAddedItems([]);
       fetchTransferHistory(); // อัปเดตประวัติหลังโอน
     } catch (error) {
-      console.error('Transfer error:', error.response?.data || error);
-      toast.error(error.response?.data?.message || 'Failed to transfer stock');
+      console.error("Transfer error:", error.response?.data || error);
+      toast.error(error.response?.data?.message || "Failed to transfer stock");
     } finally {
       setIsLoading(false);
     }
@@ -256,45 +314,53 @@ const TransferOrder = () => {
 
   const handleConfirmTransfer = async (transferId) => {
     try {
-      const response = await axios.patch(`${API_BASE_URL}/api/transfer/${transferId}/confirm`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.patch(
+        `${API_BASE_URL}/api/transfer/${transferId}/confirm`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       toast.success(response.data.message);
       fetchTransferHistory();
     } catch (error) {
-      toast.error('Failed to confirm transfer');
-      console.error('Confirm error:', error.response?.data);
+      toast.error("Failed to confirm transfer");
+      console.error("Confirm error:", error.response?.data);
     }
   };
 
   const handleRejectTransfer = async (transferId) => {
     try {
-      const response = await axios.patch(`${API_BASE_URL}/api/transfer/${transferId}/reject`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.patch(
+        `${API_BASE_URL}/api/transfer/${transferId}/reject`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       toast.success(response.data.message);
       fetchTransferHistory();
     } catch (error) {
-      toast.error('Failed to reject transfer');
-      console.error('Reject error:', error.response?.data);
+      toast.error("Failed to reject transfer");
+      console.error("Reject error:", error.response?.data);
     }
   };
 
   const generatePDF = (transfer) => {
     const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
     // -------------------- HEADER --------------------
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('TRANSFER ORDER REQUEST', 105, 20, { align: 'center' });
+    doc.setFont("helvetica", "bold");
+    doc.text("TRANSFER ORDER REQUEST", 105, 20, { align: "center" });
 
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Transfer Document', 105, 27, { align: 'center' });
+    doc.setFont("helvetica", "normal");
+    doc.text("Transfer Document", 105, 27, { align: "center" });
 
     // Add divider line
     doc.setDrawColor(200, 200, 200);
@@ -306,44 +372,48 @@ const TransferOrder = () => {
     let y = 40;
 
     // Transaction Number
-    doc.setFont('helvetica', 'bold');
-    doc.text('Transaction #:', 15, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(transfer.transferNumber || 'N/A', 45, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("Transaction #:", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(transfer.transferNumber || "N/A", 45, y);
 
     // Issue Type
-    doc.setFont('helvetica', 'bold');
-    doc.text('Issue Type:', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Transfer', 140, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("Issue Type:", 110, y);
+    doc.setFont("helvetica", "normal");
+    doc.text("Transfer", 140, y);
 
     y += 7;
 
     // Source Warehouse
-    doc.setFont('helvetica', 'bold');
-    doc.text('From WH:', 15, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(transfer.sourceWarehouseId?.name || 'N/A', 45, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("From WH:", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(transfer.sourceWarehouseId?.name || "N/A", 45, y);
 
     // Destination Warehouse
-    doc.setFont('helvetica', 'bold');
-    doc.text('To WH:', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(transfer.destinationWarehouseId?.name || 'N/A', 140, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("To WH:", 110, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(transfer.destinationWarehouseId?.name || "N/A", 140, y);
 
     y += 7;
 
     // Date
-    doc.setFont('helvetica', 'bold');
-    doc.text('Date:', 15, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(format(new Date(transfer.createdAt), 'dd/MM/yyyy, HH:mm:ss'), 45, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("Date:", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      format(new Date(transfer.createdAt), "dd/MM/yyyy, HH:mm:ss"),
+      45,
+      y,
+    );
 
     // Transfer By
-    doc.setFont('helvetica', 'bold');
-    doc.text('TRF By:', 110, y);
-    doc.setFont('helvetica', 'normal');
-    doc.text(transfer.userId?.username || 'Unknown', 140, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("TRF By:", 110, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(transfer.userId?.username || "Unknown", 140, y);
 
     // Add divider line
     y += 5;
@@ -354,47 +424,47 @@ const TransferOrder = () => {
 
     // -------------------- ITEMS LIST --------------------
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ITEMS LIST', 20, y);
+    doc.setFont("helvetica", "bold");
+    doc.text("ITEMS LIST", 20, y);
     y += 2;
 
     // -------- Table Header --------
     doc.setFontSize(8);
     doc.setFillColor(240, 240, 240);
-    doc.rect(15, y + 5, 180, 8, 'F');  // header background
+    doc.rect(15, y + 5, 180, 8, "F"); // header background
     doc.setDrawColor(220, 220, 220);
     doc.rect(15, y + 5, 180, 8);
 
     doc.setTextColor(60, 60, 60);
-    doc.setFont('helvetica', 'bold');
-    doc.text('No.', 17, y + 10);
-    doc.text('Product Code', 25, y + 10);
-    doc.text('Product Name', 50, y + 10);
-    doc.text('Lot Code', 100, y + 10);
-    doc.text('Qty', 125, y + 10);
-    doc.text('Production Date', 140, y + 10);
-    doc.text('Exp Date', 170, y + 10);
+    doc.setFont("helvetica", "bold");
+    doc.text("No.", 17, y + 10);
+    doc.text("Product Code", 25, y + 10);
+    doc.text("Product Name", 50, y + 10);
+    doc.text("Lot Code", 100, y + 10);
+    doc.text("Qty", 125, y + 10);
+    doc.text("Production Date", 140, y + 10);
+    doc.text("Exp Date", 170, y + 10);
 
     y += 15;
 
     // -------- Table Rows --------
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     transfer.lots.forEach((lot, index) => {
       if (y > 270) {
         doc.addPage();
         y = 22;
 
         doc.setFillColor(240, 240, 240);
-        doc.rect(15, y, 180, 8, 'F');
+        doc.rect(15, y, 180, 8, "F");
         doc.rect(15, y, 180, 8);
-        doc.setFont('helvetica', 'bold');
-        doc.text('No.', 17, y + 5);
-        doc.text('Product Code', 27, y + 5);
-        doc.text('Product Name', 60, y + 5);
-        doc.text('Lot Code', 100, y + 5);
-        doc.text('Qty', 125, y + 5);
-        doc.text('Production Date', 140, y + 5);
-        doc.text('Exp Date', 170, y + 5);
+        doc.setFont("helvetica", "bold");
+        doc.text("No.", 17, y + 5);
+        doc.text("Product Code", 27, y + 5);
+        doc.text("Product Name", 60, y + 5);
+        doc.text("Lot Code", 100, y + 5);
+        doc.text("Qty", 125, y + 5);
+        doc.text("Production Date", 140, y + 5);
+        doc.text("Exp Date", 170, y + 5);
         y += 10;
       }
 
@@ -405,17 +475,29 @@ const TransferOrder = () => {
       } else {
         doc.setFillColor(250, 250, 250);
       }
-      doc.rect(15, y - 2, 180, 7, 'F');
+      doc.rect(15, y - 2, 180, 7, "F");
       doc.rect(15, y - 2, 180, 7);
 
-      doc.setFont('helvetica', 'normal');
-      doc.text(String(index + 1) + '.', 17, y + 3);
-      doc.text(product.productCode || 'N/A', 25, y + 3);
-      doc.text(product.name || 'N/A', 50, y + 3);
-      doc.text(lot.lotId?.lotCode || 'N/A', 100, y + 3);
+      doc.setFont("helvetica", "normal");
+      doc.text(String(index + 1) + ".", 17, y + 3);
+      doc.text(product.productCode || "N/A", 25, y + 3);
+      doc.text(product.name || "N/A", 50, y + 3);
+      doc.text(lot.lotId?.lotCode || "N/A", 100, y + 3);
       doc.text(String(lot.quantity), 125, y + 3);
-      doc.text(lot.lotId?.productionDate ? format(new Date(lot.lotId.productionDate), 'dd/MM/yyyy') : 'N/A', 140, y + 3);
-      doc.text(lot.lotId?.expDate ? format(new Date(lot.lotId.expDate), 'dd/MM/yyyy') : 'N/A', 170, y + 3);
+      doc.text(
+        lot.lotId?.productionDate
+          ? format(new Date(lot.lotId.productionDate), "dd/MM/yyyy")
+          : "N/A",
+        140,
+        y + 3,
+      );
+      doc.text(
+        lot.lotId?.expDate
+          ? format(new Date(lot.lotId.expDate), "dd/MM/yyyy")
+          : "N/A",
+        170,
+        y + 3,
+      );
 
       y += 7;
     });
@@ -424,28 +506,58 @@ const TransferOrder = () => {
     const footerY = 285;
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
-    doc.text('Generated on: ' + format(new Date(), 'dd/MM/yyyy HH:mm:ss'), 20, footerY);
-    doc.text('Page ' + doc.getCurrentPageInfo().pageNumber, 105, footerY, { align: 'center' });
-    doc.text('© Successmore Cambodia', 190, footerY, { align: 'right' });
+    doc.text(
+      "Generated on: " + format(new Date(), "dd/MM/yyyy HH:mm:ss"),
+      20,
+      footerY,
+    );
+    doc.text("Page " + doc.getCurrentPageInfo().pageNumber, 105, footerY, {
+      align: "center",
+    });
+    doc.text("© Successmore Cambodia", 190, footerY, { align: "right" });
 
     // Open PDF in new tab
-    const pdfBlob = doc.output('blob');
+    const pdfBlob = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, '_blank');
+    window.open(pdfUrl, "_blank");
   };
 
-  const filteredProducts = selectedCategory === 'All'
-    ? products
-    : products.filter(p => p.category && p.category._id.toString() === selectedCategory);
+  const filteredProducts =
+    selectedCategory === "All"
+      ? products
+      : products.filter(
+          (p) => p.category && p.category._id.toString() === selectedCategory,
+        );
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'Pending':
-        return <Badge variant="secondary" className="bg-yellow-50 ring-[0.5px]  rounded-full ring-yellow-500 text-yellow-600">{status}</Badge>;
-      case 'Confirmed':
-        return <Badge variant="success" className="bg-green-50 ring-[0.5px]  rounded-full ring-green-500 text-green-600">{status}</Badge>;
-      case 'Rejected':
-        return <Badge variant="secondary" className="bg-red-50 ring-[0.5px]  rounded-full ring-red-500 text-red-600">{status}</Badge>;
+      case "Pending":
+        return (
+          <Badge
+            variant="secondary"
+            className="rounded-full bg-yellow-50 text-yellow-600 ring-[0.5px] ring-yellow-500"
+          >
+            {status}
+          </Badge>
+        );
+      case "Confirmed":
+        return (
+          <Badge
+            variant="success"
+            className="rounded-full bg-green-50 text-green-600 ring-[0.5px] ring-green-500"
+          >
+            {status}
+          </Badge>
+        );
+      case "Rejected":
+        return (
+          <Badge
+            variant="secondary"
+            className="rounded-full bg-red-50 text-red-600 ring-[0.5px] ring-red-500"
+          >
+            {status}
+          </Badge>
+        );
       default:
         return <Badge>{status}</Badge>;
     }
@@ -455,13 +567,14 @@ const TransferOrder = () => {
     const value = e.target.value;
     setProductSearch(value);
     let results = [];
-    if (value.trim() === '') {
+    if (value.trim() === "") {
       results = filteredProducts;
     } else {
       const search = value.toLowerCase();
-      results = filteredProducts.filter(product =>
-        product.productCode?.toLowerCase().includes(search) ||
-        product.name?.toLowerCase().includes(search)
+      results = filteredProducts.filter(
+        (product) =>
+          product.productCode?.toLowerCase().includes(search) ||
+          product.name?.toLowerCase().includes(search),
       );
     }
     setSearchResults(results);
@@ -470,8 +583,10 @@ const TransferOrder = () => {
 
   const handleProductSelect = (productId) => {
     setSelectedProduct(productId);
-    const selected = filteredProducts.find(p => p._id === productId);
-    setProductSearch(selected ? `${selected.name} (${selected.productCode})` : '');
+    const selected = filteredProducts.find((p) => p._id === productId);
+    setProductSearch(
+      selected ? `${selected.name} (${selected.productCode})` : "",
+    );
     fetchLots(productId);
     setShowProductDropdown(false);
     if (productInputRef.current) productInputRef.current.blur();
@@ -479,8 +594,8 @@ const TransferOrder = () => {
 
   const handleAddItem = () => {
     addItem();
-    setProductSearch('');
-    setSelectedProduct('');
+    setProductSearch("");
+    setSelectedProduct("");
   };
 
   return (
@@ -507,9 +622,8 @@ const TransferOrder = () => {
       </div>
 
       {isLoading && !products.length ? (
-        <div className="space-y-4">
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-64 w-full" />
+        <div className="flex h-64 items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-blue-600"></div>
         </div>
       ) : (
         <div className="space-y-6">
