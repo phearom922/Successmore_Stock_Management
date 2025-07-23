@@ -12,7 +12,7 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  'http://178.128.60.193:3000',
+  'https://www.scmstockkh.com:3000',
   'http://localhost:5173',
 ];
 
