@@ -10,11 +10,10 @@ const telegramRoutes = require('./routes/telegram');
 
 const app = express();
 
-
 const allowedOrigins = [
-  'http://178.128.60.193:3000', // รักษา IP เดิมสำหรับการทดสอบ
-  'http://localhost:5173',      // สำหรับ local development
-  'https://www.scmstockkh.com',  // Domain ใหม่สำหรับ HTTPS
+  'http://178.128.60.193:3000',
+  'http://localhost:5173',
+  'https://www.scmstockkh.com'
 ];
 
 app.use(cors({
@@ -36,10 +35,8 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use('/api', apiRoutes);
 app.use('/api/telegram', telegramRoutes);
-
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-management')
   .then(() => logger.info('Connected to MongoDB'))
@@ -48,7 +45,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/stock-man
     process.exit(1);
   });
 
-
 if (!process.env.JWT_SECRET) {
   logger.error('JWT_SECRET is missing');
   process.exit(1);
@@ -56,7 +52,6 @@ if (!process.env.JWT_SECRET) {
 if (!process.env.TELEGRAM_BOT_TOKEN) {
   logger.warn('TELEGRAM_BOT_TOKEN is missing; Telegram Bot will not start');
 }
-
 
 if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SERVICE_PASS && process.env.WEBHOOK_URL) {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -69,12 +64,16 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
   const hookPath = `/bot${BOT_TOKEN}`;
 
   async function loginService() {
-    const res = await axios.post(
-      `${API_BASE_URL}/api/login`,
-      { username: SERVICE_USER, password: SERVICE_PASS }
-    );
-    serviceToken = res.data.token;
-    logger.info('Service logged in (Bot)');
+    try {
+      const res = await axios.post(
+        `${API_BASE_URL}/api/login`,
+        { username: SERVICE_USER, password: SERVICE_PASS }
+      );
+      serviceToken = res.data.token;
+      logger.info('Service logged in (Bot)');
+    } catch (err) {
+      logger.error('Failed to login service:', { error: err.message });
+    }
   }
 
   async function fetchSummary(code) {
@@ -117,7 +116,7 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
 
   bot.command('help', ctx => {
     ctx.reply(
-      'សូមវាយលេខកូດផលិតផលដែលអ្នកចង់ដឹង\nហាមដកឃ្លា ឬអក្សរតូច\nឧទាហរណ៍: 1015KH'
+      'សូមវាយលេខកូដផលិតផលដែលអ្នកចង់ដឹង\nហាមដកឃ្លា ឬអក្សរតូច\nឧទាហរណ៍: 1015KH'
     );
   });
 
@@ -144,7 +143,7 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
   bot.on('text', async ctx => {
     const code = ctx.message.text.trim();
     if (!/^[A-Z0-9]+$/.test(code) || code === '/help') {
-      return ctx.reply('សូមវាយលេខកូដ...');
+      return ctx.reply('សូមวាយលេខកូដ...');
     }
     try {
       const resp = await fetchSummary(code);
