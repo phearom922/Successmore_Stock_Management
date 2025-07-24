@@ -1,0 +1,45 @@
+name: Deploy to DigitalOcean
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'  # ใช้ Node.js 20.x ตาม local
+
+      - name: Deploy Backend
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DO_KEY }}
+          known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
+      - name: Run Backend Deployment Commands
+        run: |
+          ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
+            cd /root/Successmore_Stock_Management/backend &&
+            git config pull.rebase false &&
+            git pull origin main &&
+            rm -rf node_modules package-lock.json &&
+            npm install &&
+            pm2 restart backend
+          "
+
+      - name: Deploy Frontend
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DO_KEY }}
+          known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
+      - name: Copy Frontend Dist
+        run: |
+          ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
+            mkdir -p /var/www/frontend &&
+            chown -R www-data:www-data /var/www/frontend
+          "
+          scp -r frontend/dist/* ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}:/var/www/frontend
