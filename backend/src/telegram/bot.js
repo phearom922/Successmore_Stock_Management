@@ -1,5 +1,3 @@
-// backend/telegram/bot.js
-
 require('dotenv').config();
 const express = require('express');
 const { Telegraf } = require('telegraf');
@@ -114,7 +112,7 @@ bot.on('text', async (ctx) => {
         return ctx.replyWithMarkdown(reply);
     } catch (err) {
         console.error('Bot error:', err.response?.data || err.message);
-        return ctx.reply('❗ เกิดข้อผิดพลาด ลองใหม่อีกครั้ง');
+        return ctx.reply('❗ មានបញ្ហាកើតឡើង សូមព្យាយាមម្តងទៀត');
     }
 });
 

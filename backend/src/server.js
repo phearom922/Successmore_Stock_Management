@@ -10,10 +10,11 @@ const telegramRoutes = require('./routes/telegram');
 
 const app = express();
 
+
 const allowedOrigins = [
-  'http://178.128.60.193:3000',
-  'http://localhost:5173',
-  'https://www.scmstockkh.com:3000'
+  'http://178.128.60.193:3000', // รักษา IP เดิมสำหรับการทดสอบ
+  'http://localhost:5173',      // สำหรับ local development
+  'https://www.scmstockkh.com',  // Domain ใหม่สำหรับ HTTPS
 ];
 
 app.use(cors({
