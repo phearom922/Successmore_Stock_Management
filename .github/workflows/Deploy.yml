@@ -15,12 +15,14 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Deploy Backend
+      - name: Setup SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.DO_KEY }}
           known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
-      - name: Run Backend Deployment Commands
+          if_key_exists: ignore  # เปลี่ยนเป็น ignore เพื่อข้ามถ้า key มีอยู่แล้ว
+
+      - name: Deploy Backend
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
             cd /root/Successmore_Stock_Management/backend &&
@@ -34,11 +36,6 @@ jobs:
           "
 
       - name: Deploy Frontend
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.DO_KEY }}
-          known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
-      - name: Copy Frontend Dist
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
             mkdir -p /var/www/frontend &&
