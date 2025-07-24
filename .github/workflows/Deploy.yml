@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'  # ใช้ Node.js 20.x ตาม local
+          node-version: '20.x'  # ใช้ Node.js 20.x
 
       - name: Deploy Backend
         uses: shimataro/ssh-key-action@v2
@@ -22,7 +22,7 @@ jobs:
           known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
       - name: Run Backend Deployment Commands
         run: |
-          ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
             cd /root/Successmore_Stock_Management/backend &&
             git config pull.rebase false &&
             git pull origin main &&
@@ -38,8 +38,9 @@ jobs:
           known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
       - name: Copy Frontend Dist
         run: |
-          ssh ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }} "
             mkdir -p /var/www/frontend &&
-            chown -R www-data:www-data /var/www/frontend
+            chown -R www-data:www-data /var/www/frontend &&
+            chmod -R 755 /var/www/frontend
           "
           scp -r frontend/dist/* ${{ secrets.DO_USER }}@${{ secrets.DO_HOST }}:/var/www/frontend
