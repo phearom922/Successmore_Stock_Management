@@ -248,13 +248,13 @@ const Products = () => {
           </div>
 
           {/* Category Tabs */}
-          <div className="px-4 pt-4">
+          <div className="px-4 pt-4 pb-4">
             <Tabs
               value={activeCategory}
               onValueChange={setActiveCategory}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2">
                 <TabsTrigger value="all" className="py-2 px-4">
                   All Categories
                 </TabsTrigger>

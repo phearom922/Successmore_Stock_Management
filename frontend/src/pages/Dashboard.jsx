@@ -112,14 +112,14 @@ const Dashboard = () => {
         );
         setWarehouses(warehousesRes.data);
 
-        if (userRole !== "admin" && user?.warehouse) {
+        if (userRole === "admin" && user?.warehouse) {
+          setSelectedWarehouse(user.warehouse);
+        } else if (userRole !== "admin" && user?.warehouse) {
           setSelectedWarehouse(user.warehouse);
         }
 
         await fetchDashboardData(
-          userRole !== "admin" && user?.warehouse
-            ? user.warehouse
-            : selectedWarehouse,
+          user?.warehouse ? user.warehouse : selectedWarehouse,
         );
         await fetchSettings();
       } catch (error) {
@@ -317,7 +317,6 @@ const Dashboard = () => {
                     <SelectValue placeholder="Select warehouse" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Warehouses</SelectItem>
                     {warehouses.map((warehouse) => (
                       <SelectItem key={warehouse._id} value={warehouse._id}>
                         {warehouse.name}
@@ -327,7 +326,7 @@ const Dashboard = () => {
                 </Select>
               </motion.div>
             )}
-            
+
             {userRole !== "admin" && user?.warehouse && (
               <motion.div variants={itemVariants}>
                 <Select value={user.warehouse} disabled>
