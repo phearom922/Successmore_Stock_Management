@@ -13,7 +13,7 @@ const app = express();
 const allowedOrigins = [
   'http://178.128.60.193:3000',
   'http://localhost:5173',
-  'https://www.scmstockkh.com'
+  'https://www.scmstockkh.com'//default production URL
 ];
 
 app.use(cors({

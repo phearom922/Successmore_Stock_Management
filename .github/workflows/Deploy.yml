@@ -20,7 +20,7 @@ jobs:
         with:
           key: ${{ secrets.DO_KEY }}
           known_hosts: ${{ secrets.DO_KNOWN_HOSTS }}
-          if_key_exists: ignore  # เปลี่ยนเป็น ignore เพื่อข้ามถ้า key มีอยู่แล้ว
+          if_key_exists: ignore
 
       - name: Deploy Backend
         run: |
