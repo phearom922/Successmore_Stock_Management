@@ -14,7 +14,7 @@ const allowedOrigins = [
   'http://178.128.60.193:3000',
   'http://localhost:5173',
   'https://www.scmstockkh.com',
-  'https://scmstockkh.com' // เพิ่มกรณีไม่มี www-phearom
+  'https://scmstockkh.com'
 ];
 app.use(cors({
   origin: function (origin, callback) {
