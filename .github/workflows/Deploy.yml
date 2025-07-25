@@ -31,7 +31,7 @@ jobs:
             git reset --hard origin/main &&
             git pull origin main &&
             rm -rf node_modules package-lock.json &&
-            npm install &&
+            npm install --legacy-peer-deps &&
             pm2 restart backend
           "
 
