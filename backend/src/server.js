@@ -13,11 +13,12 @@ const app = express();
 const allowedOrigins = [
   'http://178.128.60.193:3000',
   'http://localhost:5173',
-  'https://www.scmstockkh.com'//default production URL
+  'https://www.scmstockkh.com'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
+    console.log('Origin:', origin); // เพิ่มเพื่อ debug
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
