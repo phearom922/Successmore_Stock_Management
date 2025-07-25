@@ -16,7 +16,6 @@ const allowedOrigins = [
   'https://www.scmstockkh.com',
   'https://scmstockkh.com' // เพิ่มกรณีไม่มี www-phearom
 ];
-
 app.use(cors({
   origin: function (origin, callback) {
     console.log('Origin received:', origin); // Debug
