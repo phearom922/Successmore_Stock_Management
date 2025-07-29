@@ -139,6 +139,21 @@
             "date": 1753415210657,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-25.log",
             "hash": "67067acc0c1536e62e7958ae30959b68f1cd81106a99896c69732463f33f58dc"
+        },
+        {
+            "date": 1753589403655,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-27.log",
+            "hash": "d7595785b8effae576204d50615ccbae622f15afe2e938eb2c9b7811dced15a2"
+        },
+        {
+            "date": 1753678273583,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-28.log",
+            "hash": "23dc7472442ce9b4bd9a21e49722b733def92981a80a07122b6fb24f55835e72"
+        },
+        {
+            "date": 1753758900367,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\error-2025-07-29.log",
+            "hash": "31cec62ddeebacba45d3729ebed889f978ba7638ce55dfe120310b89396ba68b"
         }
     ],
     "hashType": "sha256"

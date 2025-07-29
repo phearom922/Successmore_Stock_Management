@@ -27,6 +27,8 @@
     "body-parser": "^2.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^2.30.0",
+    "date-fns-tz": "^2.0.1",
     "framer-motion": "^12.23.6",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
