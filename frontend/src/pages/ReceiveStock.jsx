@@ -52,6 +52,11 @@ const ReceiveStock = () => {
   const navigate = useNavigate();
   const user = token ? JSON.parse(atob(token.split(".")[1])) : {};
   const productInputRef = useRef(null);
+  const lotCodeRef = useRef(null);
+  const boxCountRef = useRef(null);
+  const qtyPerBoxRef = useRef(null);
+  const prodDateRef = useRef(null);
+  const expDateRef = useRef(null);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
@@ -392,6 +397,35 @@ const ReceiveStock = () => {
     setShowProductDropdown(false);
     if (productInputRef && productInputRef.current)
       productInputRef.current.blur();
+    setTimeout(() => {
+      lotCodeRef.current?.focus();
+    }, 100);
+  };
+
+  // ฟังก์ชัน handleKeyDown สำหรับ input แต่ละตัว
+  const handleLotCodeKeyDown = (e) => {
+    if (e.key === "Enter") {
+      boxCountRef.current?.focus();
+      e.preventDefault();
+    }
+  };
+  const handleBoxCountKeyDown = (e) => {
+    if (e.key === "Enter") {
+      qtyPerBoxRef.current?.focus();
+      e.preventDefault();
+    }
+  };
+  const handleQtyPerBoxKeyDown = (e) => {
+    if (e.key === "Enter") {
+      prodDateRef.current?.setFocus?.();
+      e.preventDefault();
+    }
+  };
+  const handleProdDateKeyDown = (e) => {
+    if (e.key === "Enter") {
+      expDateRef.current?.setFocus?.();
+      e.preventDefault();
+    }
   };
 
   const handleAddLot = () => {
@@ -409,16 +443,6 @@ const ReceiveStock = () => {
           <p className="text-gray-600">
             Record stock receive and create new lots
           </p>
-        </div>
-        <div className="flex space-x-3">
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className={`inline-flex items-center rounded-lg border border-transparent px-5 py-2.5 text-sm font-medium text-white shadow-sm ${isLoading ? "cursor-not-allowed bg-blue-300" : "bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"}`}
-            disabled={isLoading || addedLots.length === 0}
-          >
-            {isLoading ? "Processing..." : "Receive Stock"}
-          </button>
         </div>
       </div>
 
@@ -609,11 +633,13 @@ const ReceiveStock = () => {
                     Lot Code <span className="text-red-500">*</span>
                   </label>
                   <input
+                    ref={lotCodeRef}
                     type="text"
                     value={currentLot.lotCode}
                     onChange={(e) =>
                       updateCurrentLot("lotCode", e.target.value)
                     }
+                    onKeyDown={handleLotCodeKeyDown}
                     placeholder="Enter lot code"
                     className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2.5 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                     disabled={isLoading}
@@ -625,11 +651,13 @@ const ReceiveStock = () => {
                     Box Count <span className="text-red-500">*</span>
                   </label>
                   <input
+                    ref={boxCountRef}
                     type="number"
                     value={currentLot.boxCount}
                     onChange={(e) =>
                       updateCurrentLot("boxCount", e.target.value)
                     }
+                    onKeyDown={handleBoxCountKeyDown}
                     placeholder="Enter box count"
                     className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2.5 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                     disabled={isLoading}
@@ -642,11 +670,13 @@ const ReceiveStock = () => {
                     Quantity per Box <span className="text-red-500">*</span>
                   </label>
                   <input
+                    ref={qtyPerBoxRef}
                     type="number"
                     value={currentLot.qtyPerBox}
                     onChange={(e) =>
                       updateCurrentLot("qtyPerBox", e.target.value)
                     }
+                    onKeyDown={handleQtyPerBoxKeyDown}
                     placeholder="Enter quantity per box"
                     className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2.5 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                     disabled={isLoading}
@@ -674,10 +704,12 @@ const ReceiveStock = () => {
                     </label>
                     <div className="relative">
                       <DatePicker
+                        ref={prodDateRef}
                         selected={currentLot.productionDate}
                         onChange={(date) =>
                           updateCurrentLot("productionDate", date)
                         }
+                        onKeyDown={handleProdDateKeyDown}
                         className="mt-1 block w-full rounded-lg border border-gray-300 py-2.5 pr-3 pl-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
                         disabled={isLoading}
                         dateFormat="dd-MM-yyyy"
@@ -699,13 +731,13 @@ const ReceiveStock = () => {
                       <FaCalendarAlt className="absolute top-3.5 left-3 text-gray-400" />
                     </div>
                   </div>
-
                   <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">
                       Expiration Date <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <DatePicker
+                        ref={expDateRef}
                         selected={currentLot.expDate}
                         onChange={(date) => updateCurrentLot("expDate", date)}
                         className="mt-1 block w-full rounded-lg border border-gray-300 py-2.5 pr-3 pl-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none sm:text-sm"
@@ -920,6 +952,16 @@ const ReceiveStock = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className={`inline-flex items-center rounded-lg border border-transparent px-5 py-2.5 text-sm font-medium text-white shadow-sm ${isLoading ? "cursor-not-allowed bg-blue-300" : "bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"}`}
+                  disabled={isLoading || addedLots.length === 0}
+                >
+                  {isLoading ? "Processing..." : "Receive Stock"}
+                </button>
               </div>
             </div>
           )}
