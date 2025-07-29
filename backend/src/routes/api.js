@@ -150,7 +150,7 @@ router.post('/login', async (req, res) => {
       warehouse: user.warehouse.toString(), // เปลี่ยนจาก assignedWarehouse
       permissions: user.permissions || [],
       isActive: user.isActive,
-    }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    }, process.env.JWT_SECRET, { expiresIn: '8h' });
 
     logger.info('Login successful:', { username, userId: user._id, token });
     res.json({ token });
