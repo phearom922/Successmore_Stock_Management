@@ -6,16 +6,6 @@
     "auditLog": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\.4e005a02bd71a7120fff66e872671e7fc58746bf-audit.json",
     "files": [
         {
-            "date": 1751184694773,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-06-29.log",
-            "hash": "6ce040bc34c41905d1ed51bb26d001edf5e51b90609953c76ecc92b5a399ed32"
-        },
-        {
-            "date": 1751216429097,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-06-30.log",
-            "hash": "c98e7b4dc99d3e13793da76d0ea248f22a0dbd2068735359bb9eef31b34f3670"
-        },
-        {
             "date": 1751302806650,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-01.log",
             "hash": "1be7beaf0b7f3c580eaa24b03c8ec8ec0cc89580f84c05f37084c6ea33b4058d"
@@ -154,6 +144,11 @@
             "date": 1753758900372,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-29.log",
             "hash": "4bfa05dd6789d000720c658813411e3cee0d85dae0c6b7a3c116d1332a7e74f0"
+        },
+        {
+            "date": 1753846525585,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-30.log",
+            "hash": "79efb995f0b0f3c5827935b67513cc9229e8150ea8716fe57b6d3ba5811db062"
         }
     ],
     "hashType": "sha256"

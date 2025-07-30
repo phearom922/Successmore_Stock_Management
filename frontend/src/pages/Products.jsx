@@ -254,7 +254,7 @@ const Products = () => {
               onValueChange={setActiveCategory}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2">
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-2">
                 <TabsTrigger value="all" className="py-2 px-4">
                   All Categories
                 </TabsTrigger>
