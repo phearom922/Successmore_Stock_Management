@@ -6,36 +6,6 @@
     "auditLog": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\.4e005a02bd71a7120fff66e872671e7fc58746bf-audit.json",
     "files": [
         {
-            "date": 1751302806650,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-01.log",
-            "hash": "1be7beaf0b7f3c580eaa24b03c8ec8ec0cc89580f84c05f37084c6ea33b4058d"
-        },
-        {
-            "date": 1751389217141,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-02.log",
-            "hash": "026034d4449a9306da475c26467e26f79cf5a48a28069b22429a3cf72f9947d6"
-        },
-        {
-            "date": 1751475605842,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-03.log",
-            "hash": "01c3487a422cc7b23bcfffb6bf76eb23154aba131688d663a636d0e8cfbdaca5"
-        },
-        {
-            "date": 1751597912749,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-04.log",
-            "hash": "bf8437370a71a2f9dac379afddc848cbbfa2bb462cdba1e1ec88dc1a3167a79a"
-        },
-        {
-            "date": 1751648403847,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-05.log",
-            "hash": "ddbd6135988c5f2070d93503e8c7ae699e170e702326ca8210dacf6b55627590"
-        },
-        {
-            "date": 1751734804225,
-            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-06.log",
-            "hash": "e01f181e0de399ed746ca6aacb9202130b39da7f0d946123d190b1a380e0c97f"
-        },
-        {
             "date": 1751821221320,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-07.log",
             "hash": "00c87703c84a97e69e5ec1b1caa3939f4995a3ad32b67e38d123aa447493e76e"
@@ -149,6 +119,11 @@
             "date": 1753846525585,
             "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-07-30.log",
             "hash": "79efb995f0b0f3c5827935b67513cc9229e8150ea8716fe57b6d3ba5811db062"
+        },
+        {
+            "date": 1754373095104,
+            "name": "E:\\Personal Documents\\Stock-Management\\backend\\logs\\combined-2025-08-05.log",
+            "hash": "7431daed021a5de7b235dfa0e467fa4cdd373ac14cdb51bb59aa8300f802d01a"
         }
     ],
     "hashType": "sha256"

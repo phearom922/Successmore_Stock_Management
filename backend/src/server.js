@@ -104,69 +104,72 @@ if (process.env.TELEGRAM_BOT_TOKEN && process.env.SERVICE_USER && process.env.SE
     }
   }
 
-  (async () => {
-    try {
-      await bot.telegram.setMyCommands([
-        { command: 'help', description: 'Show usage instructions' },
-      ]);
-      logger.info('Telegram bot commands set');
-    } catch (err) {
-      logger.error('Failed to set bot commands', err);
-    }
-  })();
 
-  bot.command('help', ctx => {
-    ctx.reply(
-      'សូមវាយលេខកូដផលិតផលដែលអ្នកចង់ដឹង\nហាមដកឃ្លា ឬអក្សរតូច\nឧទាហរណ៍: 1015KH'
-    );
-  });
 
-  function formatSummaryMessage(rows, code) {
-    if (!rows.length) {
-      return `❌ មិនមានផលិតផលកូដ \`${code}\``;
-    }
 
-    const totals = {};
-    rows.forEach(r => {
-      const wh = r.warehouse || 'Unknown';
-      const q = Number(r.qtyOnHand) || 0;
-      totals[wh] = (totals[wh] || 0) + q;
-    });
+  // (async () => {
+  //   try {
+  //     await bot.telegram.setMyCommands([
+  //       { command: 'help', description: 'Show usage instructions' },
+  //     ]);
+  //     logger.info('Telegram bot commands set');
+  //   } catch (err) {
+  //     logger.error('Failed to set bot commands', err);
+  //   }
+  // })();
 
-    const productName = rows[0].productId?.name || 'Unknown';
-    let msg = `📦 Summary for *${code}* — _${productName}_\n\n`;
-    for (const [warehouse, sum] of Object.entries(totals)) {
-      msg += `🏭 _${warehouse}_\n   👉 ${productName} : *${sum}*\n`;
-    }
-    return msg;
-  }
+  // bot.command('help', ctx => {
+  //   ctx.reply(
+  //     'សូមវាយលេខកូដផលិតផលដែលអ្នកចង់ដឹង\nហាមដកឃ្លា ឬអក្សរតូច\nឧទាហរណ៍: 1015KH'
+  //   );
+  // });
 
-  bot.on('text', async ctx => {
-    const code = ctx.message.text.trim();
-    if (!/^[A-Z0-9]+$/.test(code) || code === '/help') {
-      return ctx.reply('សូមวាយលេខកូដ...');
-    }
-    try {
-      const resp = await fetchSummary(code);
-      const rows = resp.data.data || [];
-      const reply = formatSummaryMessage(rows, code);
-      return ctx.replyWithMarkdown(reply);
-    } catch (err) {
-      return ctx.reply('❗ មានបញ្ហាកើតឡើង សូមព្យាយាមម្តងទៀត');
-    }
-  });
+  // function formatSummaryMessage(rows, code) {
+  //   if (!rows.length) {
+  //     return `❌ មិនមានផលិតផលកូដ \`${code}\``;
+  //   }
 
-  app.use(bot.webhookCallback(hookPath));
+  //   const totals = {};
+  //   rows.forEach(r => {
+  //     const wh = r.warehouse || 'Unknown';
+  //     const q = Number(r.qtyOnHand) || 0;
+  //     totals[wh] = (totals[wh] || 0) + q;
+  //   });
 
-  (async () => {
-    try {
-      await bot.telegram.setWebhook(`${WEBHOOK_URL}${hookPath}`);
-      logger.info('Telegram webhook set to ' + `${WEBHOOK_URL}${hookPath}`);
-    } catch (err) {
-      logger.error('Failed to set webhook', err);
-      process.exit(1);
-    }
-  })();
+  //   const productName = rows[0].productId?.name || 'Unknown';
+  //   let msg = `📦 Summary for *${code}* — _${productName}_\n\n`;
+  //   for (const [warehouse, sum] of Object.entries(totals)) {
+  //     msg += `🏭 _${warehouse}_\n   👉 ${productName} : *${sum}*\n`;
+  //   }
+  //   return msg;
+  // }
+
+  // bot.on('text', async ctx => {
+  //   const code = ctx.message.text.trim();
+  //   if (!/^[A-Z0-9]+$/.test(code) || code === '/help') {
+  //     return ctx.reply('សូមวាយលេខកូដ...');
+  //   }
+  //   try {
+  //     const resp = await fetchSummary(code);
+  //     const rows = resp.data.data || [];
+  //     const reply = formatSummaryMessage(rows, code);
+  //     return ctx.replyWithMarkdown(reply);
+  //   } catch (err) {
+  //     return ctx.reply('❗ មានបញ្ហាកើតឡើង សូមព្យាយាមម្តងទៀត');
+  //   }
+  // });
+
+  // app.use(bot.webhookCallback(hookPath));
+
+  // (async () => {
+  //   try {
+  //     await bot.telegram.setWebhook(`${WEBHOOK_URL}${hookPath}`);
+  //     logger.info('Telegram webhook set to ' + `${WEBHOOK_URL}${hookPath}`);
+  //   } catch (err) {
+  //     logger.error('Failed to set webhook', err);
+  //     process.exit(1);
+  //   }
+  // })();
 }
 
 const PORT = process.env.PORT || 3000;
