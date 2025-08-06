@@ -277,7 +277,7 @@ const IssueHistory = () => {
       const response = await axios.post(
         `${API_BASE_URL}/api/telegram/send`,
         {
-          chat_id: "-4871143154",
+          chat_id: "-4886597092",
           text: message,
           parse_mode: "Markdown",
         },
